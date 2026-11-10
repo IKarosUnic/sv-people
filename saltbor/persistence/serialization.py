@@ -31,11 +31,14 @@ def _uuid_str(val: Any) -> str | None:
     return str(val)
 
 
-def _uuid_or_none(val: Any) -> UUID | None:
-    """Coerce a string back to :class:`UUID`, or return ``None``."""
+def _uuid_or_none(val: Any) -> Any:
+    """Coerce a string back to :class:`UUID`, or return str/None."""
     if val is None or val == "":
         return None
-    return UUID(str(val))
+    try:
+        return UUID(str(val))
+    except (ValueError, TypeError):
+        return str(val)
 
 
 class Serializer:

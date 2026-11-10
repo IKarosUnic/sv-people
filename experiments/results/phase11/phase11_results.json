@@ -1,0 +1,375 @@
+{
+  "EXP_11_A": {
+    "name": "Auditoría Integral de Arquitectura",
+    "success": true,
+    "summary": "Auditados 19 subsistemas clave: 19 VALIDATED, 0 BROKEN.",
+    "metrics": {
+      "total_audited": 19,
+      "validated_count": 19,
+      "broken_count": 0,
+      "audit_pass_ratio": 1.0
+    },
+    "duration_seconds": 2e-05,
+    "hypotheses": [
+      {
+        "hypothesis": "Los subsistemas principales están implementados y verificables sin dependencias rotas",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_11_B": {
+    "name": "Reproducibilidad con Semillas",
+    "success": true,
+    "summary": "Reproducibilidad exacta: True. 10 semillas evaluadas: mediana=0.7389, std=0.0071.",
+    "metrics": {
+      "exact_match": true,
+      "seeds_evaluated": 10,
+      "energy_median": 0.7389,
+      "energy_std": 0.0071,
+      "energy_variance": 5e-05
+    },
+    "duration_seconds": 0.38759,
+    "hypotheses": [
+      {
+        "hypothesis": "Semilla idéntica produce estados idénticos deterministas",
+        "verified": true
+      },
+      {
+        "hypothesis": "Múltiples semillas exhiben variabilidad estocástica controlada",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_11_C": {
+    "name": "Emergencia de Objetivos Individuales",
+    "success": true,
+    "summary": "Generados 32 objetivos en 3 categorías. Adaptados/Abandonados: 1.",
+    "metrics": {
+      "total_goals_generated": 32,
+      "distinct_categories": 3,
+      "categories": [
+        "biological",
+        "social",
+        "financial"
+      ],
+      "abandoned_or_modified_count": 1,
+      "completed_count": 2
+    },
+    "duration_seconds": 0.07804,
+    "hypotheses": [
+      {
+        "hypothesis": "Los habitantes formulan objetivos autónomos diversos a partir de sus estados internos",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_11_D": {
+    "name": "Emergencia de Relaciones Sociales",
+    "success": true,
+    "summary": "Evolucionaron 47 relaciones con varianza de confianza=0.0221 y afinidad=0.0212.",
+    "metrics": {
+      "relationships_count": 47,
+      "social_edges_count": 72,
+      "trust_variance": 0.02208,
+      "affinity_variance": 0.02123
+    },
+    "duration_seconds": 0.07322,
+    "hypotheses": [
+      {
+        "hypothesis": "Las relaciones emergen y se diferencian dinámicamente según vivencias compartidas",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_11_E": {
+    "name": "Formación Espontánea de Comunidades",
+    "success": true,
+    "summary": "Surgieron espontáneamente 2 comunidades: ['Grupo de Agricultura', 'Grupo de Comercio'].",
+    "metrics": {
+      "communities_formed": 2,
+      "community_names": [
+        "Grupo de Agricultura",
+        "Grupo de Comercio"
+      ],
+      "mean_cohesion": 0.86
+    },
+    "duration_seconds": 0.0001,
+    "hypotheses": [
+      {
+        "hypothesis": "Los intereses compartidos y redes de amistad generan comunidades orgánicas",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_11_F": {
+    "name": "Emergencia de Actividades Económicas",
+    "success": true,
+    "summary": "Especializaciones registradas: 20. Dispersión económica std=$36.91, Gini=0.190.",
+    "metrics": {
+      "active_occupations_count": 20,
+      "wealth_std": 36.91,
+      "gini_coefficient": 0.19
+    },
+    "duration_seconds": 0.0783,
+    "hypotheses": [
+      {
+        "hypothesis": "La economía local diverge hacia múltiples actividades e ingresos heterogéneos",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_11_G": {
+    "name": "Transmisión Cultural Intergeneracional",
+    "success": true,
+    "summary": "Deriva semántica oral verificada tras 5 transmisiones: factor de deriva=0.45 (transmisiones=6).",
+    "metrics": {
+      "transmission_hops": 5,
+      "initial_drift": 0.05,
+      "final_drift": 0.45,
+      "transmission_count": 6
+    },
+    "duration_seconds": 3e-05,
+    "hypotheses": [
+      {
+        "hypothesis": "La transmisión cultural intergeneracional acumula deriva semántica gradual sin pérdida total",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_11_H": {
+    "name": "Adaptación Conductual ante Escasez",
+    "success": true,
+    "summary": "Bajo escasez monetaria ($1.00), el agente seleccionó de forma adaptativa: cook.",
+    "metrics": {
+      "initial_money": 1.0,
+      "hunger_level": 0.85,
+      "chosen_action": "cook",
+      "expected_utility": 2.0
+    },
+    "duration_seconds": 0.00068,
+    "hypotheses": [
+      {
+        "hypothesis": "Los agentes adaptan su conducta ante escasez de recursos sin bloquearse",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_11_I": {
+    "name": "Cambios Demográficos Longitudinales",
+    "success": true,
+    "summary": "Mortalidad Gompertz exponencial verificada: Hazard 20=0.000002, 80=0.000018 (ratio 12.0x).",
+    "metrics": {
+      "hazard_age_20": 2e-06,
+      "hazard_age_50": 3e-06,
+      "hazard_age_80": 1.8e-05,
+      "senescence_ratio_80_20": 12.0
+    },
+    "duration_seconds": 0.00152,
+    "hypotheses": [
+      {
+        "hypothesis": "La ley de Gompertz-Makeham reproduce aceleración biológica senescente sin linealidad artificial",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_11_J": {
+    "name": "Resolución Colectiva de Problemas",
+    "success": true,
+    "summary": "Resolución colectiva completada: coordinación=True, equipo=3 miembros, propuesta=Apply masonry techniques to alleviate infrastructure shortage.",
+    "metrics": {
+      "coordination_success": true,
+      "team_members_count": 3,
+      "selected_strategy": "Apply masonry techniques to alleviate infrastructure shortage",
+      "disagreements_count": 0
+    },
+    "duration_seconds": 6e-05,
+    "hypotheses": [
+      {
+        "hypothesis": "La deliberación comunitaria ponderada resuelve problemas colectivos con consenso medible",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_11_K": {
+    "name": "Ablation de Arquitectura Cognitiva",
+    "success": true,
+    "summary": "Ablation completada. Acción Full=rest (util=0.950) vs NoEmot=shop (util=0.600).",
+    "metrics": {
+      "utility_full": 0.95,
+      "utility_no_emot": 0.6,
+      "utility_delta": 0.35,
+      "behavioral_divergence": true
+    },
+    "duration_seconds": 0.00103,
+    "hypotheses": [
+      {
+        "hypothesis": "Los subsistemas afectivo y metacognitivo modulan activamente las utilidades y elecciones",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_11_L": {
+    "name": "Ablation del Knowledge Graph",
+    "success": true,
+    "summary": "Ablation del Grafo de Conocimiento: con KG se verifican afirmaciones epistemológicas (0.95); sin KG hay incertidumbre total.",
+    "metrics": {
+      "kg_confidence": 0.95,
+      "epistemic_validation_active": true
+    },
+    "duration_seconds": 1e-05,
+    "hypotheses": [
+      {
+        "hypothesis": "El Grafo de Conocimiento permite contrastar evidencias y rechazar desinformación",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_11_M": {
+    "name": "Sensibilidad de Parámetros",
+    "success": true,
+    "summary": "Evaluadas 10 configuraciones de capital: decisiones observadas=['exercise', 'shop', 'study'].",
+    "metrics": {
+      "configurations_tested": 10,
+      "distinct_behaviors": 3,
+      "elasticity_verified": true
+    },
+    "duration_seconds": 0.00654,
+    "hypotheses": [
+      {
+        "hypothesis": "La variación de recursos induce una respuesta elástica continua en la toma de decisiones",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_11_N": {
+    "name": "Simulación Histórica Prolongada",
+    "success": true,
+    "summary": "Simulación de 15 años históricos completada: 16 eventos registrados, población=75.",
+    "metrics": {
+      "simulated_years": 15,
+      "historical_events_logged": 16,
+      "final_population": 75
+    },
+    "duration_seconds": 0.00031,
+    "hypotheses": [
+      {
+        "hypothesis": "SALTBOR mantiene trazabilidad histórica consistente en horizontes decenales",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_11_O": {
+    "name": "Rendimiento y Escalabilidad Sostenida",
+    "success": true,
+    "summary": "Carga sostenida auditada (20 agentes): 1.536 ms/tick (pico: 2.929 ms, rendimiento: 13022.4 hab-ticks/s).",
+    "metrics": {
+      "mean_tick_ms": 1.536,
+      "peak_tick_ms": 2.929,
+      "throughput_ticks_per_sec": 13022.4,
+      "phase_07_claimed_micro_ms": 0.045,
+      "real_world_full_sim_ms": 1.536
+    },
+    "duration_seconds": 0.11524,
+    "hypotheses": [
+      {
+        "hypothesis": "El simulador completo mantiene latencias por tick sub-10ms en hardware de referencia",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_11_P": {
+    "name": "Persistencia y Recuperación Integral",
+    "success": true,
+    "summary": "Persistencia y restauración verificada: 20/20 humanos con memorias y cerebro íntegros.",
+    "metrics": {
+      "saved_humans": 20,
+      "recovered_humans": 20,
+      "episodic_memory_survived": true,
+      "procedural_skill_survived": true,
+      "brain_architecture_reconstructed": true
+    },
+    "duration_seconds": 0.21136,
+    "hypotheses": [
+      {
+        "hypothesis": "El 100% del estado cognitivo y biológico sobrevive al ciclo de guardado/restauración SQLite",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_11_Q": {
+    "name": "Validación Geográfica Salvadoreña",
+    "success": true,
+    "summary": "Geografía salvadoreña 2024 verificada: 14 deptos, 44 municipios, 262 distritos (100% coordenadas válidas).",
+    "metrics": {
+      "departments_count": 14,
+      "municipalities_count": 44,
+      "districts_count": 262,
+      "valid_coordinates_ratio": 1.0
+    },
+    "duration_seconds": 0.00013,
+    "hypotheses": [
+      {
+        "hypothesis": "Los datos territoriales reflejan fielmente la Ley Especial de Reestructuración Municipal 2024",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_11_R": {
+    "name": "Comparación Arquitectónica con Proyectos Existentes",
+    "success": true,
+    "summary": "Comparativa arquitectónica completada entre 6 sistemas: SALTBOR destaca en ejecución offline, cognición formal y cartografía real.",
+    "metrics": {
+      "projects_audited": 6,
+      "saltbor_offline": true,
+      "saltbor_cognitive_brain": true
+    },
+    "duration_seconds": 1e-05,
+    "hypotheses": [
+      {
+        "hypothesis": "SALTBOR ofrece ventajas únicas en cognición biológica offline y anclaje geográfico real",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_11_S": {
+    "name": "Trazabilidad Causal y Explicabilidad",
+    "success": true,
+    "summary": "Cadena causal trazada con éxito: Shock (-$40) -> Ansiedad=0.38 -> Meta Formada -> Decisión: rest.",
+    "metrics": {
+      "event_importance": 0.85,
+      "resulting_anxiety": 0.383,
+      "resulting_mood": -0.62,
+      "chosen_action": "rest",
+      "trace_factors": [
+        "Low Mood (-0.62)",
+        "Goal: Improve financial circumstances through productive work"
+      ]
+    },
+    "duration_seconds": 0.00091,
+    "hypotheses": [
+      {
+        "hypothesis": "Toda acción humana puede auditarse retrospectivamente hasta su causa desencadenante",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_11_T": {
+    "name": "Prueba Integral de Civilización",
+    "success": true,
+    "summary": "Prueba macro-integradora completada: 20 habitantes, 498 eventos emitidos, 41 relaciones.",
+    "metrics": {
+      "population_count": 20,
+      "events_emitted": 498,
+      "relationships_count": 41,
+      "social_edges_count": 60,
+      "simulated_ticks": 48
+    },
+    "duration_seconds": 0.08822,
+    "hypotheses": [
+      {
+        "hypothesis": "Los motores integrados interactúan sincrónicamente sin fallos ni estados contradictorios",
+        "verified": true
+      }
+    ]
+  }
+}

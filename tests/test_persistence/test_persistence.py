@@ -74,3 +74,54 @@ def test_infant_and_stage_persistence(temp_db: DatabaseManager):
     assert reloaded.demographics.stage == DevelopmentalStage.INFANCY
     assert reloaded.demographics.birth_tick == 50
     assert reloaded.identity.full_name == "Bebe Prueba"
+
+
+def test_memory_and_cognitive_engine_persistence(temp_db: DatabaseManager, population_20):
+    """Verify that episodic memories, procedural skills, and cognitive brain survive roundtrip persistence."""
+    from saltbor.cognition.memory.episodic import EpisodicRecord
+    from saltbor.cognition.memory.procedural import Skill
+    from saltbor.core.types import SkillCategory
+
+    h_repo = HumanRepository(temp_db)
+    agent = population_20[0]
+
+    # Add episodic memory
+    rec = EpisodicRecord(
+        memory_id="mem_test_101",
+        summary="A memorable trade occurred at Mercado Central",
+        tick=42,
+        importance=0.85,
+        emotional_valence=0.6,
+    )
+    agent.memory.episodic.store(rec)
+
+    # Add procedural skill
+    skill = Skill(
+        skill_id="skill_carpentry",
+        name="Carpentry",
+        category=SkillCategory.TECHNICAL,
+        level=0.75,
+        experience_points=120.0,
+        practice_count=15,
+    )
+    agent.memory.procedural.add_skill(skill)
+
+    # Save
+    h_repo.save(agent)
+
+    # Reload
+    reloaded = h_repo.load(agent.uid)
+    assert reloaded is not None
+    assert reloaded.uid == agent.uid
+    assert reloaded.brain is not None
+    assert reloaded.knowledge_graph is not None
+    assert reloaded.memory.episodic.count >= 1
+    loaded_rec = reloaded.memory.episodic.get("mem_test_101")
+    assert loaded_rec is not None
+    assert loaded_rec.summary == "A memorable trade occurred at Mercado Central"
+    assert loaded_rec.emotional_valence == 0.6
+
+    loaded_skill = reloaded.memory.procedural.get_skill("skill_carpentry")
+    assert loaded_skill is not None
+    assert loaded_skill.level == 0.75
+    assert loaded_skill.practice_count == 15

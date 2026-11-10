@@ -328,6 +328,7 @@ class SyntheticHuman:
             emotions=self.emotions,
             memory=self.memory,
             rng=self._rng,
+            brain=getattr(self, "brain", None),
         )
 
         # -------------------------------------------------------------------

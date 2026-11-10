@@ -169,6 +169,7 @@ class SimulationRunner:
 
         # Phase 0.9 Social Networks, Communities, and Collective Systems
         self.social_network = SocialNetworkEngine()
+        self.social.network_engine = self.social_network
         self.community_engine = CommunityFormationEngine()
         self.collective_intelligence = CollectiveIntelligenceEngine(collective_kg=self.collective_knowledge)
         self.communication_engine = SocialCommunicationEngine(social_network=self.social_network)
@@ -300,6 +301,24 @@ class SimulationRunner:
             self.culture.decay_unpracticed_culture(current_tick)
             self.social_network.apply_decay_all(current_tick)
             self.cultural_evolution.decay_unpracticed_traditions(current_tick)
+            try:
+                candidates = []
+                for h in self.population.get_all():
+                    interests = set()
+                    if h.demographics.occupation:
+                        interests.add(h.demographics.occupation)
+                    for g in h.autonomy.get_active_goals():
+                        interests.add(g.category)
+                    candidates.append({
+                        "uid": str(h.uid),
+                        "interests": list(interests),
+                        "location": h.physical_state.current_location_id,
+                        "goals": {g.description for g in h.autonomy.get_active_goals()},
+                        "friends": [str(fid) for fid in self.social.get_friends(h.uid)],
+                    })
+                self.community_engine.check_spontaneous_formation(candidates, tick=current_tick)
+            except Exception:
+                pass
             self.event_bus.emit(
                 SimulationEvent(
                     event_type=EventType.DAY_STARTED,

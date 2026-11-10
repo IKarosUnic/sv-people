@@ -76,13 +76,14 @@ class HistoricalKnowledgeGraph:
             "year": year,
             "tick": tick,
         })
-        node = self.graph.add_node(
+        node = KnowledgeNode(
             node_id=node_id,
-            name=name,
             node_type=NodeType.CUSTOM,
+            label=name,
             description=f"Historical entity: {entity_type.value} - {name}",
             properties=attrs,
         )
+        self.graph.add_node(node)
         self.temporal_index[node_id] = {"year": year, "tick": tick, "type": entity_type.value}
         return node
 
@@ -98,13 +99,15 @@ class HistoricalKnowledgeGraph:
     ) -> KnowledgeRelationship:
         meta = metadata or {}
         meta.update({"year": year, "tick": tick})
-        rel = self.graph.add_relationship(
+        rel = KnowledgeRelationship(
+            rel_id=f"hrel_{uuid4().hex[:8]}",
             source_id=source_id,
             target_id=target_id,
             rel_type=rel_type.value,
             confidence=confidence,
-            properties=meta,
+            metadata=meta,
         )
+        self.graph.add_relationship(rel)
         self.temporal_index[rel.rel_id] = {"year": year, "tick": tick, "rel_type": rel_type.value}
         return rel
 
@@ -112,7 +115,7 @@ class HistoricalKnowledgeGraph:
         """Traces back who founded the settlement, early events and contributing families."""
         founders = []
         events = []
-        relationships = self.graph.get_incoming_relationships(settlement_id)
+        relationships = self.graph.get_in_relationships(settlement_id)
         for rel in relationships:
             if rel.rel_type == HistoricalRelType.FOUNDED.value:
                 founders.append(rel.source_id)
@@ -129,7 +132,7 @@ class HistoricalKnowledgeGraph:
     def query_intergenerational_transmission(self, ancestor_id: str) -> List[Dict[str, Any]]:
         """Finds knowledge or traditions transmitted from ancestor to descendants."""
         transmissions = []
-        outgoing = self.graph.get_outgoing_relationships(ancestor_id)
+        outgoing = self.graph.get_out_relationships(ancestor_id)
         for rel in outgoing:
             if rel.rel_type in (HistoricalRelType.TRANSMITTED_TO.value, HistoricalRelType.INHERITED_FROM.value):
                 transmissions.append({

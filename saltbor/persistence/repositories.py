@@ -50,7 +50,7 @@ class HumanRepository:
         self.db = db
 
     def save(self, human: SyntheticHuman) -> None:
-        """Insert or replace a synthetic human."""
+        """Insert or replace a synthetic human and their memories."""
         data = Serializer.serialize_human(human)
         sql = """
         INSERT OR REPLACE INTO humans (
@@ -74,6 +74,18 @@ class HumanRepository:
                     data["emotions_json"],
                 ),
             )
+            # Persist episodic, procedural, and semantic memories
+            if hasattr(human, "memory") and human.memory is not None:
+                mem_repo = MemoryRepository(self.db)
+                if hasattr(human.memory, "episodic") and human.memory.episodic is not None:
+                    for rec in human.memory.episodic.get_all(include_dormant=True):
+                        mem_repo.save_episodic_record(human.uid, rec)
+                if hasattr(human.memory, "procedural") and human.memory.procedural is not None:
+                    for skill in human.memory.procedural.get_all_skills():
+                        mem_repo.save_procedural_skill(human.uid, skill)
+                if hasattr(human.memory, "semantic") and human.memory.semantic is not None:
+                    for fact in human.memory.semantic.get_all():
+                        mem_repo.save_semantic_fact(human.uid, fact)
 
     def save_all(self, humans: list[SyntheticHuman]) -> None:
         """Bulk save a list of humans in a single transaction."""
@@ -190,6 +202,14 @@ class HumanRepository:
 
         # 6. Memory & Autonomy
         mem_eng = MemoryEngine()
+        mem_repo = MemoryRepository(self.db)
+        for rec in mem_repo.load_episodic_for_human(ident.uid):
+            mem_eng.episodic.store(rec)
+        for skill in mem_repo.load_procedural_for_human(ident.uid):
+            mem_eng.procedural.add_skill(skill)
+        for fact in mem_repo.load_semantic_for_human(ident.uid):
+            mem_eng.semantic.store(fact)
+
         autonomy_eng = AutonomyEngine()
         for g_dict in phys_d.get("goals", []):
             raw_gid = g_dict.get("goal_id", "")
@@ -212,6 +232,35 @@ class HumanRepository:
             )
             autonomy_eng.add_goal(g)
 
+        # 7. Knowledge & Full Cognitive Architecture
+        from saltbor.knowledge.layers.individual_graph import IndividualKnowledgeGraph
+        from saltbor.cognition.epistemic.interface import EpistemicInterface
+        from saltbor.cognition.reasoning.engine import AdvancedReasoningEngine
+        from saltbor.cognition.problem_solving.engine import ProblemSolvingEngine
+        from saltbor.cognition.metacognition.engine import MetacognitionEngine
+        from saltbor.cognition.creativity.engine import CreativeCombinationEngine
+        from saltbor.cognition.curiosity.engine import CuriosityEngine
+        from saltbor.cognition.architecture.brain import CognitiveBrainArchitecture
+
+        kg = IndividualKnowledgeGraph(human_uid=str(ident.uid))
+        epistemic = EpistemicInterface(human_uid=str(ident.uid), knowledge_graph=kg, memory=mem_eng)
+        reasoning = AdvancedReasoningEngine()
+        problem_solver = ProblemSolvingEngine(reasoning=reasoning)
+        metacognition = MetacognitionEngine()
+        creativity = CreativeCombinationEngine()
+        curiosity = CuriosityEngine()
+        brain = CognitiveBrainArchitecture(
+            human_uid=str(ident.uid),
+            personality=personality_eng,
+            emotions=emotional_eng,
+            memory=mem_eng,
+            autonomy=autonomy_eng,
+            knowledge_graph=kg,
+            epistemic=epistemic,
+            reasoning=reasoning,
+            problem_solver=problem_solver,
+        )
+
         return SyntheticHuman(
             identity=ident,
             demographics=demo,
@@ -223,6 +272,14 @@ class HumanRepository:
             learning=LearningEngine(),
             autonomy=autonomy_eng,
             decision=DecisionEngine(),
+            knowledge_graph=kg,
+            epistemic=epistemic,
+            reasoning=reasoning,
+            problem_solver=problem_solver,
+            metacognition=metacognition,
+            creativity=creativity,
+            curiosity=curiosity,
+            brain=brain,
         )
 
     def load(self, uid: HumanID | str) -> Optional[SyntheticHuman]:
@@ -444,6 +501,46 @@ class MemoryRepository:
                 )
             )
         return skills
+
+    def save_semantic_fact(self, human_uid: HumanID, fact: SemanticFact) -> None:
+        data = Serializer.serialize_semantic(fact)
+        sql = """
+        INSERT OR REPLACE INTO memories_semantic (
+            fact_id, human_uid, category, content, confidence, source, learned_tick
+        ) VALUES (?, ?, ?, ?, ?, ?, ?)
+        """
+        self.db.execute(
+            sql,
+            (
+                data["fact_id"],
+                str(human_uid),
+                data["category"],
+                data["content"],
+                data["confidence"],
+                data["source"],
+                data["learned_tick"],
+            ),
+        )
+
+    def load_semantic_for_human(self, human_uid: HumanID) -> list[SemanticFact]:
+        cur = self.db.execute(
+            "SELECT * FROM memories_semantic WHERE human_uid = ?",
+            (str(human_uid),),
+        )
+        facts: list[SemanticFact] = []
+        for r in cur.fetchall():
+            d = Serializer.deserialize_semantic(dict(r))
+            facts.append(
+                SemanticFact(
+                    fact_id=d["fact_id"],
+                    category=d["category"],
+                    content=d["content"],
+                    confidence=d["confidence"],
+                    source=d["source"],
+                    learned_tick=d["learned_tick"],
+                )
+            )
+        return facts
 
 
 class SimulationStateRepository:

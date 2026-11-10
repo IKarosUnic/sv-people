@@ -141,8 +141,10 @@ class EconomicCivilizationEngine:
             if not ent.active:
                 continue
             # Output depends on capital, labor, productivity and macro shock
-            output = math.sqrt(max(1.0, ent.capital)) * ent.labor_count * ent.productivity_index * productivity_shock
-            ent.capital += (output * 0.15) - 5.0  # re-investment minus depreciation/living costs
+            output = (math.sqrt(max(1.0, ent.capital)) * 2.0 + ent.capital * 0.1) * ent.labor_count * ent.productivity_index * productivity_shock
+            depreciation = ent.capital * 0.03 + 2.0
+            reinvestment = output * 0.35
+            ent.capital += reinvestment - depreciation
             if ent.capital <= 0:
                 ent.active = False
                 ent.capital = 0.0

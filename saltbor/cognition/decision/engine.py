@@ -291,8 +291,9 @@ class DecisionEngine:
         memory: Optional[MemoryEngine] = None,
         rng: Optional[Any] = None,
         exploration_noise: float = 0.10,
+        brain: Optional[Any] = None,
     ) -> ActionOption:
-        """Select an action using softmax utility evaluation with bounded rationality and record trace."""
+        """Select an action using softmax utility evaluation with bounded rationality, brain deliberation, and record trace."""
         options = self.evaluate_options(context, personality, emotions, memory)
         if not options:
             fallback = ActionOption(
@@ -302,6 +303,26 @@ class DecisionEngine:
                 reasoning="Default fallback action.",
             )
             return fallback
+
+        # Optional modulation by CognitiveBrainArchitecture (subsystems: frontal, parietal, cerebellar, limbic)
+        brain_outcome = None
+        if brain is not None and hasattr(brain, "deliberate"):
+            try:
+                candidate_acts = [
+                    {"action_name": opt.action_type.value, "target_location": opt.target_location_id}
+                    for opt in options
+                ]
+                brain_outcome = brain.deliberate(
+                    current_location_id=context.current_location_id,
+                    available_candidate_actions=candidate_acts,
+                )
+                if brain_outcome:
+                    for opt in options:
+                        if opt.action_type.value == brain_outcome.action_name:
+                            opt.expected_utility += 0.15 * (1.0 - min(1.0, brain_outcome.spatial_travel_cost / 1000.0))
+                            opt.reasoning += f" [Brain deliberation: {brain_outcome.action_name}]"
+            except Exception:
+                brain_outcome = None
 
         # Bounded rationality noise modulated by personality:
         # High conscientiousness & high patience -> lower deliberation noise
@@ -333,6 +354,8 @@ class DecisionEngine:
             dominant_factors.append(f"Low Mood ({emotions.get_mood():.2f})")
         if context.active_goals:
             dominant_factors.append(f"Goal: {context.active_goals[0].description}")
+        if brain_outcome:
+            dominant_factors.append(f"Brain Deliberation ({brain_outcome.action_name})")
 
         trace = DecisionTrace(
             chosen_action=chosen.action_type,

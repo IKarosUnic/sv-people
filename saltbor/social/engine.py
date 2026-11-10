@@ -20,6 +20,7 @@ class SocialEngine:
 
     def __init__(self) -> None:
         self._relationships: dict[tuple[HumanID, HumanID], Relationship] = {}
+        self.network_engine: Optional[Any] = None
 
     # ------------------------------------------------------------------
     # Key normalisation
@@ -93,6 +94,19 @@ class SocialEngine:
             interaction_type=interaction_type,
             from_id=from_id,
         )
+        if self.network_engine is not None and hasattr(self.network_engine, "record_interaction"):
+            valence = intensity if positive else -intensity
+            try:
+                self.network_engine.record_interaction(
+                    source_id=a_id,
+                    target_id=b_id,
+                    tick=tick,
+                    valence=valence,
+                    intensity=intensity,
+                    event_type=interaction_type,
+                )
+            except Exception:
+                pass
         return rel
 
     def record_directional_interaction(
