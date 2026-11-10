@@ -205,6 +205,20 @@ from saltbor.simulation.experiments.phase111_experiments import (
     Experiment111_I_CrossEnginePerformanceAudit,
     Experiment111_J_LongitudinalCommunityTransformation,
 )
+from saltbor.simulation.experiments.phase12_experiments import (
+    Experiment12_A_EnvironmentalDivergence,
+    Experiment12_B_CulturalKnowledgeExtinction,
+    Experiment12_C_GenerationalKnowledgeSeverance,
+    Experiment12_D_CommunityFissionAndNewSettlement,
+    Experiment12_E_FoodCrisisAndDistressMigration,
+    Experiment12_F_FinancialLiquidityFreezeAndInKindSettlement,
+    Experiment12_G_OpenCombinatorialDiscovery,
+    Experiment12_H_TechnologicalFailureAndResourceLoss,
+    Experiment12_I_ImperfectTransmissionAndKnowledgeMutation,
+    Experiment12_J_TerritorialDecayAndAbandonment,
+    Experiment12_K_CivilizationalRecoveryPostCrisis,
+    Experiment12_L_LongitudinalCivilizationalDivergence,
+)
 from saltbor.simulation.runner import SimulationRunner
 
 logger = logging.getLogger(__name__)
@@ -401,6 +415,19 @@ class SimulationLaboratory:
             "EXP_111_H": Experiment111_H_MultiSeedReproducibility,
             "EXP_111_I": Experiment111_I_CrossEnginePerformanceAudit,
             "EXP_111_J": Experiment111_J_LongitudinalCommunityTransformation,
+            # Phase 1.2 Open-Ended Society & Longitudinal Civilizational Experiments
+            "EXP_12_A": Experiment12_A_EnvironmentalDivergence,
+            "EXP_12_B": Experiment12_B_CulturalKnowledgeExtinction,
+            "EXP_12_C": Experiment12_C_GenerationalKnowledgeSeverance,
+            "EXP_12_D": Experiment12_D_CommunityFissionAndNewSettlement,
+            "EXP_12_E": Experiment12_E_FoodCrisisAndDistressMigration,
+            "EXP_12_F": Experiment12_F_FinancialLiquidityFreezeAndInKindSettlement,
+            "EXP_12_G": Experiment12_G_OpenCombinatorialDiscovery,
+            "EXP_12_H": Experiment12_H_TechnologicalFailureAndResourceLoss,
+            "EXP_12_I": Experiment12_I_ImperfectTransmissionAndKnowledgeMutation,
+            "EXP_12_J": Experiment12_J_TerritorialDecayAndAbandonment,
+            "EXP_12_K": Experiment12_K_CivilizationalRecoveryPostCrisis,
+            "EXP_12_L": Experiment12_L_LongitudinalCivilizationalDivergence,
         }
 
     def start_simulation(self, seed: Optional[int] = None) -> SimulationRunner:

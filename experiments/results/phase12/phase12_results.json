@@ -1,0 +1,235 @@
+{
+  "EXP_12_A": {
+    "name": "Divergencia Ambiental",
+    "success": true,
+    "summary": "Divergencia ecológica confirmada: Similitud Costa-Valle=0.089, Valle-Montaña=0.242, Costa-Montaña=0.105.",
+    "metrics": {
+      "cosine_sim_costa_valle": 0.089,
+      "cosine_sim_valle_montana": 0.2422,
+      "cosine_sim_costa_montana": 0.1046,
+      "costa_primary_share": 0.886,
+      "valle_primary_share": 0.887,
+      "montana_primary_share": 0.854
+    },
+    "duration_seconds": 0.00039,
+    "hypotheses": [
+      {
+        "hypothesis": "Las condiciones bioclimáticas generan una canasta de especialización económica divergente",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_12_B": {
+    "name": "Extinción Cultural",
+    "success": true,
+    "summary": "Extinción cultural verificada: La tradición 'Canto y Recitado Tradicional Nonualco' cayó en desuso tras 150 ticks sin portadores activos.",
+    "metrics": {
+      "initial_adopters": 2,
+      "final_adopters": 0,
+      "is_abandoned": true,
+      "consecutive_dormant_ticks": 150,
+      "inactivity_threshold_ticks": 100
+    },
+    "duration_seconds": 0.01558,
+    "hypotheses": [
+      {
+        "hypothesis": "La falta de transmisión intergeneracional conduce a la extinción del elemento cultural",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_12_C": {
+    "name": "Ruptura Generacional",
+    "success": true,
+    "summary": "Ruptura generacional confirmada: Al fallecer el maestro con aprendiz novato, la comunidad perdió la técnica y la forja quedó en estado FORGOTTEN.",
+    "metrics": {
+      "tech_name": "Forja Templada de Machetes de Acero al Carbono",
+      "final_status": "forgotten",
+      "apprentice_skill": 0.15,
+      "required_skill": 0.5,
+      "known_by_settlements_count": 0
+    },
+    "duration_seconds": 2e-05,
+    "hypotheses": [
+      {
+        "hypothesis": "La muerte prematura del artesano sin aprendiz capacitado extingue la tecnología especializada",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_12_D": {
+    "name": "Fragmentación Comunitaria",
+    "success": true,
+    "summary": "Fisión comunitaria exitosa: 10 miembros se escindieron fundando 'Caserío Nueva Esperanza' con su cuota comunal de recursos.",
+    "metrics": {
+      "original_pop_before": 24,
+      "original_pop_after": 14,
+      "splinter_pop": 10,
+      "antagonism_level": -0.4,
+      "splinter_capital_received": 141.18
+    },
+    "duration_seconds": 0.00028,
+    "hypotheses": [
+      {
+        "hypothesis": "El conflicto distributivo provoca la escisión pacífica pero antagónica y la fundación de nuevos asentamientos",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_12_E": {
+    "name": "Crisis Alimentaria y Migración",
+    "success": true,
+    "summary": "Crisis alimentaria verificada: Sequía forzó migración de 12 habitantes a 'Valle Escondido'; 8 habitantes inmóviles sufren hambre crítica (0.92).",
+    "metrics": {
+      "origin_pop_initial": 20,
+      "origin_pop_final": 8,
+      "destination_pop_final": 22,
+      "migrants_count": 12,
+      "inmobile_hunger_level": 0.92
+    },
+    "duration_seconds": 0.00022,
+    "hypotheses": [
+      {
+        "hypothesis": "El choque ecológico desencadena migración adaptativa y contracción de población en el foco de crisis",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_12_F": {
+    "name": "Colapso Financiero y Trueque en Especie",
+    "success": true,
+    "summary": "Trueque emergente exitoso: Deudor sin efectivo saldó cuota de $30.00 transfiriendo 12.0 kg de maíz al prestamista.",
+    "metrics": {
+      "debt_installment_due": 30.0,
+      "credit_value_settled": 30.0,
+      "commodity_transferred": "maize",
+      "quantity_transferred": 12.0,
+      "debtor_remaining_stock": 4.0,
+      "loan_remaining_balance": 120.0
+    },
+    "duration_seconds": 0.00293,
+    "hypotheses": [
+      {
+        "hypothesis": "La falta de circulante fiduciario reactiva el intercambio directo de mercancías para amortizar pasivos",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_12_G": {
+    "name": "Descubrimiento Abierto",
+    "success": true,
+    "summary": "Descubrimiento abierto confirmado: Valle inventó 'Tinaja Cerámica Sellada con Calcita' y Costa inventó 'Cesto de Palma Resinado Hermético' de forma independiente.",
+    "metrics": {
+      "tech_1_name": "Tinaja Cerámica Sellada con Calcita",
+      "tech_1_stage": "prototype",
+      "tech_2_name": "Cesto de Palma Resinado Hermético",
+      "tech_2_stage": "prototype",
+      "domain_overlap": 0,
+      "material_overlap": 0
+    },
+    "duration_seconds": 8e-05,
+    "hypotheses": [
+      {
+        "hypothesis": "Diferentes agentes resuelven el mismo problema funcional con combinaciones materiales locales distintas",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_12_H": {
+    "name": "Fracaso Tecnológico y Pérdida Material",
+    "success": true,
+    "summary": "Fracaso tecnológico registrado: 'Molinillo Hidráulico con Engranajes de Madera Verde' pasó a estado FAILED tras perder 4.0 unidades de madera en pruebas mecánicas.",
+    "metrics": {
+      "tech_name": "Molinillo Hidráulico con Engranajes de Madera Verde",
+      "final_status": "failed",
+      "materials_consumed": 4.0,
+      "inventory_timber_remaining": 2.0,
+      "reason_of_failure": "Advancement halted: Physical laws violated"
+    },
+    "duration_seconds": 4e-05,
+    "hypotheses": [
+      {
+        "hypothesis": "Las innovaciones físicamente inviables consumen recursos de inventario y terminan en fracaso permanente",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_12_I": {
+    "name": "Mutación del Conocimiento",
+    "success": true,
+    "summary": "Bifurcación de conocimiento verificada: Surgieron 'Añil Express Sin Reposo' (degradada) y 'Añil Volcánico con Ceniza Fina' (adaptada con ceniza).",
+    "metrics": {
+      "original_authenticity": 1.0,
+      "degraded_authenticity": 0.85,
+      "degraded_durability": 0.2,
+      "adaptive_durability": 0.42,
+      "adaptive_material": "ceniza_volcanica"
+    },
+    "duration_seconds": 4e-05,
+    "hypotheses": [
+      {
+        "hypothesis": "La transmisión imperfecta genera mutaciones que ramifican el árbol de técnicas culturales",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_12_J": {
+    "name": "Decadencia Territorial y Abandono",
+    "success": true,
+    "summary": "Decadencia territorial verificada: 'Caserío Los Manantiales' pasó de THRIVING -> DECAYING y finalmente a ABANDONED tras perder su población.",
+    "metrics": {
+      "settlement_name": "Caserío Los Manantiales",
+      "status_after_shock": "decaying",
+      "final_status": "abandoned",
+      "final_population": 0
+    },
+    "duration_seconds": 5e-05,
+    "hypotheses": [
+      {
+        "hypothesis": "El agotamiento de recursos ecológicos básicos induce regresión territorial y abandono",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_12_K": {
+    "name": "Recuperación Civilizatoria",
+    "success": true,
+    "summary": "Recuperación civilizatoria exitosa: 'Aldea San Bartolo' revirtió STAGNANT -> thriving (pob=26, infra=1.00).",
+    "metrics": {
+      "settlement_name": "Aldea San Bartolo",
+      "initial_status": "stagnant",
+      "recovered_status": "thriving",
+      "initial_population": 8,
+      "final_population": 26,
+      "infrastructure_level": 1.0,
+      "water_access": 0.85
+    },
+    "duration_seconds": 4e-05,
+    "hypotheses": [
+      {
+        "hypothesis": "Las inversiones de infraestructura y la atracción demográfica permiten superar crisis y estancamiento",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_12_L": {
+    "name": "Divergencia Longitudinal y Persistencia en Disco",
+    "success": true,
+    "summary": "Divergencia longitudinal validada: 10 sociedades divergieron (std_pop=4.05, 2 estados únicos). Persistencia en disco: 10 registros en 22.84 ms.",
+    "metrics": {
+      "population_std_dev": 4.05,
+      "unique_final_statuses_count": 2,
+      "societies_evaluated": 10,
+      "sqlite_disk_records_written": 10,
+      "sqlite_disk_write_latency_ms": 22.84,
+      "sqlite_wal_persistence_verified": true
+    },
+    "duration_seconds": 0.02569,
+    "hypotheses": [
+      {
+        "hypothesis": "Las condiciones iniciales divergentes producen trayectorias civilizatorias no uniformes y persisten de forma íntegra en SQLite",
+        "verified": true
+      }
+    ]
+  }
+}

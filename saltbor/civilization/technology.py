@@ -37,6 +37,7 @@ class InnovationStatus(str, Enum):
     DIFFUSED = "diffused"
     FORGOTTEN = "forgotten"
     RECOVERED = "recovered"
+    FAILED = "failed"
 
 
 @dataclass
@@ -150,3 +151,28 @@ class TechnologicalEvolutionEngine:
             tech.known_by_settlements.add(settlement_id)
             return True
         return False
+
+    def record_failed_attempt(
+        self,
+        tech_id: str,
+        innovator_id: str,
+        settlement_id: str,
+        reason: str,
+        materials_lost: Optional[List[str]] = None,
+        year: float = 2026.0,
+    ) -> bool:
+        """Records an unviable or failed innovation attempt with material loss."""
+        if tech_id not in self.technologies:
+            return False
+        tech = self.technologies[tech_id]
+        tech.status = InnovationStatus.FAILED
+        self.diffusion_history.append({
+            "tech_id": tech_id,
+            "innovator_id": innovator_id,
+            "settlement_id": settlement_id,
+            "status": InnovationStatus.FAILED.value,
+            "reason": reason,
+            "materials_lost": materials_lost or [],
+            "year": year,
+        })
+        return True

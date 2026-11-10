@@ -125,33 +125,70 @@ class SettlementEvolutionEngine:
         return False
 
     def _update_settlement_scale(self, s: Settlement) -> None:
-        """Emergent type transition based on population, infrastructure and commerce."""
+        """Emergent type and status transition based on population, infrastructure, ecology, and commerce.
+        
+        Supports non-linear developmental trajectories: growth, stagnation, decay, regression, and abandonment.
+        """
         pop = s.population_count
         infra = s.resources.infrastructure_level
         comm = s.resources.commercial_intensity
+        water = s.resources.water_access
+        soil = s.resources.soil_fertility
 
         if pop == 0:
             s.status = SettlementStatus.ABANDONED
             return
 
+        is_decaying = (
+            water < 0.25
+            or soil < 0.20
+            or (infra < 0.15 and pop < 20)
+        )
+        is_stagnant = (
+            water <= 0.40
+            or (comm < 0.20 and infra < 0.35 and pop < 40)
+        )
+
         if pop < 15:
             s.settlement_type = SettlementType.CASERIO
-            s.status = SettlementStatus.THRIVING if s.resources.water_access > 0.4 else SettlementStatus.STAGNANT
+            if is_decaying:
+                s.status = SettlementStatus.DECAYING
+            elif is_stagnant:
+                s.status = SettlementStatus.STAGNANT
+            else:
+                s.status = SettlementStatus.THRIVING
         elif pop < 50:
-            s.settlement_type = SettlementType.COMUNIDAD_RURAL if s.resources.soil_fertility > 0.5 else SettlementType.ALDEA
-            s.status = SettlementStatus.THRIVING
+            s.settlement_type = SettlementType.COMUNIDAD_RURAL if soil > 0.5 else SettlementType.ALDEA
+            if is_decaying:
+                s.status = SettlementStatus.DECAYING
+            elif is_stagnant and pop < 25:
+                s.status = SettlementStatus.STAGNANT
+            else:
+                s.status = SettlementStatus.THRIVING
         elif pop < 200:
-            if comm > 0.6:
+            if is_decaying:
+                s.settlement_type = SettlementType.ALDEA
+                s.status = SettlementStatus.DECAYING
+            elif comm > 0.6:
                 s.settlement_type = SettlementType.NUCLEO_COMERCIAL
+                s.status = SettlementStatus.THRIVING
             else:
                 s.settlement_type = SettlementType.BARRIO if infra > 0.5 else SettlementType.ALDEA
-            s.status = SettlementStatus.THRIVING
+                s.status = SettlementStatus.THRIVING
         elif pop < 800:
-            s.settlement_type = SettlementType.CENTRO_URBANO if infra > 0.6 else SettlementType.COLONIA
-            s.status = SettlementStatus.THRIVING
+            if is_decaying:
+                s.settlement_type = SettlementType.BARRIO
+                s.status = SettlementStatus.DECAYING
+            else:
+                s.settlement_type = SettlementType.CENTRO_URBANO if infra > 0.6 else SettlementType.COLONIA
+                s.status = SettlementStatus.THRIVING
         else:
-            s.settlement_type = SettlementType.CIUDAD
-            s.status = SettlementStatus.THRIVING
+            if is_decaying:
+                s.settlement_type = SettlementType.CENTRO_URBANO
+                s.status = SettlementStatus.DECAYING
+            else:
+                s.settlement_type = SettlementType.CIUDAD
+                s.status = SettlementStatus.THRIVING
 
     def develop_infrastructure(self, settlement_id: str, investment: float) -> float:
         if settlement_id not in self.settlements:

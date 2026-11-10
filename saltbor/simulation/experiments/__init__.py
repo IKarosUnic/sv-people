@@ -98,6 +98,21 @@ from saltbor.simulation.experiments.phase111_experiments import (
     Experiment111_J_LongitudinalCommunityTransformation,
     PHASE111_EXPERIMENTS,
 )
+from saltbor.simulation.experiments.phase12_experiments import (
+    Experiment12_A_EnvironmentalDivergence,
+    Experiment12_B_CulturalKnowledgeExtinction,
+    Experiment12_C_GenerationalKnowledgeSeverance,
+    Experiment12_D_CommunityFissionAndNewSettlement,
+    Experiment12_E_FoodCrisisAndDistressMigration,
+    Experiment12_F_FinancialLiquidityFreezeAndInKindSettlement,
+    Experiment12_G_OpenCombinatorialDiscovery,
+    Experiment12_H_TechnologicalFailureAndResourceLoss,
+    Experiment12_I_ImperfectTransmissionAndKnowledgeMutation,
+    Experiment12_J_TerritorialDecayAndAbandonment,
+    Experiment12_K_CivilizationalRecoveryPostCrisis,
+    Experiment12_L_LongitudinalCivilizationalDivergence,
+    PHASE12_EXPERIMENTS,
+)
 
 __all__ = [
     "BaseExperiment",
@@ -187,4 +202,18 @@ __all__ = [
     "Experiment111_I_CrossEnginePerformanceAudit",
     "Experiment111_J_LongitudinalCommunityTransformation",
     "PHASE111_EXPERIMENTS",
+    # Phase 1.2 Open-Ended Society & Longitudinal Civilizational Experiments
+    "Experiment12_A_EnvironmentalDivergence",
+    "Experiment12_B_CulturalKnowledgeExtinction",
+    "Experiment12_C_GenerationalKnowledgeSeverance",
+    "Experiment12_D_CommunityFissionAndNewSettlement",
+    "Experiment12_E_FoodCrisisAndDistressMigration",
+    "Experiment12_F_FinancialLiquidityFreezeAndInKindSettlement",
+    "Experiment12_G_OpenCombinatorialDiscovery",
+    "Experiment12_H_TechnologicalFailureAndResourceLoss",
+    "Experiment12_I_ImperfectTransmissionAndKnowledgeMutation",
+    "Experiment12_J_TerritorialDecayAndAbandonment",
+    "Experiment12_K_CivilizationalRecoveryPostCrisis",
+    "Experiment12_L_LongitudinalCivilizationalDivergence",
+    "PHASE12_EXPERIMENTS",
 ]
