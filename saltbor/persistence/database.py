@@ -28,8 +28,8 @@ class DatabaseManager:
             db.execute("SELECT 1")
     """
 
-    def __init__(self, db_path: Path) -> None:
-        self.db_path: Path = db_path
+    def __init__(self, db_path: Path | str) -> None:
+        self.db_path: Path | str = Path(db_path) if isinstance(db_path, str) and db_path != ":memory:" else db_path
         self._conn: Optional[sqlite3.Connection] = None
 
     # ------------------------------------------------------------------
@@ -42,9 +42,11 @@ class DatabaseManager:
             logger.warning("DatabaseManager.connect() called while already connected.")
             return
 
-        self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        if isinstance(self.db_path, Path):
+            self.db_path.parent.mkdir(parents=True, exist_ok=True)
         self._conn = sqlite3.connect(
             str(self.db_path),
+            timeout=30.0,
             detect_types=sqlite3.PARSE_DECLTYPES,
         )
         self._conn.row_factory = sqlite3.Row

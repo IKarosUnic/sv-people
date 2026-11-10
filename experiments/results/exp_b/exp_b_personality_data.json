@@ -1,0 +1,25 @@
+{
+  "experiment_id": "EXP_B_PERSONALITY",
+  "name": "Personality Evolution & Stability",
+  "success": true,
+  "summary": "Demonstrated empirical trait stability under minor daily events and selective plastic adaptation under major events.",
+  "hypotheses": [
+    {
+      "hypothesis": "Severe negative events produce lasting personality trait drift.",
+      "confirmed": true,
+      "evidence": "P1 neuroticism drifted by +0.0111 (base 0.30 -> current 0.3111)."
+    },
+    {
+      "hypothesis": "Trivial daily events do not alter long-term personality traits.",
+      "confirmed": true,
+      "evidence": "P2 neuroticism drift was 0.0000 under routine events."
+    }
+  ],
+  "metrics": {
+    "p1_neuroticism_drift": 0.0111,
+    "p2_neuroticism_drift": 0.0,
+    "p1_current": 0.3111,
+    "p2_current": 0.3
+  },
+  "duration_seconds": 0.000384899991331622
+}

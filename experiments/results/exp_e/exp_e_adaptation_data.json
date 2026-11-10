@@ -1,0 +1,25 @@
+{
+  "experiment_id": "EXP_E_ADAPTATION",
+  "name": "Environmental Adaptation to Urban Shocks",
+  "success": true,
+  "summary": "Individuals adapted their activity strategies and destinations when environmental conditions changed.",
+  "hypotheses": [
+    {
+      "hypothesis": "Ample funds drive convenience dining at local businesses.",
+      "confirmed": true,
+      "evidence": "Chose eat at comedor_dona_maria."
+    },
+    {
+      "hypothesis": "Economic constraints trigger resource conservation and domestic cooking.",
+      "confirmed": true,
+      "evidence": "Chose cook at casa_residencial_1."
+    }
+  ],
+  "metrics": {
+    "normal_choice": "eat",
+    "normal_target": "comedor_dona_maria",
+    "shock_choice": "cook",
+    "shock_target": "casa_residencial_1"
+  },
+  "duration_seconds": 0.0007955000037327409
+}

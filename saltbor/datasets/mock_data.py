@@ -463,8 +463,25 @@ class MockDataGenerator:
     """Generates initial demographic profiles and starting network connections."""
 
     @staticmethod
-    def get_personas() -> list[dict[str, Any]]:
-        return list(PERSONA_TEMPLATES)
+    def get_personas(count: int = 20) -> list[dict[str, Any]]:
+        if count <= len(PERSONA_TEMPLATES):
+            return list(PERSONA_TEMPLATES[:count])
+        extended = list(PERSONA_TEMPLATES)
+        for i in range(len(PERSONA_TEMPLATES), count):
+            base = PERSONA_TEMPLATES[i % len(PERSONA_TEMPLATES)].copy()
+            base_p = base["personality"].copy()
+            seed_offset = (i * 17) % 100
+            for k in base_p:
+                base_p[k] = max(0.05, min(0.95, base_p[k] + ((seed_offset - 50) / 500.0)))
+            new_profile = {
+                **base,
+                "serial": i + 1,
+                "given_name": f"{base['given_name']} (Gen-{i+1})",
+                "money": max(10.0, base["money"] + (seed_offset - 50)),
+                "personality": base_p,
+            }
+            extended.append(new_profile)
+        return extended
 
     @staticmethod
     def get_initial_relationships() -> list[dict[str, Any]]:

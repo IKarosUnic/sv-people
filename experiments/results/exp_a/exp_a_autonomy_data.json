@@ -1,0 +1,26 @@
+{
+  "experiment_id": "EXP_A_AUTONOMY",
+  "name": "Individual Autonomy & Goal Lifecycle",
+  "success": true,
+  "summary": "Individuals formulated personal goals according to biological needs and pursued them independently.",
+  "hypotheses": [
+    {
+      "hypothesis": "Agents generate autonomous goals based on physiological, financial, or skill needs.",
+      "confirmed": true,
+      "evidence": "10 active goals and 0 completed/history goals recorded."
+    },
+    {
+      "hypothesis": "Decisions are driven by active goals and internal priorities without external steering.",
+      "confirmed": true,
+      "evidence": "Observed execution traces confirming goal-directed utility bonuses."
+    }
+  ],
+  "metrics": {
+    "initial_goals": 0,
+    "final_active_goals": 10,
+    "goals_completed": 26,
+    "goals_abandoned": 0,
+    "total_decisions_executed": 1920
+  },
+  "duration_seconds": 0.21522209999966435
+}

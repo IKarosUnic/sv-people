@@ -1,0 +1,535 @@
+{
+  "total_years_simulated": 250,
+  "elapsed_seconds": 12.39,
+  "ticks_per_second": 242.2,
+  "final_census": {
+    "year": 250,
+    "approx_generation": 10.0,
+    "living_population": 583,
+    "total_births": 1516,
+    "total_deaths": 933,
+    "stage_breakdown": {
+      "infancy": 45,
+      "early_childhood": 39,
+      "childhood": 61,
+      "adolescence": 78,
+      "early_adulthood": 88,
+      "adulthood": 245,
+      "older_adulthood": 27
+    },
+    "average_age_living": 27.3,
+    "average_life_expectancy": 52.2,
+    "top_dynasties": [
+      [
+        "Portillo",
+        141
+      ],
+      [
+        "Choto",
+        137
+      ],
+      [
+        "Ramos",
+        97
+      ],
+      [
+        "Rivera",
+        50
+      ],
+      [
+        "Montoya",
+        49
+      ]
+    ],
+    "market_food_price": 18.0,
+    "market_food_stock": 0.0,
+    "population_agreeableness": 0.536,
+    "population_conscientiousness": 0.462
+  },
+  "census_timeline": [
+    {
+      "year": 0,
+      "approx_generation": 0.0,
+      "living_population": 20,
+      "total_births": 20,
+      "total_deaths": 0,
+      "stage_breakdown": {
+        "infancy": 0,
+        "early_childhood": 0,
+        "childhood": 0,
+        "adolescence": 0,
+        "early_adulthood": 13,
+        "adulthood": 7,
+        "older_adulthood": 0
+      },
+      "average_age_living": 24.8,
+      "average_life_expectancy": 0.0,
+      "top_dynasties": [
+        [
+          "Rivera",
+          1
+        ],
+        [
+          "Gómez",
+          1
+        ],
+        [
+          "Mendoza",
+          1
+        ],
+        [
+          "Alvarado",
+          1
+        ],
+        [
+          "Flores",
+          1
+        ]
+      ],
+      "market_food_price": 5.0,
+      "market_food_stock": 250.0,
+      "population_agreeableness": 0.518,
+      "population_conscientiousness": 0.468
+    },
+    {
+      "year": 25,
+      "approx_generation": 1.0,
+      "living_population": 74,
+      "total_births": 76,
+      "total_deaths": 2,
+      "stage_breakdown": {
+        "infancy": 13,
+        "early_childhood": 10,
+        "childhood": 3,
+        "adolescence": 0,
+        "early_adulthood": 30,
+        "adulthood": 18,
+        "older_adulthood": 0
+      },
+      "average_age_living": 21.7,
+      "average_life_expectancy": 45.4,
+      "top_dynasties": [
+        [
+          "Rivera",
+          9
+        ],
+        [
+          "Ramos",
+          9
+        ],
+        [
+          "Baires",
+          9
+        ],
+        [
+          "Montoya",
+          7
+        ],
+        [
+          "Portillo",
+          7
+        ]
+      ],
+      "market_food_price": 2.07,
+      "market_food_stock": 68.5,
+      "population_agreeableness": 0.505,
+      "population_conscientiousness": 0.473
+    },
+    {
+      "year": 50,
+      "approx_generation": 2.0,
+      "living_population": 110,
+      "total_births": 138,
+      "total_deaths": 28,
+      "stage_breakdown": {
+        "infancy": 8,
+        "early_childhood": 16,
+        "childhood": 23,
+        "adolescence": 2,
+        "early_adulthood": 14,
+        "adulthood": 43,
+        "older_adulthood": 4
+      },
+      "average_age_living": 22.4,
+      "average_life_expectancy": 46.5,
+      "top_dynasties": [
+        [
+          "Ramos",
+          23
+        ],
+        [
+          "Portillo",
+          13
+        ],
+        [
+          "Montoya",
+          13
+        ],
+        [
+          "Baires",
+          12
+        ],
+        [
+          "Rivera",
+          12
+        ]
+      ],
+      "market_food_price": 18.0,
+      "market_food_stock": 0.0,
+      "population_agreeableness": 0.509,
+      "population_conscientiousness": 0.469
+    },
+    {
+      "year": 75,
+      "approx_generation": 3.0,
+      "living_population": 145,
+      "total_births": 214,
+      "total_deaths": 69,
+      "stage_breakdown": {
+        "infancy": 7,
+        "early_childhood": 12,
+        "childhood": 30,
+        "adolescence": 16,
+        "early_adulthood": 10,
+        "adulthood": 67,
+        "older_adulthood": 3
+      },
+      "average_age_living": 24.4,
+      "average_life_expectancy": 46.6,
+      "top_dynasties": [
+        [
+          "Ramos",
+          36
+        ],
+        [
+          "Choto",
+          19
+        ],
+        [
+          "Rivera",
+          17
+        ],
+        [
+          "Montoya",
+          17
+        ],
+        [
+          "Portillo",
+          15
+        ]
+      ],
+      "market_food_price": 18.0,
+      "market_food_stock": 0.0,
+      "population_agreeableness": 0.524,
+      "population_conscientiousness": 0.483
+    },
+    {
+      "year": 100,
+      "approx_generation": 4.0,
+      "living_population": 190,
+      "total_births": 311,
+      "total_deaths": 121,
+      "stage_breakdown": {
+        "infancy": 10,
+        "early_childhood": 10,
+        "childhood": 23,
+        "adolescence": 32,
+        "early_adulthood": 19,
+        "adulthood": 90,
+        "older_adulthood": 6
+      },
+      "average_age_living": 27.1,
+      "average_life_expectancy": 48.0,
+      "top_dynasties": [
+        [
+          "Choto",
+          44
+        ],
+        [
+          "Ramos",
+          43
+        ],
+        [
+          "Portillo",
+          22
+        ],
+        [
+          "Rivera",
+          19
+        ],
+        [
+          "Montoya",
+          15
+        ]
+      ],
+      "market_food_price": 18.0,
+      "market_food_stock": 0.0,
+      "population_agreeableness": 0.523,
+      "population_conscientiousness": 0.487
+    },
+    {
+      "year": 125,
+      "approx_generation": 5.0,
+      "living_population": 222,
+      "total_births": 431,
+      "total_deaths": 209,
+      "stage_breakdown": {
+        "infancy": 15,
+        "early_childhood": 16,
+        "childhood": 20,
+        "adolescence": 29,
+        "early_adulthood": 35,
+        "adulthood": 102,
+        "older_adulthood": 5
+      },
+      "average_age_living": 27.3,
+      "average_life_expectancy": 48.5,
+      "top_dynasties": [
+        [
+          "Choto",
+          65
+        ],
+        [
+          "Ramos",
+          47
+        ],
+        [
+          "Portillo",
+          30
+        ],
+        [
+          "Castillo",
+          19
+        ],
+        [
+          "Montoya",
+          18
+        ]
+      ],
+      "market_food_price": 18.0,
+      "market_food_stock": 0.0,
+      "population_agreeableness": 0.525,
+      "population_conscientiousness": 0.477
+    },
+    {
+      "year": 150,
+      "approx_generation": 6.0,
+      "living_population": 289,
+      "total_births": 587,
+      "total_deaths": 298,
+      "stage_breakdown": {
+        "infancy": 18,
+        "early_childhood": 19,
+        "childhood": 37,
+        "adolescence": 27,
+        "early_adulthood": 60,
+        "adulthood": 120,
+        "older_adulthood": 8
+      },
+      "average_age_living": 26.3,
+      "average_life_expectancy": 50.5,
+      "top_dynasties": [
+        [
+          "Choto",
+          76
+        ],
+        [
+          "Ramos",
+          61
+        ],
+        [
+          "Portillo",
+          44
+        ],
+        [
+          "Montoya",
+          24
+        ],
+        [
+          "Mendoza",
+          23
+        ]
+      ],
+      "market_food_price": 18.0,
+      "market_food_stock": 0.0,
+      "population_agreeableness": 0.519,
+      "population_conscientiousness": 0.471
+    },
+    {
+      "year": 175,
+      "approx_generation": 7.0,
+      "living_population": 359,
+      "total_births": 765,
+      "total_deaths": 406,
+      "stage_breakdown": {
+        "infancy": 17,
+        "early_childhood": 21,
+        "childhood": 39,
+        "adolescence": 42,
+        "early_adulthood": 51,
+        "adulthood": 169,
+        "older_adulthood": 20
+      },
+      "average_age_living": 29.7,
+      "average_life_expectancy": 49.9,
+      "top_dynasties": [
+        [
+          "Choto",
+          93
+        ],
+        [
+          "Ramos",
+          68
+        ],
+        [
+          "Portillo",
+          61
+        ],
+        [
+          "Montoya",
+          31
+        ],
+        [
+          "Baires",
+          26
+        ]
+      ],
+      "market_food_price": 18.0,
+      "market_food_stock": 0.0,
+      "population_agreeableness": 0.526,
+      "population_conscientiousness": 0.469
+    },
+    {
+      "year": 200,
+      "approx_generation": 8.0,
+      "living_population": 404,
+      "total_births": 959,
+      "total_deaths": 555,
+      "stage_breakdown": {
+        "infancy": 25,
+        "early_childhood": 22,
+        "childhood": 42,
+        "adolescence": 39,
+        "early_adulthood": 70,
+        "adulthood": 180,
+        "older_adulthood": 26
+      },
+      "average_age_living": 30.3,
+      "average_life_expectancy": 51.0,
+      "top_dynasties": [
+        [
+          "Choto",
+          100
+        ],
+        [
+          "Portillo",
+          78
+        ],
+        [
+          "Ramos",
+          75
+        ],
+        [
+          "Montoya",
+          32
+        ],
+        [
+          "Rivera",
+          29
+        ]
+      ],
+      "market_food_price": 18.0,
+      "market_food_stock": 0.0,
+      "population_agreeableness": 0.54,
+      "population_conscientiousness": 0.467
+    },
+    {
+      "year": 225,
+      "approx_generation": 9.0,
+      "living_population": 471,
+      "total_births": 1197,
+      "total_deaths": 726,
+      "stage_breakdown": {
+        "infancy": 28,
+        "early_childhood": 29,
+        "childhood": 55,
+        "adolescence": 54,
+        "early_adulthood": 77,
+        "adulthood": 205,
+        "older_adulthood": 23
+      },
+      "average_age_living": 28.4,
+      "average_life_expectancy": 52.3,
+      "top_dynasties": [
+        [
+          "Choto",
+          105
+        ],
+        [
+          "Portillo",
+          99
+        ],
+        [
+          "Ramos",
+          87
+        ],
+        [
+          "Montoya",
+          38
+        ],
+        [
+          "Rivera",
+          35
+        ]
+      ],
+      "market_food_price": 18.0,
+      "market_food_stock": 0.0,
+      "population_agreeableness": 0.539,
+      "population_conscientiousness": 0.464
+    },
+    {
+      "year": 250,
+      "approx_generation": 10.0,
+      "living_population": 583,
+      "total_births": 1516,
+      "total_deaths": 933,
+      "stage_breakdown": {
+        "infancy": 45,
+        "early_childhood": 39,
+        "childhood": 61,
+        "adolescence": 78,
+        "early_adulthood": 88,
+        "adulthood": 245,
+        "older_adulthood": 27
+      },
+      "average_age_living": 27.3,
+      "average_life_expectancy": 52.2,
+      "top_dynasties": [
+        [
+          "Portillo",
+          141
+        ],
+        [
+          "Choto",
+          137
+        ],
+        [
+          "Ramos",
+          97
+        ],
+        [
+          "Rivera",
+          50
+        ],
+        [
+          "Montoya",
+          49
+        ]
+      ],
+      "market_food_price": 18.0,
+      "market_food_stock": 0.0,
+      "population_agreeableness": 0.536,
+      "population_conscientiousness": 0.462
+    }
+  ]
+}

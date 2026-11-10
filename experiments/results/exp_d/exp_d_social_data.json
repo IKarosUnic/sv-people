@@ -1,0 +1,25 @@
+{
+  "experiment_id": "EXP_D_SOCIAL",
+  "name": "Emergent Social Relationships",
+  "success": true,
+  "summary": "Demonstrated dynamic interpersonal evolution from mutual cooperation through sharp conflict breakdown.",
+  "hypotheses": [
+    {
+      "hypothesis": "Cooperative interactions progressively raise interpersonal trust and affinity.",
+      "confirmed": true,
+      "evidence": "Trust grew from 0.52 to 0.82."
+    },
+    {
+      "hypothesis": "Severe conflict substantially deteriorates trust.",
+      "confirmed": true,
+      "evidence": "Trust plummeted from 0.82 down to 0.50."
+    }
+  ],
+  "metrics": {
+    "initial_trust": 0.52,
+    "bonded_trust": 0.82,
+    "conflict_trust": 0.5,
+    "relationship_type": "acquaintance"
+  },
+  "duration_seconds": 0.00014849999570287764
+}

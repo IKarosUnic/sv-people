@@ -1,0 +1,27 @@
+{
+  "experiment_id": "EXP_G_LONG_TERM",
+  "name": "Long-Term Multi-Day Development",
+  "success": true,
+  "summary": "Demonstrated persistent individual divergence in economic and autobiographical trajectories over time.",
+  "hypotheses": [
+    {
+      "hypothesis": "Economic circumstances diverge across individuals over extended simulation time.",
+      "confirmed": true,
+      "evidence": "Economic delta standard deviation is $21.97."
+    },
+    {
+      "hypothesis": "Autobiographical memory records accumulate continuously.",
+      "confirmed": true,
+      "evidence": "Total new episodic records generated: 3009."
+    }
+  ],
+  "metrics": {
+    "duration_ticks": 288,
+    "simulated_days": 3.0,
+    "economic_delta_std": 21.974,
+    "total_new_memories": 3009,
+    "total_events_emitted": 3016,
+    "throughput_tps": 615.5
+  },
+  "duration_seconds": 0.46788540000852663
+}

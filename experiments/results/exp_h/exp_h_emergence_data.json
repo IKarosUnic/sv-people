@@ -1,0 +1,25 @@
+{
+  "experiment_id": "EXP_H_EMERGENCE",
+  "name": "Emergence and Social Clustering",
+  "success": true,
+  "summary": "Emergent social hubs and organic clustering formed naturally without hardcoded scripting.",
+  "hypotheses": [
+    {
+      "hypothesis": "Agents spontaneously concentrate around natural social hubs (plaza, market, comedor).",
+      "confirmed": true,
+      "evidence": "Agents utilized 15 distinct locations. Top hub: plaza_central (80 visits)."
+    },
+    {
+      "hypothesis": "Organic social networks expand through proximity encounters.",
+      "confirmed": true,
+      "evidence": "A total of 55 directional relationships formed or evolved."
+    }
+  ],
+  "metrics": {
+    "distinct_locations_visited": 15,
+    "top_hub_location": "plaza_central",
+    "top_hub_visits": 80,
+    "total_relationships_active": 55
+  },
+  "duration_seconds": 0.22313800000119954
+}

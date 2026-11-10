@@ -17,11 +17,14 @@ class SemanticFact:
     """A single factual knowledge item or belief held by a human."""
 
     fact_id: str
-    category: str        # e.g., 'world', 'social', 'location', 'self', 'work'
+    category: str        # e.g., 'world', 'social', 'location', 'self', 'work', 'habit'
     content: str
     confidence: float = 1.0   # 0.0 to 1.0 (certainty of belief)
-    source: str = ""          # origin (e.g. 'direct_experience', 'hearsay', 'innate')
+    source: str = ""          # origin (e.g. 'direct_experience', 'hearsay', 'innate', 'compression')
     learned_tick: Tick = 0
+    verification_count: int = 1
+    contradiction_count: int = 0
+    last_updated_tick: Tick = 0
 
 
 class SemanticMemory:
@@ -45,6 +48,56 @@ class SemanticMemory:
         if fact_id in self._facts:
             f = self._facts[fact_id]
             f.confidence = max(0.0, min(1.0, f.confidence + delta))
+
+    def update_with_evidence(
+        self,
+        fact_id: str,
+        is_confirming: bool,
+        delta: float = 0.15,
+        new_content: Optional[str] = None,
+        current_tick: Tick = 0,
+    ) -> None:
+        """Update a belief following new evidence.
+
+        If contradictory evidence reduces confidence below 0.20 and *new_content* is provided,
+        the belief is updated/revised.
+        """
+        fact = self._facts.get(fact_id)
+        if not fact:
+            if new_content:
+                self.store(
+                    SemanticFact(
+                        fact_id=fact_id,
+                        category="experience",
+                        content=new_content,
+                        confidence=0.6,
+                        source="new_evidence",
+                        learned_tick=current_tick,
+                    )
+                )
+            return
+
+        if is_confirming:
+            fact.confidence = min(1.0, fact.confidence + delta)
+            fact.verification_count += 1
+        else:
+            fact.confidence = max(0.0, fact.confidence - delta)
+            fact.contradiction_count += 1
+            if fact.confidence <= 0.20 and new_content:
+                fact.content = new_content
+                fact.confidence = 0.65
+                fact.source = "revised_evidence"
+
+        fact.last_updated_tick = current_tick
+
+    def revise_belief(self, fact_id: str, new_content: str, confidence: float = 0.8, tick: Tick = 0) -> None:
+        """Explicitly revise an existing belief after decisive evidence."""
+        if fact_id in self._facts:
+            f = self._facts[fact_id]
+            f.content = new_content
+            f.confidence = confidence
+            f.source = "revised_after_insight"
+            f.last_updated_tick = tick
 
     def query(
         self,

@@ -12,15 +12,39 @@ from saltbor.core.types import EmotionType, EventID, Tick
 # Valence mapping: how positive or negative each emotion is (-1 to +1).
 EMOTION_VALENCE: dict[EmotionType, float] = {
     EmotionType.JOY: 1.0,
+    EmotionType.EXCITEMENT: 0.85,
+    EmotionType.SATISFACTION: 0.75,
+    EmotionType.AFFECTION: 0.9,
+    EmotionType.CURIOSITY: 0.4,
+    EmotionType.MOTIVATION: 0.7,
     EmotionType.SADNESS: -0.8,
     EmotionType.FEAR: -0.6,
     EmotionType.ANGER: -0.7,
-    EmotionType.AFFECTION: 0.9,
+    EmotionType.FRUSTRATION: -0.6,
+    EmotionType.ANXIETY: -0.65,
+    EmotionType.DISAPPOINTMENT: -0.6,
+    EmotionType.LONELINESS: -0.75,
     EmotionType.SHAME: -0.5,
     EmotionType.GUILT: -0.4,
-    EmotionType.CURIOSITY: 0.4,
-    EmotionType.FRUSTRATION: -0.6,
-    EmotionType.MOTIVATION: 0.7,
+}
+
+# Default per-tick decay rates based on biological/psychological half-lives.
+EMOTION_DEFAULT_DECAY: dict[EmotionType, float] = {
+    EmotionType.JOY: 0.03,
+    EmotionType.EXCITEMENT: 0.06,
+    EmotionType.SATISFACTION: 0.02,
+    EmotionType.AFFECTION: 0.02,
+    EmotionType.CURIOSITY: 0.04,
+    EmotionType.MOTIVATION: 0.03,
+    EmotionType.ANGER: 0.07,
+    EmotionType.FRUSTRATION: 0.05,
+    EmotionType.FEAR: 0.04,
+    EmotionType.ANXIETY: 0.02,
+    EmotionType.DISAPPOINTMENT: 0.03,
+    EmotionType.SADNESS: 0.015,
+    EmotionType.LONELINESS: 0.015,
+    EmotionType.SHAME: 0.035,
+    EmotionType.GUILT: 0.025,
 }
 
 
@@ -68,10 +92,35 @@ class EmotionalProfile(BaseModel):
         le=1.0,
         description="Personality-derived modifier for how strongly emotions are felt.",
     )
+    regulation_capacity: float = Field(
+        default=0.5,
+        ge=0.0,
+        le=1.0,
+        description="Capacity for emotional self-regulation and recovery to baseline.",
+    )
+    expressiveness: float = Field(
+        default=0.5,
+        ge=0.0,
+        le=1.0,
+        description="Tendency to outwardly express internal emotions vs keep them internal.",
+    )
 
     # ------------------------------------------------------------------
     # Queries
     # ------------------------------------------------------------------
+
+    def should_express_externally(self, emotion_type: EmotionType | str) -> bool:
+        """Determine whether the internal emotion is expressed outwardly.
+
+        Individual expression threshold: inhibited individuals require higher
+        internal intensity before an emotion breaks out into observable behavior.
+        """
+        intensity = self.get_intensity(emotion_type)
+        if intensity < 0.05:
+            return False
+        # Threshold: expressiveness 1.0 -> 0.20 threshold; expressiveness 0.0 -> 0.80 threshold
+        threshold = max(0.20, 0.80 - self.expressiveness * 0.60)
+        return intensity >= threshold
 
     def get_dominant_emotion(self) -> EmotionType | None:
         """Return the emotion type with the highest intensity, or None."""
@@ -132,10 +181,15 @@ class EmotionalProfile(BaseModel):
             self.active_emotions[state.emotion_type] = state.model_copy()
 
     def decay_all(self, ticks: int = 1) -> None:
-        """Decay every active emotion and remove expired ones."""
+        """Decay every active emotion and remove expired ones, modulated by regulation capacity."""
         expired: list[EmotionType] = []
+        reg_factor = 1.0 + (self.regulation_capacity - 0.5) * 0.4  # [0.8, 1.2]
         for etype, estate in self.active_emotions.items():
-            estate.decay(ticks)
+            for _ in range(ticks):
+                estate.intensity *= (1.0 - estate.decay_rate * reg_factor)
+                estate.duration_remaining = max(0, estate.duration_remaining - 1)
+            if estate.intensity < 0.01:
+                estate.intensity = 0.0
             if estate.is_expired:
                 expired.append(etype)
         for etype in expired:

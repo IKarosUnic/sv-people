@@ -70,6 +70,10 @@ class Serializer:
         demographics_data: dict[str, Any] = {}
         if hasattr(human, "demographics") and human.demographics is not None:
             demo = human.demographics
+            stage_val = (
+                demo.stage.value if hasattr(getattr(demo, "stage", None), "value")
+                else str(getattr(demo, "stage", "adulthood"))
+            )
             demographics_data = {
                 "age": getattr(demo, "age", None),
                 "gender": getattr(demo, "gender", Gender.MALE).value
@@ -82,9 +86,11 @@ class Serializer:
                 "data_source": getattr(demo, "data_source", DataSource.MOCK_GENERATED).value
                 if hasattr(getattr(demo, "data_source", None), "value")
                 else str(getattr(demo, "data_source", "")),
+                "birth_tick": getattr(demo, "birth_tick", 0),
+                "stage": stage_val,
             }
 
-        # Physical state
+        # Physical state & autonomy goals
         physical_data: dict[str, Any] = {}
         if hasattr(human, "physical_state") and human.physical_state is not None:
             ps = human.physical_state
@@ -97,6 +103,23 @@ class Serializer:
                 "home_location_id": getattr(ps, "home_location_id", None),
                 "work_location_id": getattr(ps, "work_location_id", None),
             }
+        if hasattr(human, "autonomy") and human.autonomy is not None:
+            physical_data["goals"] = [
+                {
+                    "goal_id": str(g.goal_id),
+                    "description": g.description,
+                    "priority": g.priority,
+                    "category": g.category,
+                    "progress": g.progress,
+                    "status": g.status,
+                    "plan_steps": list(g.plan_steps),
+                    "current_step_index": g.current_step_index,
+                    "consecutive_failures": g.consecutive_failures,
+                    "procrastination_count": g.procrastination_count,
+                    "reasoning": g.reasoning,
+                }
+                for g in getattr(human.autonomy, "goals", [])
+            ]
 
         # Personality traits  — dict[str, {base_value, current_value, drift_rate}]
         personality_data: dict[str, Any] = {}
@@ -115,20 +138,29 @@ class Serializer:
                 else:
                     personality_data = getattr(traits, "__dict__", {})
 
-        # Emotions — dict[EmotionType, {intensity, duration_remaining, decay_rate}]
+        # Emotions — serializes active emotions, regulation capacity, and expressiveness
         emotions_data: dict[str, Any] = {}
         if hasattr(human, "emotions") and human.emotions is not None:
             emotions_obj = human.emotions
-            if isinstance(emotions_obj, dict):
+            if hasattr(emotions_obj, "profile"):
+                prof = emotions_obj.profile
+                emotions_data = {
+                    "reactivity": prof.emotional_reactivity,
+                    "regulation": prof.regulation_capacity,
+                    "expressiveness": prof.expressiveness,
+                    "active": {
+                        (k.value if isinstance(k, EmotionType) else str(k)): {
+                            "intensity": v.intensity,
+                            "duration_remaining": v.duration_remaining,
+                            "decay_rate": v.decay_rate,
+                        }
+                        for k, v in prof.active_emotions.items()
+                    },
+                }
+            elif isinstance(emotions_obj, dict):
                 emotions_data = {
                     (k.value if isinstance(k, EmotionType) else str(k)): v
                     for k, v in emotions_obj.items()
-                }
-            elif hasattr(emotions_obj, "emotions"):
-                raw = emotions_obj.emotions
-                emotions_data = {
-                    (k.value if isinstance(k, EmotionType) else str(k)): v
-                    for k, v in raw.items()
                 }
 
         return {

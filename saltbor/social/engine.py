@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 import logging
-from typing import Iterator
+from typing import Iterator, Optional
 
 from saltbor.core.types import HumanID, RelationshipType, Tick
-from saltbor.social.relationship import Relationship
+from saltbor.social.relationship import DirectionalAttitude, Relationship
 
 logger = logging.getLogger(__name__)
 
@@ -78,14 +78,102 @@ class SocialEngine:
         tick: Tick,
         positive: bool,
         intensity: float = 0.5,
+        interaction_type: str = "interaction",
+        from_id: Optional[HumanID] = None,
     ) -> Relationship:
         """Record an interaction between two people and update their bond.
 
         Returns the updated :class:`Relationship`.
         """
         rel = self.get_relationship(a_id, b_id)
-        rel.update_after_interaction(tick, positive, intensity)
+        rel.update_after_interaction(
+            tick=tick,
+            positive=positive,
+            intensity=intensity,
+            interaction_type=interaction_type,
+            from_id=from_id,
+        )
         return rel
+
+    def record_directional_interaction(
+        self,
+        from_id: HumanID,
+        to_id: HumanID,
+        tick: Tick,
+        positive: bool,
+        intensity: float = 0.5,
+        interaction_type: str = "interaction",
+    ) -> Relationship:
+        """Record an interaction with directional impact from *from_id* to *to_id*."""
+        return self.record_interaction(
+            a_id=from_id,
+            b_id=to_id,
+            tick=tick,
+            positive=positive,
+            intensity=intensity,
+            interaction_type=interaction_type,
+            from_id=from_id,
+        )
+
+    def record_conflict(
+        self,
+        a_id: HumanID,
+        b_id: HumanID,
+        tick: Tick,
+        intensity: float = 0.7,
+    ) -> Relationship:
+        """Record an interpersonal conflict, causing severe trust loss and rivalry."""
+        return self.record_interaction(
+            a_id=a_id,
+            b_id=b_id,
+            tick=tick,
+            positive=False,
+            intensity=intensity,
+            interaction_type="conflict",
+        )
+
+    def record_cooperation(
+        self,
+        a_id: HumanID,
+        b_id: HumanID,
+        tick: Tick,
+        intensity: float = 0.6,
+    ) -> Relationship:
+        """Record cooperative teamwork, strengthening trust, respect, and affinity."""
+        return self.record_interaction(
+            a_id=a_id,
+            b_id=b_id,
+            tick=tick,
+            positive=True,
+            intensity=intensity,
+            interaction_type="cooperation",
+        )
+
+    def record_reconciliation(
+        self,
+        a_id: HumanID,
+        b_id: HumanID,
+        tick: Tick,
+        intensity: float = 0.75,
+    ) -> Relationship:
+        """Record a reconciliation, resolving conflict and restoring trust."""
+        return self.record_interaction(
+            a_id=a_id,
+            b_id=b_id,
+            tick=tick,
+            positive=True,
+            intensity=intensity,
+            interaction_type="reconciliation",
+        )
+
+    def get_directional_attitude(
+        self,
+        from_id: HumanID,
+        to_id: HumanID,
+    ) -> DirectionalAttitude:
+        """Fetch the subjective directional attitude held by *from_id* toward *to_id*."""
+        rel = self.get_relationship(from_id, to_id)
+        return rel.get_attitude(from_id)
 
     def add_relationship(self, relationship: Relationship) -> None:
         """Directly insert or overwrite a pre-built relationship."""

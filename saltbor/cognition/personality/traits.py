@@ -3,27 +3,34 @@
 from __future__ import annotations
 
 import random as _random
-from typing import Iterator
+from typing import Any, Iterator
 
 from pydantic import BaseModel, Field
 
 
 class TraitValue(BaseModel):
-    """A single personality trait with base and current values.
+    """A single personality trait with base, current, and temperament values.
 
-    The *base_value* represents the stable, long-term trait level.
-    The *current_value* can fluctuate due to experiences but drifts
-    back toward the base over time at *drift_rate* per tick.
+    The *temperament_value* is the immutable biological starting baseline.
+    The *base_value* represents the evolving long-term trait level.
+    The *current_value* fluctuates dynamically due to immediate experiences and
+    drifts back toward base_value at *drift_rate* per tick.
     """
 
-    base_value: float = Field(ge=0.0, le=1.0, description="Stable long-term value.")
+    base_value: float = Field(ge=0.0, le=1.0, description="Stable evolving long-term baseline.")
     current_value: float = Field(ge=0.0, le=1.0, description="Current effective value.")
+    temperament_value: float = Field(default=0.5, ge=0.0, le=1.0, description="Initial biological temperament.")
     drift_rate: float = Field(
         default=0.005,
         ge=0.0,
         le=1.0,
         description="Rate at which current_value drifts toward base_value per tick.",
     )
+
+    def model_post_init(self, __context: Any) -> None:
+        # If temperament_value was not explicitly set different from default, anchor to base_value
+        if self.temperament_value == 0.5 and self.base_value != 0.5:
+            self.temperament_value = self.base_value
 
     # ------------------------------------------------------------------
     # helpers
@@ -78,6 +85,34 @@ class PersonalityTraits(BaseModel):
     patience: TraitValue = Field(default_factory=lambda: TraitValue(base_value=0.5, current_value=0.5))
     persistence: TraitValue = Field(default_factory=lambda: TraitValue(base_value=0.5, current_value=0.5))
 
+    # Temperament classification
+    temperament_name: str = Field(
+        default="balanced",
+        description="Qualitative temperament archetype.",
+    )
+
+    # Personal values and priorities (Schwartz-inspired)
+    personal_values: dict[str, float] = Field(
+        default_factory=lambda: {
+            "security": 0.5,
+            "achievement": 0.5,
+            "benevolence": 0.5,
+            "autonomy": 0.5,
+            "tradition": 0.5,
+        }
+    )
+
+    # Learned behavioral patterns and coping heuristics
+    behavioral_patterns: dict[str, float] = Field(
+        default_factory=lambda: {
+            "cooperativeness": 0.5,
+            "assertiveness": 0.5,
+            "risk_tendency": 0.5,
+            "patience_tendency": 0.5,
+            "sociability": 0.5,
+        }
+    )
+
     # ------------------------------------------------------------------
     # Access helpers
     # ------------------------------------------------------------------
@@ -91,6 +126,10 @@ class PersonalityTraits(BaseModel):
     def effective_value(self, trait_name: str) -> float:
         """Return the effective (current) value for the named trait."""
         return self.get_trait(trait_name).current_value
+
+    def get_trait_value(self, name: str) -> float:
+        """Alias returning the effective current value of a trait."""
+        return self.effective_value(name)
 
     def iter_traits(self) -> Iterator[tuple[str, TraitValue]]:
         """Yield ``(name, TraitValue)`` for every trait."""

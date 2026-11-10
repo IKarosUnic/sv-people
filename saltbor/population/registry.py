@@ -14,11 +14,28 @@ class PopulationRegistry:
     def __init__(self) -> None:
         self._by_id: dict[HumanID, SyntheticHuman] = {}
         self._by_serial: dict[int, SyntheticHuman] = {}
+        self._by_location: dict[LocationID, list[SyntheticHuman]] = {}
+        self._location_index_valid: bool = False
+
+    def build_location_index(self) -> None:
+        """Rebuild spatial location bucket index in a single O(N) sweep."""
+        self._by_location.clear()
+        for h in self._by_id.values():
+            loc = h.physical_state.current_location_id
+            if loc:
+                if loc not in self._by_location:
+                    self._by_location[loc] = []
+                self._by_location[loc].append(h)
+        self._location_index_valid = True
+
+    def invalidate_location_index(self) -> None:
+        self._location_index_valid = False
 
     def register(self, human: SyntheticHuman) -> None:
         """Register a human in the directory."""
         self._by_id[human.uid] = human
         self._by_serial[human.identity.serial] = human
+        self._location_index_valid = False
 
     def get(self, human_id: HumanID) -> SyntheticHuman:
         """Retrieve by UUID."""
@@ -39,6 +56,8 @@ class PopulationRegistry:
 
     def get_at_location(self, location_id: LocationID) -> list[SyntheticHuman]:
         """Return all individuals currently situated at a specific location."""
+        if self._location_index_valid:
+            return list(self._by_location.get(location_id, []))
         return [
             h for h in self._by_id.values()
             if h.physical_state.current_location_id == location_id

@@ -48,6 +48,15 @@ class PhysicalState(BaseModel):
     money: float = Field(
         default=100.0, ge=0.0, description="Available money (abstract units)."
     )
+
+    @property
+    def wallet(self) -> float:
+        """Alias for money."""
+        return self.money
+
+    @wallet.setter
+    def wallet(self, val: float) -> None:
+        self.money = val
     home_location_id: Optional[LocationID] = Field(
         default=None, description="Assigned home location."
     )

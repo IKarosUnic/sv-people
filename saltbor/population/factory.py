@@ -62,8 +62,8 @@ class PopulationFactory:
             logger.info("Using NVIDIA Nemotron Personas El Salvador dataset.")
             profiles = adapter.get_profiles(cfg.initial_population_size)
         else:
-            logger.info("Using curated Saltbor mock personas (20 differentiated profiles).")
-            profiles = MockDataGenerator.get_personas()[: cfg.initial_population_size]
+            logger.info("Using curated Saltbor mock personas (differentiated profiles).")
+            profiles = MockDataGenerator.get_personas(cfg.initial_population_size)
 
         humans: list[SyntheticHuman] = []
 

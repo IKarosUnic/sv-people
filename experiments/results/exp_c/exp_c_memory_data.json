@@ -1,0 +1,24 @@
+{
+  "experiment_id": "EXP_C_MEMORY",
+  "name": "Memory Formation, Consolidation & Forgetting",
+  "success": true,
+  "summary": "Validated episodic consolidation and memory-guided decision biases.",
+  "hypotheses": [
+    {
+      "hypothesis": "High-importance events resist decay and maintain recall accessibility.",
+      "confirmed": true,
+      "evidence": "Salient event at mercado_municipal remains directly accessible after consolidation."
+    },
+    {
+      "hypothesis": "Negative experiences establish an affective location aversion bias.",
+      "confirmed": true,
+      "evidence": "Affective valence for mercado_municipal is -0.90."
+    }
+  ],
+  "metrics": {
+    "total_memories_stored": 16,
+    "salient_recalled_count": 1,
+    "location_valence": -0.9
+  },
+  "duration_seconds": 0.0014396999904420227
+}

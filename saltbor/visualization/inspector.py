@@ -40,8 +40,8 @@ class IndividualInspector:
         lines.append(f"║  Current Activity: {phys.current_activity.value if phys.current_activity else 'idle'} ({phys.activity_ticks_remaining} ticks remaining)".ljust(79) + "║")
         lines.append("╟" + "─" * 78 + "╢")
 
-        # Personality Traits
-        lines.append("║  [PERSONALITY TRAITS (Base / Current)]".ljust(79) + "║")
+        # Personality Traits & Temperament
+        lines.append(f"║  [PERSONALITY & TEMPERAMENT: {pers.temperament_value.upper()}]".ljust(79) + "║")
         traits = pers.traits
         for t_name in [
             "openness", "conscientiousness", "extraversion", "agreeableness",
@@ -53,7 +53,9 @@ class IndividualInspector:
         lines.append("╟" + "─" * 78 + "╢")
 
         # Emotions
-        lines.append(f"║  [EMOTIONAL PROFILE] Overall Mood: {emot.get_mood():+.2f}".ljust(79) + "║")
+        reg_cap = getattr(emot, "regulation_capacity", 0.5)
+        expr = getattr(emot.profile, "expressiveness", 0.5)
+        lines.append(f"║  [EMOTIONAL PROFILE] Mood: {emot.get_mood():+.2f} | RegCap: {reg_cap:.2f} | Expr: {expr:.2f}".ljust(79) + "║")
         emot_states = getattr(emot.profile, "active_emotions", {})
         active_emots = [f"{e.value if hasattr(e, 'value') else str(e)}:{st.intensity:.2f}" for e, st in emot_states.items() if st.intensity > 0.05]
         active_str = ", ".join(active_emots) if active_emots else "None (quiescent)"
@@ -63,7 +65,7 @@ class IndividualInspector:
         # Memory Systems
         stats = mem.get_memory_stats()
         lines.append(f"║  [MEMORY ENGINE] Footprint: {stats['approx_bytes']} bytes ({stats['usage_pct']}% of 1MB quota)".ljust(79) + "║")
-        lines.append(f"║    Working items: {stats['working_items']} | Episodic records: {stats['episodic_records']} | Skills: {stats['skills']}".ljust(79) + "║")
+        lines.append(f"║    Working items: {stats['working_items']} | Episodic: {stats['episodic_records']} (Stored: {mem.episodic.total_stored_count}) | Skills: {stats['skills']}".ljust(79) + "║")
         lines.append("║    Top Episodic Memories:".ljust(79) + "║")
         recent = mem.episodic.get_recent(3)
         if not recent:
@@ -73,26 +75,32 @@ class IndividualInspector:
                 lines.append(f"║      • [T{r.tick}] {r.summary[:50]} (imp: {r.importance:.2f}, val: {r.emotional_valence:+.2f})".ljust(79) + "║")
         lines.append("╟" + "─" * 78 + "╢")
 
-        # Goals
-        lines.append("║  [ACTIVE GOALS]".ljust(79) + "║")
+        # Goals Lifecycle
+        lines.append("║  [AUTONOMOUS GOALS LIFECYCLE]".ljust(79) + "║")
         goals = human.autonomy.get_active_goals()
         if not goals:
             lines.append("║    (No active goals)".ljust(79) + "║")
         else:
             for g in goals[:3]:
-                lines.append(f"║    • {g.description} (priority: {g.priority:.2f}, prog: {int(g.progress*100)}%)".ljust(79) + "║")
+                step_info = f" | Step: {g.plan_steps[g.current_step_index]}" if g.plan_steps and g.current_step_index < len(g.plan_steps) else ""
+                lines.append(f"║    • [{g.category.upper()}] {g.description} ({int(g.progress*100)}%{step_info})".ljust(79) + "║")
         lines.append("╟" + "─" * 78 + "╢")
 
         # Social Network
         if social_engine:
-            lines.append("║  [SOCIAL RELATIONSHIPS]".ljust(79) + "║")
+            lines.append("║  [SOCIAL RELATIONSHIPS & ATTITUDES]".ljust(79) + "║")
             rels = social_engine.get_relationships_for(human.uid)
             if not rels:
                 lines.append("║    (No recorded relationships)".ljust(79) + "║")
             else:
                 for rel in rels[:4]:
                     other_uid = rel.other_id(human.uid)
-                    lines.append(f"║    • With {str(other_uid)[:8]}...: {rel.relationship_type.value} | Trust: {rel.trust:.2f} | Affinity: {rel.affinity:.2f}".ljust(79) + "║")
+                    try:
+                        att = rel.get_attitude(human.uid)
+                        att_str = f"DirTrust: {att.trust:.2f}"
+                    except Exception:
+                        att_str = ""
+                    lines.append(f"║    • With {str(other_uid)[:8]}...: {rel.relationship_type.value} | Trust: {rel.trust:.2f} ({att_str})".ljust(79) + "║")
 
         lines.append("╚" + "═" * 78 + "╝")
         return "\n".join(lines)

@@ -65,6 +65,11 @@ class EmotionType(enum.Enum):
     GUILT = "guilt"
     CURIOSITY = "curiosity"
     FRUSTRATION = "frustration"
+    ANXIETY = "anxiety"
+    SATISFACTION = "satisfaction"
+    DISAPPOINTMENT = "disappointment"
+    LONELINESS = "loneliness"
+    EXCITEMENT = "excitement"
     MOTIVATION = "motivation"
 
 

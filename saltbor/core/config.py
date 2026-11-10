@@ -24,6 +24,7 @@ class SimulationConfig(BaseSettings):
         description="Simulated minutes per tick (default 15 → 96 ticks/day).",
     )
     ticks_per_day: int = Field(default=96, description="Derived: 24*60 / tick_duration_minutes.")
+    ticks_per_year: float = Field(default=35040.0, description="Ticks per simulated year (365 days * 96 ticks/day).")
     start_hour: int = Field(default=6, description="Hour of day when simulation day begins.")
 
     # --- World ---

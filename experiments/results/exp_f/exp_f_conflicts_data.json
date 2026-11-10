@@ -1,0 +1,25 @@
+{
+  "experiment_id": "EXP_F_CONFLICTS",
+  "name": "Conflicting Needs and Competing Trade-offs",
+  "success": true,
+  "summary": "Demonstrated divergent conflict resolution without a single universal decision formula.",
+  "hypotheses": [
+    {
+      "hypothesis": "High conscientiousness prioritizes vocational duty over physical discomfort.",
+      "confirmed": true,
+      "evidence": "Agent 1 selected work with utility 1.36."
+    },
+    {
+      "hypothesis": "Low conscientiousness yields to physical fatigue and rest.",
+      "confirmed": true,
+      "evidence": "Agent 2 selected sleep with utility 0.98."
+    }
+  ],
+  "metrics": {
+    "workaholic_choice": "work",
+    "workaholic_utility": 1.36,
+    "fatigued_choice": "sleep",
+    "fatigued_utility": 0.975
+  },
+  "duration_seconds": 0.0012606000091182068
+}
