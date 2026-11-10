@@ -12,12 +12,15 @@ from __future__ import annotations
 
 import dataclasses
 from enum import Enum
+import logging
 from typing import Any, Optional
 from uuid import uuid4
 
 from saltbor.cognition.epistemic.beliefs import BeliefType, EpistemicBelief
 from saltbor.cognition.epistemic.interface import EpistemicInterface
 from saltbor.knowledge.layers.individual_graph import IndividualKnowledgeGraph
+
+logger = logging.getLogger(__name__)
 
 
 class InnovationStage(str, Enum):

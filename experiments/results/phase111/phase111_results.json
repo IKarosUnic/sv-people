@@ -1,0 +1,182 @@
+{
+  "EXP_111_A": {
+    "name": "Cultura sin Deriva Fija",
+    "success": true,
+    "summary": "Deriva contextual validada tras 4 transmisiones: Alta Confianza=0.194 vs Baja Confianza=0.983 (Delta=0.789).",
+    "metrics": {
+      "chain_high_trust_final_drift": 0.194,
+      "chain_low_trust_final_drift": 0.983,
+      "drift_differential": 0.789,
+      "hops": 4
+    },
+    "duration_seconds": 9e-05,
+    "hypotheses": [
+      {
+        "hypothesis": "La fidelidad del relato oral depende de la confianza relacional y la brecha etaria, no de una constante plana",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_111_B": {
+    "name": "Comunidades a Escala 20–100 Agentes",
+    "success": true,
+    "summary": "Clustering comunitario verificado en 60 agentes: 3 colectivos activos, membresía=60, cohesión media=0.86.",
+    "metrics": {
+      "active_communities": 3,
+      "total_organized_agents": 60,
+      "mean_cohesion": 0.86
+    },
+    "duration_seconds": 0.00028,
+    "hypotheses": [
+      {
+        "hypothesis": "Poblaciones de escala 20-100 agentes divergen en colectivos especializados dentro de límites sociológicos verosímiles",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_111_C": {
+    "name": "Economía Longitudinal Autónoma",
+    "success": true,
+    "summary": "Circuito económico sostenido (96 ticks): solvencia=100.0%, media final=$108.67 (inicial=$86.75).",
+    "metrics": {
+      "initial_mean_money": 86.75,
+      "final_mean_money": 108.67,
+      "solvency_rate": 1.0,
+      "ticks_simulated": 96
+    },
+    "duration_seconds": 0.15762,
+    "hypotheses": [
+      {
+        "hypothesis": "El circuito económico local mantiene solvencia y circulación sin colapso a liquidez cero",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_111_D": {
+    "name": "Conflictos Colectivos por Recursos",
+    "success": true,
+    "summary": "Conflicto distributivo resuelto por mediación institucional: propuesta consensuada = 'Apply agriculture techniques to alleviate social shortage'.",
+    "metrics": {
+      "coordination_success": true,
+      "selected_proposal_id": "prop_b64b07",
+      "team_members": 3
+    },
+    "duration_seconds": 8e-05,
+    "hypotheses": [
+      {
+        "hypothesis": "Los grupos en disputa convergen hacia acuerdos institucionales eficientes guiados por mediación",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_111_E": {
+    "name": "Descubrimiento Tecnológico Autónomo",
+    "success": true,
+    "summary": "Descubrimiento autónomo validado: 'Telar de Pedal Tradicional' alcanzó etapa validated_innovation. Madera consumida=3.0, destreza consolidada.",
+    "metrics": {
+      "innovation_name": "Telar de Pedal Tradicional",
+      "final_stage": "validated_innovation",
+      "timber_consumed": 3.0,
+      "remaining_timber": 3.0,
+      "skill_acquired": true
+    },
+    "duration_seconds": 0.00171,
+    "hypotheses": [
+      {
+        "hypothesis": "Los artesanos pueden concebir, construir y validar tecnologías autónomamente consumiendo insumos reales",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_111_F": {
+    "name": "Transmisión de Conocimientos (Mentor-Aprendiz)",
+    "success": true,
+    "summary": "Transmisión diádica completada: Aprendiz Sofia Reyes adoptó la técnica (Adopted faithfully) y alcanzó nivel 0.55.",
+    "metrics": {
+      "transmission_adopted": true,
+      "apprentice_skill_level": 0.55,
+      "channel_used": "mentorship"
+    },
+    "duration_seconds": 0.00123,
+    "hypotheses": [
+      {
+        "hypothesis": "El conocimiento tecnológico se transmite orgánicamente de maestro a aprendiz mediante mentoría",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_111_G": {
+    "name": "Innovación y Especialización Económica",
+    "success": true,
+    "summary": "Especialización laboral verificada: Artesano vendió 10 prendas, volumen comerciado=$100.00, capital final=$180.00.",
+    "metrics": {
+      "artisan_revenue": 160.0,
+      "total_trade_volume": 100.0,
+      "transactions_count": 3,
+      "final_artisan_money": 180.0
+    },
+    "duration_seconds": 0.00157,
+    "hypotheses": [
+      {
+        "hypothesis": "La innovación técnica induce ventajas comparativas, comercio en mercado y división laboral",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_111_H": {
+    "name": "Reproducibilidad de Innovación en 10 Semillas",
+    "success": true,
+    "summary": "Reproducibilidad multillave verificada: 10/10 semillas culminaron en innovación validada (tasa=100%).",
+    "metrics": {
+      "evaluated_seeds_count": 10,
+      "successful_innovations": 10,
+      "reproducibility_rate": 1.0
+    },
+    "duration_seconds": 0.00499,
+    "hypotheses": [
+      {
+        "hypothesis": "El proceso de descubrimiento es una propiedad estructural robusta del sistema bajo distintas semillas",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_111_I": {
+    "name": "Auditoría de Rendimiento en Cascada Inter-Motores",
+    "success": true,
+    "summary": "Rendimiento inter-motores validado: latencia media=1.206 ms/tick (P95=2.207 ms, max=2.302 ms).",
+    "metrics": {
+      "mean_tick_latency_ms": 1.206,
+      "p95_latency_ms": 2.207,
+      "max_latency_ms": 2.302,
+      "is_real_time_capable": true
+    },
+    "duration_seconds": 0.06922,
+    "hypotheses": [
+      {
+        "hypothesis": "La cascada de interacción entre cognición, inventarios y redes se ejecuta en tiempo real sub-10ms",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_111_J": {
+    "name": "Transformación Comunitaria Longitudinal",
+    "success": true,
+    "summary": "Transformación comunitaria lograda: caserio -> nucleo_comercial (pob=60, comercio=0.65, especializaciones=2).",
+    "metrics": {
+      "initial_settlement_type": "caserio",
+      "final_settlement_type": "nucleo_comercial",
+      "initial_population": 15,
+      "final_population": 60,
+      "commercial_intensity_growth": 0.45,
+      "infrastructure_level": 1.0,
+      "historical_event_logged": true
+    },
+    "duration_seconds": 0.00022,
+    "hypotheses": [
+      {
+        "hypothesis": "La innovación acumulativa y el comercio transforman el tipo y la economía del asentamiento",
+        "verified": true
+      }
+    ]
+  }
+}

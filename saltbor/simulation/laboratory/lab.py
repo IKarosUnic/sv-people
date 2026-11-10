@@ -193,6 +193,18 @@ from saltbor.simulation.experiments.phase11_experiments import (
     Experiment11_S_CausalTraceability,
     Experiment11_T_CivilizationIntegralTest,
 )
+from saltbor.simulation.experiments.phase111_experiments import (
+    Experiment111_A_DynamicCulturalDrift,
+    Experiment111_B_Communities20to100Agents,
+    Experiment111_C_LongitudinalAutonomousEconomy,
+    Experiment111_D_CollectiveResourceConflicts,
+    Experiment111_E_AutonomousTechnologicalDiscovery,
+    Experiment111_F_KnowledgeTransmissionMentorship,
+    Experiment111_G_InnovationAndEconomicSpecialization,
+    Experiment111_H_MultiSeedReproducibility,
+    Experiment111_I_CrossEnginePerformanceAudit,
+    Experiment111_J_LongitudinalCommunityTransformation,
+)
 from saltbor.simulation.runner import SimulationRunner
 
 logger = logging.getLogger(__name__)
@@ -378,6 +390,17 @@ class SimulationLaboratory:
             "EXP_11_R": Experiment11_R_ArchitecturalComparison,
             "EXP_11_S": Experiment11_S_CausalTraceability,
             "EXP_11_T": Experiment11_T_CivilizationIntegralTest,
+            # Phase 1.1.1 Validation Extension Suite
+            "EXP_111_A": Experiment111_A_DynamicCulturalDrift,
+            "EXP_111_B": Experiment111_B_Communities20to100Agents,
+            "EXP_111_C": Experiment111_C_LongitudinalAutonomousEconomy,
+            "EXP_111_D": Experiment111_D_CollectiveResourceConflicts,
+            "EXP_111_E": Experiment111_E_AutonomousTechnologicalDiscovery,
+            "EXP_111_F": Experiment111_F_KnowledgeTransmissionMentorship,
+            "EXP_111_G": Experiment111_G_InnovationAndEconomicSpecialization,
+            "EXP_111_H": Experiment111_H_MultiSeedReproducibility,
+            "EXP_111_I": Experiment111_I_CrossEnginePerformanceAudit,
+            "EXP_111_J": Experiment111_J_LongitudinalCommunityTransformation,
         }
 
     def start_simulation(self, seed: Optional[int] = None) -> SimulationRunner:

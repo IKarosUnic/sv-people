@@ -174,8 +174,27 @@ class HistoricalMemoryEngine:
         self.narratives.setdefault(society_id, []).append(narrative)
         return narrative
 
-    def transmit_narrative(self, narrative_id: str, fidelity_loss: float = 0.08) -> Optional[CulturalNarrative]:
-        """Simulate generational retelling: increases transmission count and semantic drift."""
+    def transmit_narrative(
+        self,
+        narrative_id: str,
+        fidelity_loss: Optional[float] = None,
+        source_trust: Optional[float] = None,
+        age_gap_years: Optional[float] = None,
+        speaker_conscientiousness: Optional[float] = None,
+    ) -> Optional[CulturalNarrative]:
+        """Simulate generational retelling: increases transmission count and semantic drift.
+
+        If contextual parameters are supplied, computes dynamic fidelity loss based
+        on interpersonal trust, generation gap, and speaker conscientiousness.
+        """
+        if fidelity_loss is None:
+            base_loss = 0.08
+            trust = source_trust if source_trust is not None else 0.5
+            consc = speaker_conscientiousness if speaker_conscientiousness is not None else 0.5
+            gap = age_gap_years if age_gap_years is not None else 20.0
+            dyn_loss = base_loss * (1.5 - trust) * (1.4 - 0.8 * consc) * (1.0 + min(1.0, gap / 50.0))
+            fidelity_loss = max(0.01, min(0.35, dyn_loss))
+
         for narr_list in self.narratives.values():
             for narr in narr_list:
                 if narr.narrative_id == narrative_id:

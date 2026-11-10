@@ -85,6 +85,19 @@ from saltbor.simulation.experiments.phase11_experiments import (
     Experiment11_S_CausalTraceability,
     Experiment11_T_CivilizationIntegralTest,
 )
+from saltbor.simulation.experiments.phase111_experiments import (
+    Experiment111_A_DynamicCulturalDrift,
+    Experiment111_B_Communities20to100Agents,
+    Experiment111_C_LongitudinalAutonomousEconomy,
+    Experiment111_D_CollectiveResourceConflicts,
+    Experiment111_E_AutonomousTechnologicalDiscovery,
+    Experiment111_F_KnowledgeTransmissionMentorship,
+    Experiment111_G_InnovationAndEconomicSpecialization,
+    Experiment111_H_MultiSeedReproducibility,
+    Experiment111_I_CrossEnginePerformanceAudit,
+    Experiment111_J_LongitudinalCommunityTransformation,
+    PHASE111_EXPERIMENTS,
+)
 
 __all__ = [
     "BaseExperiment",
@@ -162,4 +175,16 @@ __all__ = [
     "Experiment11_R_ArchitecturalComparison",
     "Experiment11_S_CausalTraceability",
     "Experiment11_T_CivilizationIntegralTest",
+    # Phase 1.1.1 Validation Extension Experiments
+    "Experiment111_A_DynamicCulturalDrift",
+    "Experiment111_B_Communities20to100Agents",
+    "Experiment111_C_LongitudinalAutonomousEconomy",
+    "Experiment111_D_CollectiveResourceConflicts",
+    "Experiment111_E_AutonomousTechnologicalDiscovery",
+    "Experiment111_F_KnowledgeTransmissionMentorship",
+    "Experiment111_G_InnovationAndEconomicSpecialization",
+    "Experiment111_H_MultiSeedReproducibility",
+    "Experiment111_I_CrossEnginePerformanceAudit",
+    "Experiment111_J_LongitudinalCommunityTransformation",
+    "PHASE111_EXPERIMENTS",
 ]
