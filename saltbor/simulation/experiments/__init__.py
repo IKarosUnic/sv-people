@@ -113,6 +113,18 @@ from saltbor.simulation.experiments.phase12_experiments import (
     Experiment12_L_LongitudinalCivilizationalDivergence,
     PHASE12_EXPERIMENTS,
 )
+from saltbor.simulation.experiments.phase121_experiments import (
+    Experiment121_A_CausalCounterfactualValidation,
+    Experiment121_B_AblationInKindPayment,
+    Experiment121_C_AblationKnowledgeTransmission,
+    Experiment121_D_EmergentFissionFromGrievances,
+    Experiment121_E_CascadingSocioecologicalAbandonment,
+    Experiment121_F_CombinatorialSearchMaterialPhysics,
+    Experiment121_G_IrreversibleCollapseVsContingentRecovery,
+    Experiment121_H_MultidimensionalDivergence40Societies,
+    Experiment121_I_ForensicSqlitePersistenceAndRecovery,
+    PHASE121_EXPERIMENTS,
+)
 
 __all__ = [
     "BaseExperiment",
@@ -216,4 +228,15 @@ __all__ = [
     "Experiment12_K_CivilizationalRecoveryPostCrisis",
     "Experiment12_L_LongitudinalCivilizationalDivergence",
     "PHASE12_EXPERIMENTS",
+    # Phase 1.2.1 Adversarial Validation, Causal Counterfactuals & Multidimensional Divergence
+    "Experiment121_A_CausalCounterfactualValidation",
+    "Experiment121_B_AblationInKindPayment",
+    "Experiment121_C_AblationKnowledgeTransmission",
+    "Experiment121_D_EmergentFissionFromGrievances",
+    "Experiment121_E_CascadingSocioecologicalAbandonment",
+    "Experiment121_F_CombinatorialSearchMaterialPhysics",
+    "Experiment121_G_IrreversibleCollapseVsContingentRecovery",
+    "Experiment121_H_MultidimensionalDivergence40Societies",
+    "Experiment121_I_ForensicSqlitePersistenceAndRecovery",
+    "PHASE121_EXPERIMENTS",
 ]

@@ -1,0 +1,180 @@
+{
+  "EXP_121_A": {
+    "name": "Validación Causal Contrafactual",
+    "success": true,
+    "summary": "Causalidad contrafactual confirmada: Divergencia previa nula (ATE_pre=0.0000), divergencia causal neta posterior ATE_prod=19.19, ATE_pop=6.45.",
+    "metrics": {
+      "ate_production_pre_shock": 0.0,
+      "ate_production_post_shock": 19.19,
+      "ate_population_post_shock": 6.45,
+      "final_population_control": 22,
+      "final_population_treatment": 9,
+      "pre_shock_exact_match": true
+    },
+    "duration_seconds": 0.0122,
+    "hypotheses": [
+      {
+        "hypothesis": "Las consecuencias observadas son estrictamente causadas por el choque en t=10 y no por fluctuaciones espurias",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_121_B": {
+    "name": "Ablación: Trueque en Especie vs Iliquidez",
+    "success": true,
+    "summary": "Ablación concluyente: Con trueque el crédito se amortizó a $75.00 (active); sin trueque colapsó a defaulted.",
+    "metrics": {
+      "intact_loan_status": "active",
+      "intact_loan_balance": 75.0,
+      "ablated_loan_status": "defaulted",
+      "ablated_loan_balance": 100.0
+    },
+    "duration_seconds": 0.00225,
+    "hypotheses": [
+      {
+        "hypothesis": "La dación en pago es causalmente necesaria para evitar el impago total ante parálisis monetaria",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_121_C": {
+    "name": "Ablación: Transmisión Cultural",
+    "success": true,
+    "summary": "Ablación de transmisión confirmada: Con mentoría la técnica sobrevivió (maestro muerto, aprendiz vivo); sin mentoría cayó en estado forgotten.",
+    "metrics": {
+      "intact_tech_status": "validated",
+      "intact_living_practitioners": 1,
+      "ablated_tech_status": "forgotten",
+      "ablated_living_practitioners": 0
+    },
+    "duration_seconds": 2e-05,
+    "hypotheses": [
+      {
+        "hypothesis": "La ausencia de transmisión intergeneracional induce amnesia tecnológica inmediata tras la muerte de artesanos",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_121_D": {
+    "name": "Fisión Emergente por Agravios Relacionales",
+    "success": true,
+    "summary": "Fisión emergente verificada: Conflicto relacional elevó agravio a 0.510 (umbral=0.5), activando escisión de 14 miembros.",
+    "metrics": {
+      "mean_grievance_index": 0.51,
+      "grievance_threshold": 0.5,
+      "fission_autonomously_triggered": true,
+      "parent_final_members": 6,
+      "splinter_final_members": 14
+    },
+    "duration_seconds": 0.00154,
+    "hypotheses": [
+      {
+        "hypothesis": "La fragmentación social es una decisión colectiva emergente de la erosión de confianza y aumento de rivalidad",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_121_E": {
+    "name": "Cascada de Abandono Socioecológico",
+    "success": true,
+    "summary": "Cascada de abandono demostrada en 5 etapas secuenciales: ECOLOGICAL_STRESS -> ECONOMIC_DECAY -> FIRST_WAVE_MIGRATION -> INFRASTRUCTURE_NEGLECT -> TOTAL_ABANDONMENT.",
+    "metrics": {
+      "cascade_stages_completed": 5,
+      "initial_status": "thriving",
+      "final_status": "abandoned",
+      "final_water_access": 0.15,
+      "final_infrastructure": 0.08,
+      "final_population": 0
+    },
+    "duration_seconds": 4e-05,
+    "hypotheses": [
+      {
+        "hypothesis": "El abandono del asentamiento es la consecuencia final de una cascada causal ecológica, económica y demográfica",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_121_F": {
+    "name": "Búsqueda Combinatoria sin Recetas Regionales",
+    "success": true,
+    "summary": "Búsqueda combinatoria física validada: 4 soluciones viables y 11 inviables evaluadas sin recetas fijas.",
+    "metrics": {
+      "materials_evaluated_count": 6,
+      "pairs_tested_count": 15,
+      "viable_solutions_count": 4,
+      "inviable_combinations_count": 11,
+      "ceramic_solution_found": true,
+      "basketry_solution_found": true
+    },
+    "duration_seconds": 0.00018,
+    "hypotheses": [
+      {
+        "hypothesis": "Las innovaciones surgen del espacio combinatorio guiado por propiedades físicas y no por atajos geográficos",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_121_G": {
+    "name": "Colapso Irreversible vs Recuperación Contingente",
+    "success": true,
+    "summary": "Bifurcación de resiliencia demostrada: Ante igual sequía, Sociedad A se recuperó (thriving), mientras que Sociedad B colapsó (abandoned).",
+    "metrics": {
+      "society_a_status": "thriving",
+      "society_a_final_pop": 15,
+      "society_b_status": "abandoned",
+      "society_b_final_pop": 0
+    },
+    "duration_seconds": 3e-05,
+    "hypotheses": [
+      {
+        "hypothesis": "La recuperación tras el colapso depende endógenamente del capital social y no está asegurada a priori",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_121_H": {
+    "name": "Divergencia Multidimensional en 40 Sociedades",
+    "success": true,
+    "summary": "Divergencia multidimensional verificada en 40 sociedades: 5 arquetipos emergentes; distancia estructural media con misma población=0.854.",
+    "metrics": {
+      "societies_simulated": 40,
+      "unique_archetypes_count": 5,
+      "archetypes_list": [
+        "ASENTAMIENTO_FRAGIL_EN_DECADENCIA",
+        "CASERIO_TRADICIONAL_ESTABLE",
+        "ENCLAVE_FACIONAL_EN_CONFLICTO",
+        "NUCLEO_COMERCIAL_PROSPERO",
+        "POLO_INNOVADOR_ESPECIALIZADO"
+      ],
+      "mean_distance_equal_population": 0.854
+    },
+    "duration_seconds": 0.00201,
+    "hypotheses": [
+      {
+        "hypothesis": "Las sociedades divergen a lo largo de un espacio de 6 dimensiones y no se reducen al tamaño demográfico",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_121_I": {
+    "name": "Auditoría Forense de Persistencia SQLite WAL",
+    "success": true,
+    "summary": "Auditoría forense superada: 1,700 registros persistidos en disco (147456 bytes), checkpoint en 3.20 ms, rollback validado (ghost_records=0), integrity_check=ok.",
+    "metrics": {
+      "total_records_inserted": 1700,
+      "db_bytes_on_disk": 147456,
+      "wal_bytes_generated": 177192,
+      "batch_write_time_ms": 9.05,
+      "checkpoint_truncate_time_ms": 3.2,
+      "ghost_records_after_rollback": 0,
+      "pragma_integrity_status": "ok"
+    },
+    "duration_seconds": 0.03588,
+    "hypotheses": [
+      {
+        "hypothesis": "La base de datos SQLite física con WAL resiste transacciones abortadas y garantiza integridad ACID estricta",
+        "verified": true
+      }
+    ]
+  }
+}

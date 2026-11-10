@@ -219,6 +219,17 @@ from saltbor.simulation.experiments.phase12_experiments import (
     Experiment12_K_CivilizationalRecoveryPostCrisis,
     Experiment12_L_LongitudinalCivilizationalDivergence,
 )
+from saltbor.simulation.experiments.phase121_experiments import (
+    Experiment121_A_CausalCounterfactualValidation,
+    Experiment121_B_AblationInKindPayment,
+    Experiment121_C_AblationKnowledgeTransmission,
+    Experiment121_D_EmergentFissionFromGrievances,
+    Experiment121_E_CascadingSocioecologicalAbandonment,
+    Experiment121_F_CombinatorialSearchMaterialPhysics,
+    Experiment121_G_IrreversibleCollapseVsContingentRecovery,
+    Experiment121_H_MultidimensionalDivergence40Societies,
+    Experiment121_I_ForensicSqlitePersistenceAndRecovery,
+)
 from saltbor.simulation.runner import SimulationRunner
 
 logger = logging.getLogger(__name__)
@@ -428,6 +439,16 @@ class SimulationLaboratory:
             "EXP_12_J": Experiment12_J_TerritorialDecayAndAbandonment,
             "EXP_12_K": Experiment12_K_CivilizationalRecoveryPostCrisis,
             "EXP_12_L": Experiment12_L_LongitudinalCivilizationalDivergence,
+            # Phase 1.2.1 Adversarial Validation, Causal Counterfactuals & Multidimensional Divergence
+            "EXP_121_A": Experiment121_A_CausalCounterfactualValidation,
+            "EXP_121_B": Experiment121_B_AblationInKindPayment,
+            "EXP_121_C": Experiment121_C_AblationKnowledgeTransmission,
+            "EXP_121_D": Experiment121_D_EmergentFissionFromGrievances,
+            "EXP_121_E": Experiment121_E_CascadingSocioecologicalAbandonment,
+            "EXP_121_F": Experiment121_F_CombinatorialSearchMaterialPhysics,
+            "EXP_121_G": Experiment121_G_IrreversibleCollapseVsContingentRecovery,
+            "EXP_121_H": Experiment121_H_MultidimensionalDivergence40Societies,
+            "EXP_121_I": Experiment121_I_ForensicSqlitePersistenceAndRecovery,
         }
 
     def start_simulation(self, seed: Optional[int] = None) -> SimulationRunner:
