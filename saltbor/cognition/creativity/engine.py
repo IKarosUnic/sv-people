@@ -307,3 +307,69 @@ class CreativeCombinationEngine:
             alternative_resource_usage_note=f"Replaced {standard_material} with {substitute_material}",
             created_tick=tick,
         )
+
+
+class DiscoveryCycleStage(str, Enum):
+    """The 12 formal stages of the complete scientific discovery cycle for SALTBOR Phase 1.2.2."""
+
+    OBSERVATION = "observation"
+    PROBLEM_IDENTIFICATION = "problem_identification"
+    QUESTION_FORMULATION = "question_formulation"
+    HYPOTHESIS_GENERATION = "hypothesis_generation"
+    EXPERIMENT_DESIGN = "experiment_design"
+    RESOURCE_ALLOCATION = "resource_allocation"
+    EXPERIMENT_EXECUTION = "experiment_execution"
+    OBSERVATION_OF_RESULTS = "observation_of_results"
+    BELIEF_REVISION = "belief_revision"
+    KNOWLEDGE_VALIDATION = "knowledge_validation"
+    PROCEDURAL_CONSOLIDATION = "procedural_consolidation"
+    SOCIAL_TRANSMISSION = "social_transmission"
+
+
+@dataclasses.dataclass
+class DiscoveryCycleTrace:
+    """Full traceability record of an unscripted technological discovery cycle."""
+
+    process_id: str
+    creator_uid: str
+    target_problem_criteria: dict[str, Any]
+    current_stage: DiscoveryCycleStage
+    stages_completed: list[DiscoveryCycleStage] = dataclasses.field(default_factory=list)
+    observations: list[str] = dataclasses.field(default_factory=list)
+    hypotheses: list[str] = dataclasses.field(default_factory=list)
+    materials_allocated: dict[str, float] = dataclasses.field(default_factory=dict)
+    materials_consumed: dict[str, float] = dataclasses.field(default_factory=dict)
+    physical_measurements: dict[str, float] = dataclasses.field(default_factory=dict)
+    outcome_status: str = "in_progress"  # "validated", "failed", "abandoned"
+    innovation_created: Optional[CreativeInnovation] = None
+    trace_events: list[dict[str, Any]] = dataclasses.field(default_factory=list)
+
+    def log_event(self, stage: DiscoveryCycleStage, description: str, data: Optional[dict[str, Any]] = None) -> None:
+        self.trace_events.append({
+            "stage": stage.value,
+            "description": description,
+            "data": data or {},
+        })
+        if stage not in self.stages_completed:
+            self.stages_completed.append(stage)
+        self.current_stage = stage
+
+
+def initiate_blind_discovery(
+    creator_uid: str,
+    problem_criteria: dict[str, Any],
+    observation: str,
+    tick: int = 0,
+) -> DiscoveryCycleTrace:
+    """Initiates an unscripted discovery process without preset solution names or regional recipes."""
+    trace_id = f"disc_{uuid4().hex[:8]}"
+    trace = DiscoveryCycleTrace(
+        process_id=trace_id,
+        creator_uid=str(creator_uid),
+        target_problem_criteria=problem_criteria,
+        current_stage=DiscoveryCycleStage.OBSERVATION,
+    )
+    trace.log_event(DiscoveryCycleStage.OBSERVATION, f"Initial observation: {observation}")
+    trace.observations.append(observation)
+    return trace
+

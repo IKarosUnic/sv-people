@@ -230,6 +230,20 @@ from saltbor.simulation.experiments.phase121_experiments import (
     Experiment121_H_MultidimensionalDivergence40Societies,
     Experiment121_I_ForensicSqlitePersistenceAndRecovery,
 )
+from saltbor.simulation.experiments.phase122_experiments import (
+    Experiment122_A_MultiSeedCounterfactualRobustness,
+    Experiment122_B_ThresholdSensitivity,
+    Experiment122_C_HiddenTechnologicalDiscovery,
+    Experiment122_D_AdversarialCommunityDynamics,
+    Experiment122_E_EcologicalRecoverySensitivity,
+    Experiment122_F_MultidimensionalStatisticalValidation,
+    Experiment122_G_KnowledgeExtinctionAndRediscovery,
+    Experiment122_H_CollectiveLearningWithoutCentralAuthority,
+    Experiment122_I_AblationAndMechanismDependency,
+    Experiment122_J_LongitudinalCivilizationDivergence,
+    Experiment122_K_PhysicalPersistenceAndPerformance,
+    Experiment122_L_IntegratedAdversarialStressTest,
+)
 from saltbor.simulation.runner import SimulationRunner
 
 logger = logging.getLogger(__name__)
@@ -449,6 +463,19 @@ class SimulationLaboratory:
             "EXP_121_G": Experiment121_G_IrreversibleCollapseVsContingentRecovery,
             "EXP_121_H": Experiment121_H_MultidimensionalDivergence40Societies,
             "EXP_121_I": Experiment121_I_ForensicSqlitePersistenceAndRecovery,
+            # Phase 1.2.2 Adversarial Robustness, Causal Sensitivity & Statistical Validation
+            "EXP_122_A": Experiment122_A_MultiSeedCounterfactualRobustness,
+            "EXP_122_B": Experiment122_B_ThresholdSensitivity,
+            "EXP_122_C": Experiment122_C_HiddenTechnologicalDiscovery,
+            "EXP_122_D": Experiment122_D_AdversarialCommunityDynamics,
+            "EXP_122_E": Experiment122_E_EcologicalRecoverySensitivity,
+            "EXP_122_F": Experiment122_F_MultidimensionalStatisticalValidation,
+            "EXP_122_G": Experiment122_G_KnowledgeExtinctionAndRediscovery,
+            "EXP_122_H": Experiment122_H_CollectiveLearningWithoutCentralAuthority,
+            "EXP_122_I": Experiment122_I_AblationAndMechanismDependency,
+            "EXP_122_J": Experiment122_J_LongitudinalCivilizationDivergence,
+            "EXP_122_K": Experiment122_K_PhysicalPersistenceAndPerformance,
+            "EXP_122_L": Experiment122_L_IntegratedAdversarialStressTest,
         }
 
     def start_simulation(self, seed: Optional[int] = None) -> SimulationRunner:

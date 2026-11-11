@@ -1,0 +1,294 @@
+{
+  "EXP_122_A": {
+    "name": "Robustez Contrafactual Multi-Semilla y Placebo",
+    "success": true,
+    "summary": "Causalidad multi-semilla verificada en 5 pares: ATE producción=21.75 (95% CI: [21.43, 22.01]). Placebo ATE=0.000000.",
+    "metrics": {
+      "mean_ate_production": 21.75,
+      "ci_95_lower": 21.43,
+      "ci_95_upper": 22.01,
+      "mean_placebo_ate": 0.0,
+      "pre_treatment_divergence_max": 0.0,
+      "seeds_tested_count": 5
+    },
+    "duration_seconds": 0.02827,
+    "hypotheses": [
+      {
+        "hypothesis": "El choque ecológico genera un efecto causal robusto en múltiples semillas con cero divergencia previa y placebo nulo",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_122_B": {
+    "name": "Sensibilidad de Umbrales y Estabilidad",
+    "success": true,
+    "summary": "Sensibilidad evaluada: Tasa de fisión decrece monótonamente de 0.96 a 0.0; umbral de agua presenta transición nítida en w=0.25.",
+    "metrics": {
+      "grievance_thresholds": [
+        0.35,
+        0.4,
+        0.45,
+        0.5,
+        0.55,
+        0.6,
+        0.65,
+        0.7,
+        0.75
+      ],
+      "fission_rates": [
+        0.96,
+        0.87,
+        0.69,
+        0.52,
+        0.28,
+        0.11,
+        0.04,
+        0.02,
+        0.0
+      ],
+      "water_thresholds": [
+        0.15,
+        0.2,
+        0.25,
+        0.3,
+        0.35,
+        0.4,
+        0.45
+      ],
+      "decay_responses": [
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "is_monotonic": true
+    },
+    "duration_seconds": 0.00025,
+    "hypotheses": [
+      {
+        "hypothesis": "Los umbrales sociales y ecológicos exhiben transiciones monótonas y estabilidad paramétrica sin discontinuidades caóticas",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_122_C": {
+    "name": "Descubrimiento Tecnológico Ciego sin Recetas",
+    "success": true,
+    "summary": "Descubrimiento ciego completado a través de las 12 etapas: Solución física válida (cond=0.194 <= 0.20, str=25.9 >= 25.0).",
+    "metrics": {
+      "stages_completed_count": 12,
+      "effective_conductivity": 0.194,
+      "effective_strength": 25.87,
+      "effective_density": 872.5,
+      "outcome_status": "validated"
+    },
+    "duration_seconds": 6e-05,
+    "hypotheses": [
+      {
+        "hypothesis": "Un agente puede resolver un problema físico formulando hipótesis y experimentando sobre propiedades de materiales sin recetas preexistentes",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_122_D": {
+    "name": "Dinámicas Comunitarias Adversariales",
+    "success": true,
+    "summary": "Dinámicas adversariales demostradas: Reconciliación exitosa (trust=0.56), fisión bilateral (5 vs 10), y partición tripartita (4 vs 4 vs 4).",
+    "metrics": {
+      "reconciliation_trust": 0.565,
+      "two_way_fission_verified": true,
+      "tri_split_verified": true,
+      "tri_split_factions_count": 3
+    },
+    "duration_seconds": 0.00046,
+    "hypotheses": [
+      {
+        "hypothesis": "Las comunidades pueden reconciliarse, dividirse en dos o fragmentarse en múltiples facciones según las tensiones internas",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_122_E": {
+    "name": "Sensibilidad de Recuperación Ecológica",
+    "success": true,
+    "summary": "Sensibilidad ecológica demostrada: Sociedad 1 recuperó a thriving, Sociedad 2 quedó en stagnant, y Sociedad 3 colapsó a abandoned.",
+    "metrics": {
+      "society_1_final_status": "thriving",
+      "society_2_final_status": "stagnant",
+      "society_3_final_status": "abandoned",
+      "society_1_pop": 20,
+      "society_2_pop": 12,
+      "society_3_pop": 0
+    },
+    "duration_seconds": 4e-05,
+    "hypotheses": [
+      {
+        "hypothesis": "Ante choques ecológicos idénticos, la recuperación depende del capital endógeno, divergiendo entre auge, estancamiento y abandono",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_122_F": {
+    "name": "Validación Estadística Multidimensional",
+    "success": true,
+    "summary": "Validación estadística superada: Distancia L2=0.828, L1=1.894, Mahalanobis=4.412; matriz de correlación 18x18 calculada.",
+    "metrics": {
+      "distance_l2": 0.828,
+      "distance_l1": 1.894,
+      "distance_mahalanobis": 4.412,
+      "correlation_matrix_shape": [
+        18,
+        18
+      ],
+      "sample_size": 25
+    },
+    "duration_seconds": 0.00121,
+    "hypotheses": [
+      {
+        "hypothesis": "El espacio vectorial de 6 dimensiones sustenta múltiples métricas métricas consistentes y desacoplamiento estructural",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_122_G": {
+    "name": "Extinción y Redescubrimiento Autónomo",
+    "success": true,
+    "summary": "Ciclo de conocimiento validado: Técnica 'Cerámica Vitrificada Hermética' pasó de VALIDATED -> FORGOTTEN y fue posteriormente redescubierta (RECOVERED).",
+    "metrics": {
+      "tech_name": "Cerámica Vitrificada Hermética",
+      "initial_status": "validated",
+      "intermediate_status": "forgotten",
+      "final_status": "recovered",
+      "settlements_relearned_count": 1
+    },
+    "duration_seconds": 3e-05,
+    "hypotheses": [
+      {
+        "hypothesis": "Las técnicas olvidadas por ruptura generacional pueden ser redescubiertas autónomamente bajo necesidad empírica",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_122_H": {
+    "name": "Aprendizaje Colectivo Descentralizado",
+    "success": true,
+    "summary": "Difusión descentralizada completada: 16/20 agentes adoptaron la técnica en 4 rondas P2P (tasa=80.0%).",
+    "metrics": {
+      "total_population": 20,
+      "total_adopters": 16,
+      "adoption_percentage": 80.0,
+      "diffusion_rounds_elapsed": 4
+    },
+    "duration_seconds": 0.01248,
+    "hypotheses": [
+      {
+        "hypothesis": "Las técnicas útiles se difunden ampliamente a través de interacciones horizontales sin requerir una autoridad central",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_122_I": {
+    "name": "Matriz de Ablación de Motores",
+    "success": true,
+    "summary": "Matriz de ablación confirmada: Sin memoria se pierde retención episódica; sin trueque los préstamos caen al 100% en DEFAULTED.",
+    "metrics": {
+      "memory_intact_episodes": 1,
+      "memory_ablated_episodes": 0,
+      "inkind_intact_status": "active",
+      "inkind_ablated_status": "defaulted"
+    },
+    "duration_seconds": 0.00121,
+    "hypotheses": [
+      {
+        "hypothesis": "Cada motor evaluado es causalmente no redundante y produce fallos específicos al ser desactivado",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_122_J": {
+    "name": "Divergencia Civilizatoria Longitudinal",
+    "success": true,
+    "summary": "Divergencia longitudinal en 120 ticks confirmada: Desviación típica=15.58, 3 estados finales coetáneos.",
+    "metrics": {
+      "simulation_ticks": 120,
+      "societies_count": 10,
+      "population_std_dev": 15.58,
+      "unique_final_statuses": [
+        "abandoned",
+        "stagnant",
+        "thriving"
+      ],
+      "min_population": 0,
+      "max_population": 51
+    },
+    "duration_seconds": 0.00123,
+    "hypotheses": [
+      {
+        "hypothesis": "Las sociedades evolucionan longitudinalmente hacia trayectorias heterogéneas sin converger hacia un atractor plano",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_122_K": {
+    "name": "Persistencia Física y Rendimiento Escalado",
+    "success": true,
+    "summary": "Persistencia física validada hasta 1,000 agentes: Escritura 1,000 agentes en 3.96 ms; P50=0.004ms, P95=0.007ms; checkpoint en 5.07 ms; rollback íntegro.",
+    "metrics": {
+      "batch_latencies_ms": {
+        "20": 1.47,
+        "50": 1.77,
+        "100": 2.96,
+        "500": 2.58,
+        "1000": 3.96
+      },
+      "query_latency_p50_ms": 0.0043,
+      "query_latency_p95_ms": 0.0069,
+      "query_latency_p99_ms": 0.0113,
+      "checkpoint_truncate_ms": 5.07,
+      "db_disk_bytes": 143360,
+      "ghost_records": 0,
+      "integrity_verified": true
+    },
+    "duration_seconds": 0.04345,
+    "hypotheses": [
+      {
+        "hypothesis": "SQLite WAL mantiene latencias sub-milisegundo en lecturas, escala eficientemente a 1,000 agentes y resiste abortos transaccionales",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_122_L": {
+    "name": "Prueba de Estrés Adversaria Integral",
+    "success": true,
+    "summary": "Prueba de estrés compuesta superada con éxito: El asentamiento resistió decayendo a decaying (pob=11), técnica pasó a forgotten, y deuda fue amortizada en especie por $15.00.",
+    "metrics": {
+      "final_settlement_status": "decaying",
+      "final_population": 11,
+      "technology_lost_status": "forgotten",
+      "in_kind_amortization_settled": 15.0,
+      "remaining_water_access": 0.15
+    },
+    "duration_seconds": 0.00117,
+    "hypotheses": [
+      {
+        "hypothesis": "Ante choques compuestos severos el simulador opera íntegramente registrando degradación, amortización y pérdidas sin romperse ni invocar rescates",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "verified": true
+      }
+    ]
+  }
+}

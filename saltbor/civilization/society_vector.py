@@ -92,10 +92,72 @@ class SocietalIdentityVector:
         ], dtype=float)
 
     def distance(self, other: SocietalIdentityVector) -> float:
-        """Calculates normalized Euclidean distance between two societal identity vectors."""
+        """Calculates normalized Euclidean (L2) distance between two societal identity vectors."""
         v1 = self.to_normalized_vector()
         v2 = other.to_normalized_vector()
         return float(np.linalg.norm(v1 - v2))
+
+    def distance_manhattan(self, other: SocietalIdentityVector) -> float:
+        """Calculates Manhattan (L1) distance between two societal identity vectors."""
+        v1 = self.to_normalized_vector()
+        v2 = other.to_normalized_vector()
+        return float(np.sum(np.abs(v1 - v2)))
+
+    def distance_mahalanobis(
+        self, other: SocietalIdentityVector, cov_inv: Optional[np.ndarray] = None
+    ) -> float:
+        """Calculates Mahalanobis distance using provided inverse covariance matrix or regularized identity."""
+        v1 = self.to_normalized_vector()
+        v2 = other.to_normalized_vector()
+        diff = v1 - v2
+        if cov_inv is None:
+            # Fallback to normalized identity with mild regularization
+            cov_inv = np.eye(len(diff))
+        d_sq = float(diff.T @ cov_inv @ diff)
+        return float(math.sqrt(max(0.0, d_sq)))
+
+    def to_weighted_vector(self, weights: Optional[Dict[str, float]] = None) -> np.ndarray:
+        """Converts state into a weighted normalized vector based on dimension importance."""
+        v = self.to_normalized_vector()
+        if not weights:
+            return v
+        w = np.ones(len(v), dtype=float)
+        # Apply dimensional weight multipliers
+        w[0:4] *= weights.get("demography", 1.0)
+        w[4:9] *= weights.get("economy", 1.0)
+        w[9:12] *= weights.get("culture", 1.0)
+        w[12:15] *= weights.get("cognition", 1.0)
+        w[15:18] *= weights.get("social", 1.0)
+        return v * w
+
+    @staticmethod
+    def compute_correlation_matrix(vectors: List[SocietalIdentityVector]) -> np.ndarray:
+        """Computes pairwise Pearson correlation matrix across the 18 normalized features for an ensemble."""
+        if len(vectors) < 2:
+            return np.eye(18)
+        matrix = np.array([v.to_normalized_vector() for v in vectors])
+        std = np.std(matrix, axis=0)
+        std[std == 0] = 1.0  # Prevent divide-by-zero on invariant features
+        norm_matrix = (matrix - np.mean(matrix, axis=0)) / std
+        corr = (norm_matrix.T @ norm_matrix) / max(1, len(vectors) - 1)
+        return np.clip(corr, -1.0, 1.0)
+
+    @staticmethod
+    def compute_trajectory_divergence(trajectories: List[List[SocietalIdentityVector]]) -> float:
+        """Computes mean pairwise distance between societies over time trajectories."""
+        if len(trajectories) < 2:
+            return 0.0
+        n_steps = min(len(t) for t in trajectories)
+        if n_steps == 0:
+            return 0.0
+        total_dist = 0.0
+        comparisons = 0
+        for step in range(n_steps):
+            for i in range(len(trajectories)):
+                for j in range(i + 1, len(trajectories)):
+                    total_dist += trajectories[i][step].distance(trajectories[j][step])
+                    comparisons += 1
+        return float(total_dist / max(1, comparisons))
 
     def classify_archetype(self) -> str:
         """Classifies the society into an emergent developmental archetype."""
