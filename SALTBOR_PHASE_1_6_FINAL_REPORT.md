@@ -428,6 +428,11 @@ Modified:
 This documentation update is recorded in the commit that follows it; the
 implementation commit above is the one validated by `526 passed`.
 
+**Follow-up commit:** `a615da5`
+(`feat(phase1.6): render real OSM geometry on the map and cut checkpoint cost`)
+adds viewport GeoJSON rendering, the batched/transactional checkpoint work and
+the measurements reported in §9–§10; it is validated by `531 passed`.
+
 ---
 
 ## 15. Reproduction
