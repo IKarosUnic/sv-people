@@ -77,7 +77,7 @@ SyntheticHuman.psychology ──► DecisionContext.psychological ──► Deci
 | `saltbor/simulation/experiments/phase17_experiments_a_j.py` | EXP_17_A … EXP_17_J |
 | `saltbor/simulation/experiments/phase17_experiments_k_t.py` | EXP_17_K … EXP_17_T |
 | `saltbor/simulation/experiments/phase17_experiments.py` | Agregador y ejecución del suite |
-| `scripts/benchmark_phase17.py` | Benchmark 20–10.000 y simulación completa 20/100 |
+| `scripts/benchmark_phase17.py` | Benchmark aislado 20–10.000 y simulación completa 20/100/10.000 |
 
 ## 4. Sistemas existentes modificados
 
@@ -93,6 +93,7 @@ SyntheticHuman.psychology ──► DecisionContext.psychological ──► Deci
 - `core/identity.py` + `population/factory.py` + `runner.py`: UUIDv5 deterministas por semilla/serial y sincronización de seriales al recargar. Sin esto, el escalado tras un checkpoint reutilizaba seriales y perdía individuos.
 - `psychology/regulation.py`: corrección de signo en sensibilidad/recaída (las crisis previas ahora bajan el umbral, no lo suben).
 - `psychology/support.py`: una solicitud sin red también registra rechazo y coste de soledad.
+- `persistence/repositories.py`: el upsert de `humans` pasó de `INSERT OR REPLACE` a `ON CONFLICT(uid) DO UPDATE`. El `REPLACE` borraba la fila y el `ON DELETE CASCADE` eliminaba la línea de tiempo en cada checkpoint; al ser incremental, el historial anterior no se reescribía.
 
 ## 5. Persistencia
 
@@ -145,10 +146,11 @@ Migración no destructiva: `CREATE TABLE/INDEX IF NOT EXISTS`; `_SCHEMA_VERSION 
 | Desarrollo longitudinal | Sí | Sí | Sí | M: 25 años, deriva 0.024 |
 | Diversidad conductual | Sí | Sí | Sí | N: entropía 0.74–0.77, asociación débil (H2 inconclusa) |
 | Ablación causal | Sí | Sí | Sí | Q: evaluación, afrontamiento y apoyo cambian el resultado |
-| LOD psicológico | Sí | Sí | Sí | S y benchmark: 10.000 en 31.7 ms/tick |
-| Persistencia y recarga | Sí | Sí | Sí | T: 20/20 estados, 406–469 filas |
+| LOD psicológico | Sí | Sí | Sí | S + benchmark: 10.000 aislado 51.8 ms/tick |
+| Simulación completa 10.000 | Sí | Sí | Sí | Benchmark: 68.1 s/tick, 1.14 GB RSS, checkpoint 17.5 s |
+| Persistencia y recarga | Sí | Sí | Sí | T: 20/20 estados; checkpoint conserva la timeline (300→332) |
 | API | Sí | Sí | Sí | 3 tests de contrato |
-| Frontend | Sí | Sí | Parcial | `node --check`; no verificado visualmente |
+| Frontend | Sí | Sí | Parcial | Captura real del panel + endpoints; sin recorrido exhaustivo |
 | Determinismo del motor psicológico | Sí | Sí | Sí | R: firmas idénticas con misma semilla |
 | Determinismo exacto de la simulación completa | Parcial | Sí | Parcial | UUIDv5 corrigió colisiones; el runner completo aún puede variar por orden de eventos/azar de otros motores |
 
@@ -159,4 +161,6 @@ Migración no destructiva: `CREATE TABLE/INDEX IF NOT EXISTS`; `_SCHEMA_VERSION 
 - La memoria no es una copia literal; su reconstrucción es funcional, no neurocientífica.
 - El determinismo exacto del runner completo no está garantizado; el motor psicológico sí es exacto con la misma semilla.
 - Los edificios OSM son parciales (pilot bbox) y los establecimientos simulados están marcados como tales.
-- La UI no se revisó visualmente en esta fase; solo se validó sintaxis y contratos API.
+- La UI se revisó visualmente en una captura real; no se recorrieron todos sus controles.
+- La simulación completa a 10.000 tarda 68.1 s/tick y 1.14 GB; no es tiempo real a esa escala. El benchmark no aísla aún el motor responsable del crecimiento superlineal.
+- El 500 de `/api/geography/geojson` observado en la vista de mapa es preexistente, ajeno a la capa psicológica, y no se corrigió en este cambio.

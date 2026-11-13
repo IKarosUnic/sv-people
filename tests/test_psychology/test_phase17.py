@@ -192,6 +192,11 @@ def test_psychology_persists_across_checkpoint_and_reload():
     uid = str(runner.population.get_all()[0].uid)
     stress = runner.population.get_all()[0].psychology.chronic_stress
     timeline_rows = runner.db.execute("SELECT COUNT(*) c FROM psychology_timeline").fetchone()["c"]
+    # Saving a human must update the row in place: INSERT OR REPLACE would
+    # delete it, cascade-delete the timeline, and lose all prior history.
+    runner.checkpoint()
+    timeline_rows_after = runner.db.execute("SELECT COUNT(*) c FROM psychology_timeline").fetchone()["c"]
+    assert timeline_rows_after >= timeline_rows
     runner.db.close()
 
     reloaded = SimulationRunner(config)

@@ -20,8 +20,9 @@ Phase 0.4 introduces **Social Complexity, Biological Lifecycle, Dynamic Economy 
 - **Social support and body↔mind**: granted/refused support with provider cost and stigma; hunger, sleep, pain, illness and money feed stress and self-control, which in turn affect eating, rest and health.
 - **Longitudinal development**: slow, bounded Big Five drift over years, plus LOD (FULL 1, ROUTINE 2, MACRO 8, DORMANT 24 ticks).
 - **Experiments EXP_17_A … EXP_17_T**: 20 experiments, 60 hypotheses — **53 supported, 5 inconclusive, 2 rejected**. Multi-seed, controls, effect sizes and confidence intervals where applicable.
-- **API/UI**: `/api/psychology/{overview,individual,timeline,social}`, psychological fields in the roster and dossier, and a dedicated frontend panel.
-- **Persistence**: SQLite schema v4 with `psychology_timeline`, plus full state in the `phase15_extension` checkpoint.
+- **API/UI**: `/api/psychology/{overview,individual,timeline,social}`, psychological fields in the roster and dossier, and a dedicated frontend panel. Verified against a live FastAPI server in Chromium; see `docs/reports/phase17_ui_psychology.png`.
+- **Persistence**: SQLite schema v4 with `psychology_timeline`, plus full state in the `phase15_extension` checkpoint. Human saves update in place so a checkpoint no longer cascade-deletes prior timeline history.
+- **Full-scale benchmark**: the complete simulation was measured at 20, 100 and 10,000 agents. At 10,000 it takes **68.1 s/tick**, 1.14 GB RSS and a 17.5 s checkpoint; the isolated psychological layer is 51.8 ms/tick. The superlinear cost is reported as a limit, not hidden.
 
 See `SALTBOR_PHASE_1_7_AUDIT.md`, `SALTBOR_PHASE_1_7_FINAL_REPORT.md` and `THIRD_PARTY_NOTICES.md`.
 
@@ -249,7 +250,7 @@ Total tests: **561 passing automated tests** across all phases with 0 regression
 
 ## Performance & Resource Measurements
 
-> Superseded for Phase 1.7 by `docs/reports/phase17_benchmark.json`: the isolated psychological engine costs **0.032 ms/tick at 20 agents, 2.3 ms/tick at 1,000 and 31.7–54.9 ms/tick at 10,000** (448 MB RSS at 10k); a full 20-agent simulation runs at **7.3 ms/tick** and 100 agents at **82.1 ms/tick** with SQLite WAL. The figures below describe earlier, smaller configurations.
+> Superseded for Phase 1.7 by `docs/reports/phase17_benchmark.json`: the isolated psychological engine costs **0.033 ms/tick at 20 agents, 3.8 ms/tick at 1,000 and 31.7–54.9 ms/tick at 10,000** (448 MB RSS at 10k). The **full simulation** runs at **7.5 ms/tick** with 20 agents, **77.1 ms/tick** with 100, and **68.1 s/tick** with 10,000 (1.14 GB RSS, 17.5 s checkpoint): the last figure is a measured scaling limit, not real-time capability. The figures below describe earlier, smaller configurations.
 
 > Phase 1.6 reference: sustained runs measure **0.65–0.80 ms per agent per tick** (50 → 200 agents) with a checkpoint stall of 0.9–3.3 s once per simulated day (`docs/reports/phase16_benchmark.json`).
 

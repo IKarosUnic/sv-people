@@ -46,10 +46,20 @@ logger = logging.getLogger(__name__)
 # Upsert statements are shared by the single-record and bulk paths so the two
 # can never drift apart.
 _HUMAN_UPSERT = """
-INSERT OR REPLACE INTO humans (
+INSERT INTO humans (
     uid, serial, given_name, family_name, nickname, data_source,
     demographics_json, physical_state_json, personality_json, emotions_json
 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+ON CONFLICT(uid) DO UPDATE SET
+    serial = excluded.serial,
+    given_name = excluded.given_name,
+    family_name = excluded.family_name,
+    nickname = excluded.nickname,
+    data_source = excluded.data_source,
+    demographics_json = excluded.demographics_json,
+    physical_state_json = excluded.physical_state_json,
+    personality_json = excluded.personality_json,
+    emotions_json = excluded.emotions_json
 """
 
 _EPISODIC_UPSERT = """

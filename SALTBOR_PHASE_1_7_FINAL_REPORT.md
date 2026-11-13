@@ -77,22 +77,33 @@ Todos ejecutaron con múltiples semillas y controles cuando el diseño lo permit
 
 | Población | ms/tick | ms/individuo/tick | RSS |
 |---:|---:|---:|---:|
-| 20 | 0.032 | 0.0016 | 67.0 MB |
-| 100 | 0.274 | 0.0027 | 70.3 MB |
-| 500 | 1.312 | 0.0026 | 86.6 MB |
-| 1.000 | 2.315 | 0.0023 | 105.7 MB |
-| 10.000 | 54.880 | 0.0055 | 448.4 MB |
+| 20 | 0.033 | 0.0017 | 67.3 MB |
+| 100 | 0.156 | 0.0016 | 70.7 MB |
+| 500 | 1.219 | 0.0024 | 86.9 MB |
+| 1.000 | 3.772 | 0.0038 | 105.4 MB |
+| 10.000 | 51.848 | 0.0052 | 448.4 MB |
 
-En una ejecución previa, 10.000 individuos dieron **31.7 ms/tick** y 0.0032 ms/individuo; la variación (31.7–54.9 ms) refleja carga de la máquina, no un cambio de algoritmo. Incluso el peor valor mantiene 10.000 individuos por debajo de 60 ms/tick.
+En ejecuciones previas, 10.000 individuos dieron **31.7–54.9 ms/tick** (0.0032–0.0055 ms/individuo). La variación refleja carga de la máquina; el motor psicológico aislado sigue por debajo de 60 ms/tick con 10.000 estados.
 
 ### Simulación completa
 
-| Población | Ticks | ms/tick medio | p95 | RSS | SQLite | WAL | Timeline | Overview API |
-|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 20 | 96 | 7.34 | 13.49 | 90.1 MB | 4 KB | 4.05 MB | 279 | 0.032 ms |
-| 100 | 48 | 82.07 | 142.59 | 140.8 MB | 15.0 MB | 15.7 MB | 1.487 | 0.114 ms |
+Cada tick incluye decisiones, eventos, cuerpo, redes, economía, psicología y SQLite. La inicialización y el checkpoint se cronometran aparte y no forman parte del ms/tick.
 
-El snapshot individual tarda ~0.28–0.31 ms. La simulación completa a 10.000 no se ejecutó: mezclaría la capa psicológica con toda la arquitectura de agentes. Esa limitación está declarada, no ocultada.
+| Población | Ticks | Init | ms/tick | p95 | ms/agente | RSS | Checkpoint | SQLite | WAL | Timeline tras checkpoint |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 20 | 96 | 1.15 s | 7.52 | 11.53 | 0.376 | 89.7 MB | 0.148 s | 3.5 MB | 4.2 MB | 332 |
+| 100 | 48 | 1.12 s | 77.14 | 126.29 | 0.771 | 145.8 MB | 1.351 s | 20.0 MB | 17.5 MB | 2.203 |
+| 10.000 | 3 | 7.19 s | **68.102,5** | 83.175,7 | **6.810** | **1.142 MB** | **17.49 s** | 238.0 MB | 240.0 MB | 2.462 |
+
+La simulación completa a 10.000 es **superlineal**: 100 → 10.000 multiplica la población por 100 y el tick por ~883 (77 ms → 68,1 s), mientras el coste por agente sube de 0,77 a 6,81 ms. No es apta para tiempo real a esa escala. El benchmark no aísla todavía qué motor causa el crecimiento; la cifra se reporta como medida, no como diagnóstico. El overview psicológico tarda 39,4 ms y el snapshot individual 0,096 ms a 10.000.
+
+El tramo de 10.000 usó 1 tick de calentamiento y 3 medidos para acotar el tiempo; no se extrapola a 96 ticks. El checkpoint de 17,5 s y el RSS de 1,1 GB son parte del coste real medido.
+
+### UI observada
+
+El panel se revisó en un servidor real (FastAPI + Chromium, 1600×1000), no solo por sintaxis. La vista **Explorador Individual → dossier** muestra estrés agudo/crónico, autocontrol, esperanza, fatiga, soledad, apoyo percibido, bienestar, LOD, red, creencias, crisis, afrontamiento, timeline y recuerdo reconstruido con su nota de modelo funcional. Captura: `docs/reports/phase17_ui_psychology.png`.
+
+Los endpoints `overview`, `individual`, `timeline` y `social` respondieron 200 con datos reales. La consola no mostró errores del panel psicológico; sí un 500 preexistente de `/api/geography/geojson` en la vista de mapa, ajeno a esta capa y no corregido en este cambio.
 
 ## 5. Pruebas y regresiones
 
@@ -100,9 +111,10 @@ El snapshot individual tarda ~0.28–0.31 ms. La simulación completa a 10.000 n
 - Fase 1.7 añadió 30: 6 de psicología, 21 de experimentos, 3 de contratos API.
 - `python -m compileall -q saltbor` pasa.
 - `node --check saltbor/visualization/web/app.js` pasa.
-- Se corrigieron dos regresiones reales detectadas por la suite:
+- Se corrigieron tres regresiones reales:
   1. El escalado tras cargar un checkpoint reutilizaba seriales y perdía individuos (20 → 30 en lugar de 50). Se sincroniza el `IdentityFactory` al máximo serial restaurado.
   2. Una solicitud de apoyo sin red no registraba rechazo ni coste de soledad.
+  3. `INSERT OR REPLACE` en `humans` borraba la fila en cada checkpoint y el `ON DELETE CASCADE` eliminaba la línea de tiempo; como la escritura es incremental, el historial anterior se perdía. El upsert usa ahora `ON CONFLICT(uid) DO UPDATE` y hay una regresión que comprueba que el número de filas no disminuye.
 - EXP_111_I (auditoría de rendimiento de una fase anterior) es sensible a la carga: pasó en aislamiento y en la ejecución final completa. No se rebajó su umbral.
 
 ## 6. Licencias y atribuciones
@@ -115,9 +127,10 @@ Ver `THIRD_PARTY_NOTICES.md`. No se incorporó código de terceros; solo se usar
 - La memoria es funcional y reconstructiva, no un modelo neurocientífico.
 - La personalidad cambia lentamente y con topes; no se busca “transformación dramática” garantizada.
 - El determinismo exacto del motor psicológico está probado; el runner completo aún puede variar por el orden de eventos y el azar de otros motores.
-- La UI se validó por sintaxis y contratos API, pero **no se revisó visualmente** en esta fase.
+- La UI se revisó visualmente en una captura real; no se hizo un recorrido exhaustivo de todos sus controles.
 - Los edificios OSM son parciales (pilot bbox); los establecimientos simulados están marcados como tales.
-- El benchmark de 10.000 mide la capa psicológica, no la simulación completa.
+- La simulación completa a 10.000 tarda 68,1 s/tick y consume 1,1 GB: es un límite medido, no una capacidad de tiempo real. El overview psicológico y el snapshot sí responden en decenas de milisegundos.
+- El 500 de `/api/geography/geojson` observado en la vista de mapa es preexistente y queda fuera de este cambio.
 
 ## 8. Matriz de estado
 
@@ -136,10 +149,10 @@ Ver `THIRD_PARTY_NOTICES.md`. No se incorporó código de terceros; solo se usar
 | Desarrollo longitudinal | Sí | Sí | Sí | M |
 | Diversidad conductual | Sí | Sí | Sí | N |
 | Ablación causal | Sí | Sí | Sí | Q |
-| LOD / rendimiento | Sí | Sí | Sí | S + benchmark |
+| LOD / rendimiento | Sí | Sí | Sí | S + benchmark; 10k full = 68,1 s/tick |
 | Persistencia / recarga | Sí | Sí | Sí | T, tests |
 | API | Sí | Sí | Sí | 3 tests |
-| Frontend | Sí | Sí | Parcial | `node --check`; no revisión visual |
+| Frontend | Sí | Sí | Parcial | Captura real + endpoints; sin recorrido exhaustivo |
 | Determinismo del motor | Sí | Sí | Sí | R |
 | Determinismo exacto del runner | Parcial | Sí | Parcial | Limitación declarada |
 
@@ -148,7 +161,7 @@ Ver `THIRD_PARTY_NOTICES.md`. No se incorporó código de terceros; solo se usar
 ```bash
 python -m pytest -q
 python -m saltbor.simulation.experiments.phase17_experiments
-python scripts/benchmark_phase17.py --populations 20,100,500,1000,10000
+python scripts/benchmark_phase17.py --full-populations 20,100,10000
 ```
 
 Artefactos: `docs/reports/phase17_experiments.json`, `docs/reports/phase17_benchmark.json`.
