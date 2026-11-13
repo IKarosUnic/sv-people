@@ -409,7 +409,10 @@ Modified:
 - `saltbor/visualization/web/app.js` (perception panel, OSM attribution, layer summary)
 - `.gitignore` (`saltbor/datasets/gis/ingested/`)
 
-Commit: `__COMMIT__` — see §14 note in the delivery message.
+**Commit:** `99224c056591d8ed0e7ee8ce25ca84eb26e5f7c9`
+(`feat(phase1.6): OSM geographic foundation, perception engine and EXP_16_A..T`).
+This documentation update is recorded in the commit that follows it; the
+implementation commit above is the one validated by `526 passed`.
 
 ---
 
