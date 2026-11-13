@@ -4,6 +4,8 @@
 
 **Commit de implementación: `1a6105f74cac37d509e77e489fd6b0e64de2cc78`**
 
+**Commit de verificación UI + benchmark completo 10k: `5b641252f19051839f03c3613fe85114ae799a93`**
+
 La Fase 1.7 está integrada en `SimulationRunner`, persistida en SQLite y observable por API/UI. No es un conjunto de motores aislados: cada tick procesa eventos nuevos, actualiza el estado psicológico con LOD y escribe en emoción, memoria, decisión, cuerpo, redes y economía existentes.
 
 > SALTBOR no afirma consciencia fenomenológica ni equivalencia psicológica humana. Modela mecanismos funcionales y trayectorias verificables.
