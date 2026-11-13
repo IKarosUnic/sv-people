@@ -32,6 +32,10 @@ class EpisodicRecord:
     is_dormant: bool = False         # Below active retrieval threshold (preserved in history)
     emotional_associations: dict[str, float] = field(default_factory=dict)
     context_tags: list[str] = field(default_factory=list)
+    # Provenance: the event this record was encoded from, kept separate from
+    # the record's own (reconstructible) content.  Optional for backward
+    # compatibility with databases written before Phase 1.7.
+    source_event_id: Optional[str] = None
 
     def touch(self, current_tick: Tick, reinforcement: float = 0.2) -> None:
         """Mark memory as recalled, increasing access frequency and freshness."""

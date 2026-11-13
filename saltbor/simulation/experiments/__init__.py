@@ -148,6 +148,10 @@ from saltbor.simulation.experiments.phase15_experiments import PHASE15_EXPERIMEN
 from saltbor.simulation.experiments.phase15_extension_experiments import (
     PHASE15_EXTENSION_EXPERIMENTS,
 )
+from saltbor.simulation.experiments.phase17_experiments import (
+    PHASE17_EXPERIMENTS,
+    run_all_phase17_experiments,
+)
 
 __all__ = [
     "BaseExperiment",
@@ -280,4 +284,7 @@ __all__ = [
     "PHASE15_EXPERIMENTS",
     # Phase 1.5 Extension World-Human, Romance, Health & Disaster Experiments
     "PHASE15_EXTENSION_EXPERIMENTS",
+    # Phase 1.7 Psychological Realism, Fragility & Adaptive Behavior
+    "PHASE17_EXPERIMENTS",
+    "run_all_phase17_experiments",
 ]

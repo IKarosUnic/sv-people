@@ -82,6 +82,7 @@ class SyntheticHuman:
         meta_learning: Optional[MetaLearningEngine] = None,
         plasticity: Optional[CognitivePlasticityEngine] = None,
         scientific_thinking: Optional[ScientificThinkingEngine] = None,
+        psychology: Optional[Any] = None,
     ) -> None:
         self.identity = identity
         self.demographics = demographics
@@ -147,6 +148,34 @@ class SyntheticHuman:
             "shopping_curiosity": 0.50,
         }
         self.habits: list[dict[str, Any]] = []
+
+        # Phase 1.7 Integrated Psychological State.  The state is created from
+        # the individual's Big Five profile here, so every code path that
+        # builds a SyntheticHuman (factory, experiments, tests) has one.
+        if psychology is not None:
+            self.psychology = psychology
+        else:
+            from saltbor.psychology.models import PsychologicalState
+
+            trait_values = {
+                name: self.personality.effective_value(name)
+                for name in (
+                    "openness", "conscientiousness", "extraversion",
+                    "agreeableness", "neuroticism", "risk_tolerance",
+                    "patience", "persistence",
+                )
+            }
+            self.psychology = PsychologicalState.from_personality(
+                str(self.identity.uid),
+                age=float(getattr(self.demographics, "age", 30.0)),
+                temperament=str(getattr(self.personality, "temperament_value", "balanced")),
+                personality_values=trait_values,
+                money=float(getattr(self.physical_state, "money", 80.0)),
+                health=float(getattr(self.physical_state, "health", 1.0)),
+            )
+        from saltbor.psychology.regulation import RegulationEngine
+
+        self._psych_regulation = RegulationEngine()
 
         # Phase 1.5 Extension: Health, Romance & Family Caregiving
         self.active_health_conditions: list[Any] = []
@@ -415,6 +444,9 @@ class SyntheticHuman:
             invitation_location_id=getattr(self, "invitation_location_id", None),
             invitation_offered_treat=getattr(self, "invitation_offered_treat", False),
             personal_preferences=getattr(self, "preferences", {}),
+            psychological=self._psych_regulation.decision_modifiers(self.psychology)
+            if getattr(self, "psychology", None) is not None
+            else {},
         )
 
         chosen = self.decision.decide(
@@ -502,4 +534,7 @@ class SyntheticHuman:
             "is_partnered": self.romantic_partner_id is not None,
             "is_heartbroken": self.heartbreak_state is not None,
             "memory_items": self.memory.episodic.count,
+            "chronic_stress": round(float(getattr(self.psychology, "chronic_stress", 0.0)), 3),
+            "self_control": round(float(getattr(self.psychology, "self_control", 1.0)), 3),
+            "in_crisis": bool(getattr(self.psychology, "in_crisis", lambda: False)()),
         }

@@ -407,6 +407,9 @@ def list_individuals() -> list[dict[str, Any]]:
                 if hasattr(h, "employment_status") and hasattr(h.employment_status, "value")
                 else str(getattr(h, "employment_status", "unemployed"))
             ),
+            "chronic_stress": round(float(getattr(getattr(h, "psychology", None), "chronic_stress", 0.0)), 3),
+            "self_control": round(float(getattr(getattr(h, "psychology", None), "self_control", 1.0)), 3),
+            "in_crisis": bool(getattr(getattr(h, "psychology", None), "in_crisis", lambda: False)()),
         })
     return roster
 
@@ -648,7 +651,179 @@ def get_individual_detail(uid: str) -> dict[str, Any]:
     else:
         dossier["perception"] = {"has_perception_data": False}
 
+    # 9. Phase 1.7 integrated psychological state, appraisal, coping and
+    #    reconstructed autobiographical memory.  Served from the live engine.
+    psych_engine = getattr(runner, "psychology", None)
+    if psych_engine is not None:
+        dossier["psychology"] = psych_engine.snapshot(human)
+    else:
+        dossier["psychology"] = {"available": False}
+
     return dossier
+
+
+# -----------------------------------------------------------------------------
+# Phase 1.7 Psychological Observability
+# -----------------------------------------------------------------------------
+
+def _resolve_individual(runner: Any, uid: str) -> SyntheticHuman:
+    for human in runner.population.get_all():
+        if str(human.uid) == uid or str(human.identity.serial) == uid:
+            return human
+    raise HTTPException(status_code=404, detail=f"Individual '{uid}' not found.")
+
+
+@router.get("/psychology/overview")
+def get_psychology_overview() -> dict[str, Any]:
+    """Aggregate psychological state of the living population."""
+    ctrl = get_controller()
+    runner = ctrl.runner
+    if runner is None:
+        raise HTTPException(status_code=500, detail="Runner uninitialized")
+    engine = getattr(runner, "psychology", None)
+    if engine is None:
+        return {"available": False}
+    overview = engine.overview()
+    overview["available"] = True
+    overview["coping_distribution"] = _coping_distribution(engine)
+    overview["recent_outcomes"] = list(getattr(engine, "_recent_outcomes", []))[-12:]
+    return overview
+
+
+@router.get("/psychology/individual/{uid}")
+def get_individual_psychology(uid: str) -> dict[str, Any]:
+    """Full psychological snapshot for one individual."""
+    ctrl = get_controller()
+    runner = ctrl.runner
+    if runner is None:
+        raise HTTPException(status_code=500, detail="Runner uninitialized")
+    human = _resolve_individual(runner, uid)
+    engine = getattr(runner, "psychology", None)
+    if engine is None:
+        raise HTTPException(status_code=404, detail="Psychological engine not available")
+    return engine.snapshot(human)
+
+
+@router.get("/psychology/timeline/{uid}")
+def get_individual_timeline(uid: str, limit: int = Query(default=60, ge=1, le=240)) -> dict[str, Any]:
+    """Chronological psychological timeline for one individual.
+
+    Returns the in-memory timeline (current state) plus the persisted rows when
+    available.  The UI is never given a fabricated life history.
+    """
+    ctrl = get_controller()
+    runner = ctrl.runner
+    if runner is None:
+        raise HTTPException(status_code=500, detail="Runner uninitialized")
+    human = _resolve_individual(runner, uid)
+    engine = getattr(runner, "psychology", None)
+    if engine is None:
+        raise HTTPException(status_code=404, detail="Psychological engine not available")
+    state = engine.ensure(human)
+    entries = [record.model_dump(mode="json") for record in state.timeline[-limit:]]
+    entries.sort(key=lambda r: int(r.get("tick", 0)))
+    crises = [
+        {
+            "crisis_id": ep.crisis_id,
+            "kind": ep.kind.value,
+            "start_tick": ep.start_tick,
+            "ended_tick": ep.ended_tick,
+            "peak_severity": ep.peak_severity,
+            "relapsed": ep.relapsed,
+            "behaviours": ep.behaviours,
+        }
+        for ep in state.crisis_history[-12:]
+    ]
+    return {
+        "uid": str(human.uid),
+        "name": human.name,
+        "entries": entries,
+        "crises": crises,
+        "coping": [
+            {
+                "strategy": ep.strategy.value,
+                "category": ep.category.value,
+                "tick": ep.tick,
+                "relief": ep.short_term_relief,
+                "long_term_delta": ep.long_term_delta,
+            }
+            for ep in state.coping_history[-20:]
+        ],
+    }
+
+
+@router.get("/psychology/social/{uid}")
+def get_psychological_social_view(uid: str) -> dict[str, Any]:
+    """Family, partner, friendships, conflicts and support ties for one person."""
+    ctrl = get_controller()
+    runner = ctrl.runner
+    if runner is None:
+        raise HTTPException(status_code=500, detail="Runner uninitialized")
+    human = _resolve_individual(runner, uid)
+    engine = getattr(runner, "psychology", None)
+    if engine is None:
+        raise HTTPException(status_code=404, detail="Psychological engine not available")
+    state = engine.ensure(human)
+
+    family_ids: set[str] = set()
+    genealogy = getattr(getattr(runner, "extension", None), "life_events", None)
+    genealogy = getattr(genealogy, "genealogy", None) if genealogy is not None else None
+    if genealogy is not None:
+        for getter in ("get_parents", "get_children", "get_siblings"):
+            try:
+                family_ids.update(str(x) for x in getattr(genealogy, getter)(human.uid))
+            except Exception:
+                continue
+
+    nodes: dict[str, dict[str, Any]] = {}
+    edges: list[dict[str, Any]] = []
+    for rel in runner.social.get_relationships_for(human.uid):
+        other_uid = str(rel.other_id(human.uid))
+        other = runner.population.get_optional(rel.other_id(human.uid))
+        relation = getattr(rel.relationship_type, "value", str(rel.relationship_type))
+        if other_uid in family_ids:
+            relation = "family"
+        nodes[other_uid] = {
+            "uid": other_uid,
+            "name": other.name if other is not None else other_uid[:8],
+            "relation": relation,
+            "trust": round(float(rel.trust), 3),
+            "affinity": round(float(rel.affinity), 3),
+            "rivalry": round(float(rel.rivalry), 3),
+        }
+        edges.append(
+            {
+                "source": str(human.uid),
+                "target": other_uid,
+                "trust": round(float(rel.trust), 3),
+                "affinity": round(float(rel.affinity), 3),
+                "rivalry": round(float(rel.rivalry), 3),
+                "kind": "conflict" if float(rel.rivalry) > 0.35 else ("support" if float(rel.trust) > 0.6 else "weak_tie"),
+            }
+        )
+
+    assessment = engine._support_cache.get(str(human.uid))
+    if assessment is None:
+        assessment = engine.support.assess(human, runner.social, genealogy, runner.population)
+    return {
+        "uid": str(human.uid),
+        "name": human.name,
+        "nodes": list(nodes.values()),
+        "edges": edges,
+        "support": assessment.as_dict(),
+        "partner_id": str(human.romantic_partner_id) if getattr(human, "romantic_partner_id", None) else None,
+        "family_ids": sorted(family_ids),
+        "network_size": len(nodes),
+        "intimate_ties": state.intimate_ties,
+    }
+
+
+def _coping_distribution(engine: Any) -> dict[str, int]:
+    counts: dict[str, int] = {}
+    for state in engine.states.values():
+        for strategy, attempts in state.coping.attempts.items():
+            counts[strategy] = counts.get(strategy, 0) + int(attempts)
+    return dict(sorted(counts.items(), key=lambda kv: kv[1], reverse=True)[:12])
 
 
 # -----------------------------------------------------------------------------

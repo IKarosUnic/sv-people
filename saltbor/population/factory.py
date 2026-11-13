@@ -48,7 +48,7 @@ class PopulationFactory:
     ) -> list[SyntheticHuman]:
         """Generate the first 20 differentiated synthetic humans of Saltbor."""
         cfg = config or SimulationConfig()
-        id_factory = identity_factory or IdentityFactory()
+        id_factory = identity_factory or IdentityFactory(seed=cfg.random_seed)
         master_rng = rng or (
             np.random.default_rng(cfg.random_seed)
             if cfg.random_seed is not None
@@ -82,7 +82,7 @@ class PopulationFactory:
     ) -> list[SyntheticHuman]:
         """Generate SyntheticHuman instances from a list of persona profile dictionaries."""
         cfg = config or SimulationConfig()
-        id_factory = identity_factory or IdentityFactory()
+        id_factory = identity_factory or IdentityFactory(seed=cfg.random_seed)
         master_rng = rng or (
             np.random.default_rng(cfg.random_seed)
             if cfg.random_seed is not None

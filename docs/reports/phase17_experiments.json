@@ -1,0 +1,3649 @@
+{
+  "EXP_17_A": {
+    "name": "Acumulación de estrés agudo vs. crónico",
+    "success": true,
+    "summary": "EXP_17_A: estrés agudo frente a acumulación crónica",
+    "hypotheses": [
+      {
+        "id": "H1",
+        "statement": "La exposición repetida produce mayor estrés crónico que un shock único",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "chronic_peak_mean vs acute_peak_mean",
+        "value": "0.7902 vs 0.7026 (d=1.263)",
+        "detail": ""
+      },
+      {
+        "id": "H2",
+        "statement": "La carga acumulada durante la exposición es mayor con estresores repetidos",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "AUC of chronic stress, days 10-90",
+        "value": "46.6186 vs 43.8842",
+        "detail": ""
+      },
+      {
+        "id": "H3",
+        "statement": "El efecto persiste tras cesar los estresores",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "late mean (days 100-180) / Cohen d",
+        "value": "0.7219 vs 0.6846 / d=0.552",
+        "detail": ""
+      }
+    ],
+    "metrics": {
+      "control_end": {
+        "mean": 0.6493,
+        "sd": 0.0595,
+        "ci95": 0.0674,
+        "n": 3,
+        "min": 0.5929,
+        "max": 0.7115
+      },
+      "acute_peak": {
+        "mean": 0.7026,
+        "sd": 0.0553,
+        "ci95": 0.0626,
+        "n": 3,
+        "min": 0.6434,
+        "max": 0.7529
+      },
+      "chronic_peak": {
+        "mean": 0.7902,
+        "sd": 0.0811,
+        "ci95": 0.0918,
+        "n": 3,
+        "min": 0.734,
+        "max": 0.8832
+      },
+      "acute_end": {
+        "mean": 0.686,
+        "sd": 0.0371,
+        "ci95": 0.042,
+        "n": 3,
+        "min": 0.6434,
+        "max": 0.7115
+      },
+      "chronic_end": {
+        "mean": 0.7183,
+        "sd": 0.0957,
+        "ci95": 0.1083,
+        "n": 3,
+        "min": 0.6576,
+        "max": 0.8286
+      },
+      "acute_auc": {
+        "mean": 43.8842,
+        "sd": 5.4591,
+        "ci95": 6.1776,
+        "n": 3,
+        "min": 40.2872,
+        "max": 50.1658
+      },
+      "chronic_auc": {
+        "mean": 46.6186,
+        "sd": 9.9122,
+        "ci95": 11.2167,
+        "n": 3,
+        "min": 37.8365,
+        "max": 57.3663
+      },
+      "acute_late": {
+        "mean": 0.6846,
+        "sd": 0.0377,
+        "ci95": 0.0427,
+        "n": 3,
+        "min": 0.6413,
+        "max": 0.7103
+      },
+      "chronic_late": {
+        "mean": 0.7219,
+        "sd": 0.0879,
+        "ci95": 0.0995,
+        "n": 3,
+        "min": 0.6682,
+        "max": 0.8234
+      },
+      "cohens_d_peak": 1.263,
+      "cohens_d_late": 0.552,
+      "sample_trajectory": [
+        0.1452,
+        0.4863,
+        0.8019,
+        0.8697,
+        0.8359,
+        0.8154,
+        0.818,
+        0.8266,
+        0.8279
+      ],
+      "hypotheses_supported": 3,
+      "hypotheses_rejected": 0,
+      "hypotheses_inconclusive": 0,
+      "duration_seconds": 1.071,
+      "seeds": 17,
+      "population_size": 3
+    },
+    "anomalies": [],
+    "duration_seconds": 1.071
+  },
+  "EXP_17_B": {
+    "name": "Diversidad de respuesta individual",
+    "success": true,
+    "summary": "EXP_17_B: un despido, seis biografías",
+    "hypotheses": [
+      {
+        "id": "H1",
+        "statement": "El mismo acontecimiento produce emociones dominantes distintas",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "distinct dominant emotions",
+        "value": "2: ['frustration', 'joy']",
+        "detail": ""
+      },
+      {
+        "id": "H2",
+        "statement": "La evaluación individual varía (no solo la intensidad)",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "range(desirability)",
+        "value": 1.31,
+        "detail": ""
+      },
+      {
+        "id": "H3",
+        "statement": "La variación se asocia a diferencias individuales, no a ruido",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "corr(neuroticism, negative appraisal)",
+        "value": 0.473,
+        "detail": ""
+      }
+    ],
+    "metrics": {
+      "distinct_emotions": [
+        "frustration",
+        "joy"
+      ],
+      "desirability_range": 1.31,
+      "corr_neuroticism_negative": 0.473,
+      "chronic_by_persona": {
+        "ansioso": {
+          "mean": 0.2881,
+          "sd": 0.0116,
+          "ci95": 0.0131,
+          "n": 3,
+          "min": 0.2747,
+          "max": 0.2952
+        },
+        "seguro": {
+          "mean": 0.5732,
+          "sd": 0.0583,
+          "ci95": 0.066,
+          "n": 3,
+          "min": 0.537,
+          "max": 0.6404
+        },
+        "proveedor": {
+          "mean": 0.2166,
+          "sd": 0.0089,
+          "ci95": 0.0101,
+          "n": 3,
+          "min": 0.2115,
+          "max": 0.2269
+        },
+        "desapegado": {
+          "mean": 0.259,
+          "sd": 0.0027,
+          "ci95": 0.0031,
+          "n": 3,
+          "min": 0.2569,
+          "max": 0.2621
+        },
+        "resentido": {
+          "mean": 0.2944,
+          "sd": 0.006,
+          "ci95": 0.0068,
+          "n": 3,
+          "min": 0.2904,
+          "max": 0.3013
+        },
+        "pragmatico": {
+          "mean": 0.3693,
+          "sd": 0.1264,
+          "ci95": 0.1431,
+          "n": 3,
+          "min": 0.2271,
+          "max": 0.4691
+        }
+      },
+      "samples": [
+        {
+          "seed": 29,
+          "dominant": "frustration",
+          "desirability": -0.4395,
+          "expectedness": 0.4458,
+          "control": 0.1361,
+          "chronic": 0.2943,
+          "negative": 0.55,
+          "profile_negative": 1.3865,
+          "positive": 0,
+          "neuroticism": 0.9
+        },
+        {
+          "seed": 37,
+          "dominant": "frustration",
+          "desirability": -0.4395,
+          "expectedness": 0.4458,
+          "control": 0.1361,
+          "chronic": 0.2747,
+          "negative": 0.5226,
+          "profile_negative": 1.3694,
+          "positive": 0,
+          "neuroticism": 0.9
+        },
+        {
+          "seed": 41,
+          "dominant": "frustration",
+          "desirability": -0.4395,
+          "expectedness": 0.4458,
+          "control": 0.1361,
+          "chronic": 0.2952,
+          "negative": 0.5165,
+          "profile_negative": 1.3812,
+          "positive": 0,
+          "neuroticism": 0.9
+        },
+        {
+          "seed": 29,
+          "dominant": "frustration",
+          "desirability": -0.5531,
+          "expectedness": 0.3581,
+          "control": 0.1557,
+          "chronic": 0.5421,
+          "negative": 0.5169,
+          "profile_negative": 1.4282,
+          "positive": 0,
+          "neuroticism": 0.15
+        },
+        {
+          "seed": 37,
+          "dominant": "frustration",
+          "desirability": -0.5531,
+          "expectedness": 0.3581,
+          "control": 0.1557,
+          "chronic": 0.6404,
+          "negative": 0.5114,
+          "profile_negative": 1.5978,
+          "positive": 0,
+          "neuroticism": 0.15
+        },
+        {
+          "seed": 41,
+          "dominant": "frustration",
+          "desirability": -0.5531,
+          "expectedness": 0.3581,
+          "control": 0.1557,
+          "chronic": 0.537,
+          "negative": 0.53,
+          "profile_negative": 1.6324,
+          "positive": 0,
+          "neuroticism": 0.15
+        },
+        {
+          "seed": 29,
+          "dominant": "frustration",
+          "desirability": -1.1593,
+          "expectedness": 0.3975,
+          "control": 0.1518,
+          "chronic": 0.2269,
+          "negative": 1.0782,
+          "profile_negative": 1.4663,
+          "positive": 0,
+          "neuroticism": 0.55
+        },
+        {
+          "seed": 37,
+          "dominant": "frustration",
+          "desirability": -1.1593,
+          "expectedness": 0.3975,
+          "control": 0.1518,
+          "chronic": 0.2115,
+          "negative": 1.083,
+          "profile_negative": 1.4939,
+          "positive": 0,
+          "neuroticism": 0.55
+        },
+        {
+          "seed": 41,
+          "dominant": "frustration",
+          "desirability": -1.1593,
+          "expectedness": 0.3975,
+          "control": 0.1518,
+          "chronic": 0.2115,
+          "negative": 1.0686,
+          "profile_negative": 1.4931,
+          "positive": 0,
+          "neuroticism": 0.55
+        },
+        {
+          "seed": 29,
+          "dominant": "joy",
+          "desirability": 0.0701,
+          "expectedness": 0.4005,
+          "control": 0.1427,
+          "chronic": 0.258,
+          "negative": 0,
+          "profile_negative": 1.2668,
+          "positive": 0.0451,
+          "neuroticism": 0.25
+        },
+        {
+          "seed": 37,
+          "dominant": "joy",
+          "desirability": 0.0701,
+          "expectedness": 0.4005,
+          "control": 0.1427,
+          "chronic": 0.2621,
+          "negative": 0,
+          "profile_negative": 1.2604,
+          "positive": 0.0479,
+          "neuroticism": 0.25
+        },
+        {
+          "seed": 41,
+          "dominant": "joy",
+          "desirability": 0.0701,
+          "expectedness": 0.4005,
+          "control": 0.1427,
+          "chronic": 0.2569,
+          "negative": 0,
+          "profile_negative": 1.2649,
+          "positive": 0.0486,
+          "neuroticism": 0.25
+        }
+      ],
+      "hypotheses_supported": 3,
+      "hypotheses_rejected": 0,
+      "hypotheses_inconclusive": 0,
+      "duration_seconds": 0.418,
+      "seeds": 29,
+      "population_size": 6
+    },
+    "anomalies": [],
+    "duration_seconds": 0.418
+  },
+  "EXP_17_C": {
+    "name": "Deterioro psicológico y recuperación del autocontrol",
+    "success": true,
+    "summary": "EXP_17_C: deterioro y recuperación del autocontrol",
+    "hypotheses": [
+      {
+        "id": "H1",
+        "statement": "La presión sostenida produce crisis en ambos perfiles",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "individuals with at least one crisis",
+        "value": "6/6",
+        "detail": ""
+      },
+      {
+        "id": "H2",
+        "statement": "Con la misma presión, el perfil vulnerable pierde más autocontrol y sufre crisis más severas",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "peak / end self-control vulnerable vs resilient",
+        "value": "0.2479 / 0.4561 vs 0.1172 / 0.8134",
+        "detail": ""
+      },
+      {
+        "id": "H3",
+        "statement": "Las crisis iniciadas pueden terminar; no son etiquetas permanentes",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "episodes ended",
+        "value": 7,
+        "detail": ""
+      }
+    ],
+    "metrics": {
+      "vulnerable": [
+        {
+          "crises": 1,
+          "peak": 0.2479,
+          "days_in_crisis": 2,
+          "recovered": 1,
+          "residual": 0.0,
+          "control_end": 0.4533,
+          "chronic_end": 0.3895,
+          "active": false
+        },
+        {
+          "crises": 2,
+          "peak": 0.2479,
+          "days_in_crisis": 4,
+          "recovered": 2,
+          "residual": 0.0,
+          "control_end": 0.4572,
+          "chronic_end": 0.3879,
+          "active": false
+        },
+        {
+          "crises": 1,
+          "peak": 0.2479,
+          "days_in_crisis": 2,
+          "recovered": 1,
+          "residual": 0.0,
+          "control_end": 0.4579,
+          "chronic_end": 0.3865,
+          "active": false
+        }
+      ],
+      "resiliente": [
+        {
+          "crises": 1,
+          "peak": 0.1172,
+          "days_in_crisis": 2,
+          "recovered": 1,
+          "residual": 0.0,
+          "control_end": 0.8134,
+          "chronic_end": 0.1923,
+          "active": false
+        },
+        {
+          "crises": 1,
+          "peak": 0.1172,
+          "days_in_crisis": 2,
+          "recovered": 1,
+          "residual": 0.0,
+          "control_end": 0.8134,
+          "chronic_end": 0.1923,
+          "active": false
+        },
+        {
+          "crises": 1,
+          "peak": 0.1172,
+          "days_in_crisis": 2,
+          "recovered": 1,
+          "residual": 0.0,
+          "control_end": 0.8134,
+          "chronic_end": 0.1923,
+          "active": false
+        }
+      ],
+      "vulnerable_peak": {
+        "mean": 0.2479,
+        "sd": 0.0,
+        "ci95": 0.0,
+        "n": 3,
+        "min": 0.2479,
+        "max": 0.2479
+      },
+      "resilient_peak": {
+        "mean": 0.1172,
+        "sd": 0.0,
+        "ci95": 0.0,
+        "n": 3,
+        "min": 0.1172,
+        "max": 0.1172
+      },
+      "vulnerable_control_end": {
+        "mean": 0.4561,
+        "sd": 0.0025,
+        "ci95": 0.0028,
+        "n": 3,
+        "min": 0.4533,
+        "max": 0.4579
+      },
+      "resilient_control_end": {
+        "mean": 0.8134,
+        "sd": 0.0,
+        "ci95": 0.0,
+        "n": 3,
+        "min": 0.8134,
+        "max": 0.8134
+      },
+      "hypotheses_supported": 3,
+      "hypotheses_rejected": 0,
+      "hypotheses_inconclusive": 0,
+      "duration_seconds": 1.149,
+      "seeds": 43,
+      "population_size": 2
+    },
+    "anomalies": [],
+    "duration_seconds": 1.149
+  },
+  "EXP_17_D": {
+    "name": "Afrontamiento adaptativo por categoría",
+    "success": true,
+    "summary": "EXP_17_D: problema, emoción y evitación",
+    "hypotheses": [
+      {
+        "id": "H1",
+        "statement": "Las estrategias centradas en el problema reducen más el estrés crónico",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "chronic_delta (negative improves)",
+        "value": "problema=-0.175, emocion=-0.1637, evitacion=-0.0377",
+        "detail": ""
+      },
+      {
+        "id": "H2",
+        "statement": "Las estrategias emocionales alivian más el estrés agudo inmediato",
+        "status": "INCONCLUSIVE",
+        "metric": "acute_delta",
+        "value": "emocion=0.4124, problema=0.4201",
+        "detail": ""
+      },
+      {
+        "id": "H3",
+        "statement": "La evitación puede aliviar a corto plazo y empeorar el largo plazo",
+        "status": "INCONCLUSIVE",
+        "metric": "relief vs long_term_delta",
+        "value": "0.103 vs 0.0094",
+        "detail": ""
+      }
+    ],
+    "metrics": {
+      "problema": {
+        "relief": {
+          "mean": 0.1236,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 0.1236,
+          "max": 0.1236
+        },
+        "acute_delta": {
+          "mean": 0.4201,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 0.4201,
+          "max": 0.4201
+        },
+        "chronic_delta": {
+          "mean": -0.175,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": -0.175,
+          "max": -0.175
+        },
+        "long_term": {
+          "mean": 0.0437,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 0.0437,
+          "max": 0.0437
+        },
+        "control": {
+          "mean": 0.594,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 0.594,
+          "max": 0.594
+        }
+      },
+      "emocion": {
+        "relief": {
+          "mean": 0.206,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 0.206,
+          "max": 0.206
+        },
+        "acute_delta": {
+          "mean": 0.4124,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 0.4124,
+          "max": 0.4124
+        },
+        "chronic_delta": {
+          "mean": -0.1637,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": -0.1637,
+          "max": -0.1637
+        },
+        "long_term": {
+          "mean": 0.0409,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 0.0409,
+          "max": 0.0409
+        },
+        "control": {
+          "mean": 0.5887,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 0.5887,
+          "max": 0.5887
+        }
+      },
+      "evitacion": {
+        "relief": {
+          "mean": 0.103,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 0.103,
+          "max": 0.103
+        },
+        "acute_delta": {
+          "mean": 0.338,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 0.338,
+          "max": 0.338
+        },
+        "chronic_delta": {
+          "mean": -0.0377,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": -0.0377,
+          "max": -0.0377
+        },
+        "long_term": {
+          "mean": 0.0094,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 0.0094,
+          "max": 0.0094
+        },
+        "control": {
+          "mean": 0.5155,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 0.5155,
+          "max": 0.5155
+        }
+      },
+      "hypotheses_supported": 1,
+      "hypotheses_rejected": 0,
+      "hypotheses_inconclusive": 2,
+      "duration_seconds": 0.119,
+      "seeds": 59,
+      "population_size": 3
+    },
+    "anomalies": [],
+    "duration_seconds": 0.119
+  },
+  "EXP_17_E": {
+    "name": "Trade-offs del afrontamiento",
+    "success": true,
+    "summary": "EXP_17_E: alivio ahora, coste después",
+    "hypotheses": [
+      {
+        "id": "H1",
+        "statement": "La estrategia evitativa produce alivio inmediato medible",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "mean short-term relief",
+        "value": 0.103,
+        "detail": ""
+      },
+      {
+        "id": "H2",
+        "statement": "El beneficio inmediato coexiste con un coste diferido",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "mean long_term_delta (negative = worse)",
+        "value": -0.024,
+        "detail": ""
+      },
+      {
+        "id": "H3",
+        "statement": "El aprendizaje corrige parcialmente la preferencia tras resultados negativos",
+        "status": "HYPOTHESIS_REJECTED",
+        "metric": "preference drop first→last",
+        "value": 0.1941,
+        "detail": ""
+      }
+    ],
+    "metrics": {
+      "mean_relief": 0.103,
+      "mean_long_term_delta": -0.024,
+      "preference_drop": 0.1941,
+      "trajectories": [
+        {
+          "reliefs": [
+            0.103,
+            0.103,
+            0.103,
+            0.103,
+            0.103,
+            0.103,
+            0.103,
+            0.103
+          ],
+          "long_terms": [
+            -0.0241,
+            -0.0415,
+            -0.034,
+            -0.0269,
+            -0.0215,
+            -0.0175,
+            -0.0145,
+            -0.0123
+          ],
+          "prefs": [
+            0.3972,
+            0.3245,
+            0.2772,
+            0.2468,
+            0.2275,
+            0.2153,
+            0.2077,
+            0.2031
+          ],
+          "chronic": [
+            0.4747,
+            0.5174,
+            0.5502,
+            0.5745,
+            0.5922,
+            0.605,
+            0.6142,
+            0.6207
+          ]
+        },
+        {
+          "reliefs": [
+            0.103,
+            0.103,
+            0.103,
+            0.103,
+            0.103,
+            0.103,
+            0.103,
+            0.103
+          ],
+          "long_terms": [
+            -0.0241,
+            -0.0415,
+            -0.034,
+            -0.0269,
+            -0.0215,
+            -0.0175,
+            -0.0145,
+            -0.0123
+          ],
+          "prefs": [
+            0.3972,
+            0.3245,
+            0.2772,
+            0.2468,
+            0.2275,
+            0.2153,
+            0.2077,
+            0.2031
+          ],
+          "chronic": [
+            0.4747,
+            0.5174,
+            0.5502,
+            0.5745,
+            0.5922,
+            0.605,
+            0.6142,
+            0.6207
+          ]
+        },
+        {
+          "reliefs": [
+            0.103,
+            0.103,
+            0.103,
+            0.103,
+            0.103,
+            0.103,
+            0.103,
+            0.103
+          ],
+          "long_terms": [
+            -0.0241,
+            -0.0415,
+            -0.034,
+            -0.0269,
+            -0.0215,
+            -0.0175,
+            -0.0145,
+            -0.0123
+          ],
+          "prefs": [
+            0.3972,
+            0.3245,
+            0.2772,
+            0.2468,
+            0.2275,
+            0.2153,
+            0.2077,
+            0.2031
+          ],
+          "chronic": [
+            0.4747,
+            0.5174,
+            0.5502,
+            0.5745,
+            0.5922,
+            0.605,
+            0.6142,
+            0.6207
+          ]
+        }
+      ],
+      "hypotheses_supported": 2,
+      "hypotheses_rejected": 1,
+      "hypotheses_inconclusive": 0,
+      "duration_seconds": 0.094,
+      "seeds": 71,
+      "population_size": 1
+    },
+    "anomalies": [],
+    "duration_seconds": 0.094
+  },
+  "EXP_17_F": {
+    "name": "Evaluación emocional OCC",
+    "success": true,
+    "summary": "EXP_17_F: el mismo despido, cuatro significados",
+    "hypotheses": [
+      {
+        "id": "H1",
+        "statement": "La deseabilidad no se deriva sólo del tipo de acontecimiento",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "signs of desirability",
+        "value": {
+          "odiaba_su_trabajo": 1,
+          "sostiene_familia": -1,
+          "verguenza_social": -1,
+          "esperanzado": -1
+        },
+        "detail": ""
+      },
+      {
+        "id": "H2",
+        "statement": "Personas distintas experimentan emociones dominantes distintas",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "distinct dominant emotions",
+        "value": [
+          "frustration",
+          "joy"
+        ],
+        "detail": ""
+      },
+      {
+        "id": "H3",
+        "statement": "La evaluación deja trazabilidad de metas, control y confianza",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "appraisal fields present",
+        "value": true,
+        "detail": ""
+      }
+    ],
+    "metrics": {
+      "personas": {
+        "odiaba_su_trabajo": {
+          "desirability": 0.2326,
+          "expectedness": 0.3771,
+          "control": 0.148,
+          "dominant": "joy",
+          "emotions": {
+            "joy": 0.1129,
+            "satisfaction": 0.0592,
+            "hope": 0.0526
+          },
+          "negative": 0.0,
+          "positive": 0.1994
+        },
+        "sostiene_familia": {
+          "desirability": -1.0843,
+          "expectedness": 0.3769,
+          "control": 0.1502,
+          "dominant": "frustration",
+          "emotions": {
+            "sadness": 0.2607,
+            "fear": 0.2091,
+            "anxiety": 0.2527,
+            "frustration": 0.3253
+          },
+          "negative": 0.6935,
+          "positive": 0.0
+        },
+        "verguenza_social": {
+          "desirability": -0.6841,
+          "expectedness": 0.403,
+          "control": 0.147,
+          "dominant": "frustration",
+          "emotions": {
+            "sadness": 0.1963,
+            "fear": 0.1764,
+            "anxiety": 0.1914,
+            "frustration": 0.242
+          },
+          "negative": 0.5325,
+          "positive": 0.0
+        },
+        "esperanzado": {
+          "desirability": -0.1654,
+          "expectedness": 0.3623,
+          "control": 0.1485,
+          "dominant": "frustration",
+          "emotions": {
+            "sadness": 0.0364,
+            "fear": 0.0309,
+            "anxiety": 0.0445,
+            "frustration": 0.0467
+          },
+          "negative": 0.1046,
+          "positive": 0.0
+        }
+      },
+      "distinct_emotions": [
+        "frustration",
+        "joy"
+      ],
+      "hypotheses_supported": 3,
+      "hypotheses_rejected": 0,
+      "hypotheses_inconclusive": 0,
+      "duration_seconds": 0.013,
+      "seeds": 83,
+      "population_size": 4
+    },
+    "anomalies": [],
+    "duration_seconds": 0.013
+  },
+  "EXP_17_G": {
+    "name": "Recuperación asociativa de memoria",
+    "success": true,
+    "summary": "EXP_17_G: recuperación selectiva y contextual",
+    "hypotheses": [
+      {
+        "id": "H1",
+        "statement": "La recencia influye en la recuperación cuando no hay otra señal",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "top tick (no cue)",
+        "value": 980,
+        "detail": ""
+      },
+      {
+        "id": "H2",
+        "statement": "La relevancia contextual puede superar a la recencia",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "top relevance memory",
+        "value": "Ayuda de José con la renta",
+        "detail": ""
+      },
+      {
+        "id": "H3",
+        "statement": "La recuperación es selectiva, no un escaneo completo",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "candidates examined per query",
+        "value": 7,
+        "detail": ""
+      }
+    ],
+    "metrics": {
+      "top_recent": [
+        "Discusión con Marta en el mercado",
+        "Ayuda de José con la renta"
+      ],
+      "top_important": [
+        "Discusión con Marta en el mercado"
+      ],
+      "top_relevant": [
+        "Ayuda de José con la renta"
+      ],
+      "candidates_examined": 7,
+      "hypotheses_supported": 3,
+      "hypotheses_rejected": 0,
+      "hypotheses_inconclusive": 0,
+      "duration_seconds": 0.0,
+      "seeds": 97,
+      "population_size": 1
+    },
+    "anomalies": [],
+    "duration_seconds": 0.0
+  },
+  "EXP_17_H": {
+    "name": "Olvido, reconstrucción y contradicción",
+    "success": true,
+    "summary": "EXP_17_H: la memoria no es una copia",
+    "hypotheses": [
+      {
+        "id": "H1",
+        "statement": "La fidelidad declina con el tiempo",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "fidelity at 0 vs 200 days",
+        "value": "0.97 vs 0.0698",
+        "detail": ""
+      },
+      {
+        "id": "H2",
+        "statement": "El estado afectivo actual sesga la reconstrucción",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "reconstructed differs by mood",
+        "value": true,
+        "detail": ""
+      },
+      {
+        "id": "H3",
+        "statement": "Se detectan recuerdos contradictorios sobre la misma persona",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "contradiction pairs",
+        "value": 1,
+        "detail": ""
+      }
+    ],
+    "metrics": {
+      "fresh": {
+        "memory_id": "5f748498-2a8f-423d-b52b-5b1b7cf1d4cf",
+        "original_summary": "Discusión con Marta en el mercado por una deuda; gritos, gente mirando, luego silencio",
+        "reconstructed_summary": "Discusión con Marta en el mercado por una deuda; gritos, gente mirando, luego silencio [recordado con más calidez que en su momento]",
+        "fidelity": 0.97,
+        "confidence": 0.873,
+        "age_days": 0.0,
+        "distortions": [],
+        "source_event_id": null,
+        "accessibility": 1.0,
+        "contradictory_with": []
+      },
+      "aged": {
+        "memory_id": "5f748498-2a8f-423d-b52b-5b1b7cf1d4cf",
+        "original_summary": "Discusión con Marta en el mercado por una deuda; gritos, gente mirando, luego silencio",
+        "reconstructed_summary": "Recuerdo difuso: Discusión con Marta en el mercado por una deuda, gritos (detalles imprecisos) [recordado con más dureza que en su momento]",
+        "fidelity": 0.0698,
+        "confidence": 0.0628,
+        "age_days": 200.0,
+        "distortions": [
+          "detalles perdidos",
+          "recuerdo esquemático",
+          "nunca evocado desde entonces"
+        ],
+        "source_event_id": null,
+        "accessibility": 1.0,
+        "contradictory_with": []
+      },
+      "hopeful": {
+        "memory_id": "5f748498-2a8f-423d-b52b-5b1b7cf1d4cf",
+        "original_summary": "Discusión con Marta en el mercado por una deuda; gritos, gente mirando, luego silencio",
+        "reconstructed_summary": "Discusión con Marta en el mercado por una deuda; gritos, gente mirando, luego silencio [recordado con más dureza que en su momento]",
+        "fidelity": 0.97,
+        "confidence": 0.873,
+        "age_days": 0.0,
+        "distortions": [],
+        "source_event_id": null,
+        "accessibility": 1.0,
+        "contradictory_with": []
+      },
+      "contradictions": [
+        [
+          "5f748498-2a8f-423d-b52b-5b1b7cf1d4cf",
+          "7e831d91-6dbf-4a84-8a7a-ffc8d1910398"
+        ]
+      ],
+      "hypotheses_supported": 3,
+      "hypotheses_rejected": 0,
+      "hypotheses_inconclusive": 0,
+      "duration_seconds": 0.001,
+      "seeds": 101,
+      "population_size": 1
+    },
+    "anomalies": [],
+    "duration_seconds": 0.001
+  },
+  "EXP_17_I": {
+    "name": "Trayectorias de duelo",
+    "success": true,
+    "summary": "EXP_17_I: duelo sin recuperación uniforme",
+    "hypotheses": [
+      {
+        "id": "H1",
+        "statement": "Las trayectorias de duelo son heterogéneas",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "distinct day-30 sadness values",
+        "value": 13,
+        "detail": ""
+      },
+      {
+        "id": "H2",
+        "statement": "Con la misma personalidad, más apoyo reduce la tristeza a 30 días",
+        "status": "HYPOTHESIS_REJECTED",
+        "metric": "Cohen d (low-support - high-support); paired delta",
+        "value": "-2.181 / -0.1027",
+        "detail": ""
+      },
+      {
+        "id": "H3",
+        "statement": "No todas las personas vuelven al nivel previo en 180 días",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "still elevated at day 180",
+        "value": 16,
+        "detail": ""
+      }
+    ],
+    "metrics": {
+      "by_persona": {
+        "apegado": {
+          "bajo": {
+            "mean": 0.224,
+            "sd": 0.032,
+            "ci95": 0.0444,
+            "n": 2,
+            "min": 0.2013,
+            "max": 0.2466
+          },
+          "alto": {
+            "mean": 0.3136,
+            "sd": 0.0264,
+            "ci95": 0.0366,
+            "n": 2,
+            "min": 0.295,
+            "max": 0.3323
+          }
+        },
+        "pragmatico": {
+          "bajo": {
+            "mean": 0.2676,
+            "sd": 0.0056,
+            "ci95": 0.0077,
+            "n": 2,
+            "min": 0.2637,
+            "max": 0.2716
+          },
+          "alto": {
+            "mean": 0.3773,
+            "sd": 0.0776,
+            "ci95": 0.1076,
+            "n": 2,
+            "min": 0.3224,
+            "max": 0.4322
+          }
+        },
+        "aislado": {
+          "bajo": {
+            "mean": 0.2183,
+            "sd": 0.0145,
+            "ci95": 0.0201,
+            "n": 2,
+            "min": 0.2081,
+            "max": 0.2286
+          },
+          "alto": {
+            "mean": 0.2708,
+            "sd": 0.0054,
+            "ci95": 0.0075,
+            "n": 2,
+            "min": 0.2669,
+            "max": 0.2746
+          }
+        },
+        "comunitario": {
+          "bajo": {
+            "mean": 0.2348,
+            "sd": 0.0047,
+            "ci95": 0.0065,
+            "n": 2,
+            "min": 0.2315,
+            "max": 0.2381
+          },
+          "alto": {
+            "mean": 0.3939,
+            "sd": 0.0226,
+            "ci95": 0.0314,
+            "n": 2,
+            "min": 0.3779,
+            "max": 0.4099
+          }
+        }
+      },
+      "recovery_days": [],
+      "cohens_d_day30": -2.181,
+      "mean_paired_delta": -0.1027,
+      "paired_deltas": [
+        -0.0857,
+        -0.0937,
+        -0.1606,
+        -0.0587,
+        -0.0665,
+        -0.0383,
+        -0.1784,
+        -0.1398
+      ],
+      "still_elevated": 16,
+      "rows": {
+        "apegado": {
+          "bajo": [
+            {
+              "peak": 0.6490166911294184,
+              "day30": 0.2466,
+              "day90": 0.5853,
+              "day180": 0.649,
+              "recovery_day": -1.0,
+              "residual": 0.4118
+            },
+            {
+              "peak": 0.31079698559307944,
+              "day30": 0.2013,
+              "day90": 0.2912,
+              "day180": 0.2735,
+              "recovery_day": -1.0,
+              "residual": 0.0363
+            }
+          ],
+          "alto": [
+            {
+              "peak": 0.5048068481508399,
+              "day30": 0.3323,
+              "day90": 0.5024,
+              "day180": 0.5003,
+              "recovery_day": -1.0,
+              "residual": 0.2631
+            },
+            {
+              "peak": 0.5172102194574298,
+              "day30": 0.295,
+              "day90": 0.5134,
+              "day180": 0.5134,
+              "recovery_day": -1.0,
+              "residual": 0.2762
+            }
+          ]
+        },
+        "pragmatico": {
+          "bajo": [
+            {
+              "peak": 0.5679560153405768,
+              "day30": 0.2716,
+              "day90": 0.5534,
+              "day180": 0.5561,
+              "recovery_day": -1.0,
+              "residual": 0.3777
+            },
+            {
+              "peak": 0.5540176721621958,
+              "day30": 0.2637,
+              "day90": 0.5359,
+              "day180": 0.554,
+              "recovery_day": -1.0,
+              "residual": 0.3756
+            }
+          ],
+          "alto": [
+            {
+              "peak": 0.5352699581950938,
+              "day30": 0.4322,
+              "day90": 0.5304,
+              "day180": 0.5224,
+              "recovery_day": -1.0,
+              "residual": 0.344
+            },
+            {
+              "peak": 0.5170848701177716,
+              "day30": 0.3224,
+              "day90": 0.5122,
+              "day180": 0.5171,
+              "recovery_day": -1.0,
+              "residual": 0.3387
+            }
+          ]
+        },
+        "aislado": {
+          "bajo": [
+            {
+              "peak": 0.5681053345384207,
+              "day30": 0.2081,
+              "day90": 0.5452,
+              "day180": 0.5681,
+              "recovery_day": -1.0,
+              "residual": 0.3526
+            },
+            {
+              "peak": 0.5614505200779007,
+              "day30": 0.2286,
+              "day90": 0.4342,
+              "day180": 0.5615,
+              "recovery_day": -1.0,
+              "residual": 0.346
+            }
+          ],
+          "alto": [
+            {
+              "peak": 0.46602200989480574,
+              "day30": 0.2746,
+              "day90": 0.4478,
+              "day180": 0.466,
+              "recovery_day": -1.0,
+              "residual": 0.2505
+            },
+            {
+              "peak": 0.48828609784774357,
+              "day30": 0.2669,
+              "day90": 0.4735,
+              "day180": 0.4883,
+              "recovery_day": -1.0,
+              "residual": 0.2728
+            }
+          ]
+        },
+        "comunitario": {
+          "bajo": [
+            {
+              "peak": 0.5737519628331114,
+              "day30": 0.2315,
+              "day90": 0.4914,
+              "day180": 0.5736,
+              "recovery_day": -1.0,
+              "residual": 0.3763
+            },
+            {
+              "peak": 0.5543800486004411,
+              "day30": 0.2381,
+              "day90": 0.5177,
+              "day180": 0.5544,
+              "recovery_day": -1.0,
+              "residual": 0.3571
+            }
+          ],
+          "alto": [
+            {
+              "peak": 0.5455410648852606,
+              "day30": 0.4099,
+              "day90": 0.5451,
+              "day180": 0.5432,
+              "recovery_day": -1.0,
+              "residual": 0.3459
+            },
+            {
+              "peak": 0.5604982544324696,
+              "day30": 0.3779,
+              "day90": 0.5605,
+              "day180": 0.5388,
+              "recovery_day": -1.0,
+              "residual": 0.3415
+            }
+          ]
+        }
+      },
+      "hypotheses_supported": 2,
+      "hypotheses_rejected": 1,
+      "hypotheses_inconclusive": 0,
+      "duration_seconds": 2.63,
+      "seeds": 103,
+      "population_size": 8
+    },
+    "anomalies": [],
+    "duration_seconds": 2.63
+  },
+  "EXP_17_J": {
+    "name": "Interacción cuerpo–mente",
+    "success": true,
+    "summary": "EXP_17_J: cuerpo y mente se modifican mutuamente",
+    "hypotheses": [
+      {
+        "id": "H1",
+        "statement": "Hambre y deuda de sueño elevan el estrés agudo",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "stress hambre/sueño/control",
+        "value": "0.2073/0.4428/0.0311",
+        "detail": ""
+      },
+      {
+        "id": "H2",
+        "statement": "Dolor y enfermedad elevan la fatiga y reducen el autocontrol",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "fatigue/control dolor vs control",
+        "value": "0.4171/0.4342 vs 0.1337/0.5879",
+        "detail": ""
+      },
+      {
+        "id": "H3",
+        "statement": "El descontrol psicológico se traduce en deterioro corporal",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "hunger delta descontrol vs regulado",
+        "value": "0.0238 vs 0.0",
+        "detail": ""
+      }
+    ],
+    "metrics": {
+      "conditions": {
+        "control": {
+          "stress": {
+            "mean": 0.0311,
+            "sd": 0.0439,
+            "ci95": 0.0609,
+            "n": 2,
+            "min": 0.0,
+            "max": 0.0621
+          },
+          "fatigue": {
+            "mean": 0.1337,
+            "sd": 0.0071,
+            "ci95": 0.0098,
+            "n": 2,
+            "min": 0.1287,
+            "max": 0.1387
+          },
+          "control": {
+            "mean": 0.5879,
+            "sd": 0.0165,
+            "ci95": 0.0228,
+            "n": 2,
+            "min": 0.5763,
+            "max": 0.5996
+          },
+          "hope": {
+            "mean": 1.0,
+            "sd": 0.0,
+            "ci95": 0.0,
+            "n": 2,
+            "min": 1.0,
+            "max": 1.0
+          }
+        },
+        "hambre": {
+          "stress": {
+            "mean": 0.2073,
+            "sd": 0.0013,
+            "ci95": 0.0018,
+            "n": 2,
+            "min": 0.2064,
+            "max": 0.2082
+          },
+          "fatigue": {
+            "mean": 0.202,
+            "sd": 0.0088,
+            "ci95": 0.0122,
+            "n": 2,
+            "min": 0.1957,
+            "max": 0.2082
+          },
+          "control": {
+            "mean": 0.5525,
+            "sd": 0.0004,
+            "ci95": 0.0006,
+            "n": 2,
+            "min": 0.5522,
+            "max": 0.5528
+          },
+          "hope": {
+            "mean": 1.0,
+            "sd": 0.0,
+            "ci95": 0.0,
+            "n": 2,
+            "min": 1.0,
+            "max": 1.0
+          }
+        },
+        "sueño": {
+          "stress": {
+            "mean": 0.4428,
+            "sd": 0.0018,
+            "ci95": 0.0025,
+            "n": 2,
+            "min": 0.4415,
+            "max": 0.4441
+          },
+          "fatigue": {
+            "mean": 0.5828,
+            "sd": 0.0016,
+            "ci95": 0.0023,
+            "n": 2,
+            "min": 0.5817,
+            "max": 0.584
+          },
+          "control": {
+            "mean": 0.3469,
+            "sd": 0.0021,
+            "ci95": 0.0029,
+            "n": 2,
+            "min": 0.3454,
+            "max": 0.3484
+          },
+          "hope": {
+            "mean": 0.5757,
+            "sd": 0.0097,
+            "ci95": 0.0134,
+            "n": 2,
+            "min": 0.5689,
+            "max": 0.5826
+          }
+        },
+        "dolor": {
+          "stress": {
+            "mean": 0.256,
+            "sd": 0.0173,
+            "ci95": 0.0239,
+            "n": 2,
+            "min": 0.2438,
+            "max": 0.2682
+          },
+          "fatigue": {
+            "mean": 0.4171,
+            "sd": 0.0238,
+            "ci95": 0.0329,
+            "n": 2,
+            "min": 0.4003,
+            "max": 0.4339
+          },
+          "control": {
+            "mean": 0.4342,
+            "sd": 0.017,
+            "ci95": 0.0235,
+            "n": 2,
+            "min": 0.4222,
+            "max": 0.4462
+          },
+          "hope": {
+            "mean": 1.0,
+            "sd": 0.0,
+            "ci95": 0.0,
+            "n": 2,
+            "min": 1.0,
+            "max": 1.0
+          }
+        }
+      },
+      "body_arms": {
+        "descontrol": [
+          {
+            "hunger_delta": 0.0238,
+            "health_delta": -0.0009
+          },
+          {
+            "hunger_delta": 0.0238,
+            "health_delta": -0.0009
+          }
+        ],
+        "regulado": [
+          {
+            "hunger_delta": 0.0,
+            "health_delta": 0.0
+          },
+          {
+            "hunger_delta": 0.0,
+            "health_delta": 0.0
+          }
+        ]
+      },
+      "hypotheses_supported": 3,
+      "hypotheses_rejected": 0,
+      "hypotheses_inconclusive": 0,
+      "duration_seconds": 0.088,
+      "seeds": 109,
+      "population_size": 4
+    },
+    "anomalies": [],
+    "duration_seconds": 0.088
+  },
+  "EXP_17_K": {
+    "name": "Apoyo social, redes y reciprocidad",
+    "success": true,
+    "summary": "EXP_17_K: el apoyo tiene red, coste y rechazo",
+    "hypotheses": [
+      {
+        "id": "H1",
+        "statement": "Una red más densa aumenta la probabilidad de recibir apoyo",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "grant rate fuerte vs aislado",
+        "value": "0.6111 vs 0.0 (d=8.981)",
+        "detail": ""
+      },
+      {
+        "id": "H2",
+        "statement": "El rechazo tiene coste psicológico y el apoyo no está garantizado",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "loneliness aislado vs fuerte",
+        "value": "0.7737 vs 0.694",
+        "detail": ""
+      },
+      {
+        "id": "H3",
+        "statement": "El apoyo consume recursos del proveedor",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "provider cost (money + energy·10)",
+        "value": 30.5094,
+        "detail": ""
+      }
+    ],
+    "metrics": {
+      "aislado": {
+        "grant_rate": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "support": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "loneliness": {
+          "mean": 0.7737,
+          "sd": 0.0184,
+          "ci95": 0.0208,
+          "n": 3,
+          "min": 0.7529,
+          "max": 0.7877
+        },
+        "trust": {
+          "mean": 0.5136,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 0.5136,
+          "max": 0.5136
+        },
+        "stress": {
+          "mean": 0.3318,
+          "sd": 0.0014,
+          "ci95": 0.0016,
+          "n": 3,
+          "min": 0.3302,
+          "max": 0.333
+        },
+        "provider_cost": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 0.0,
+          "max": 0.0
+        }
+      },
+      "debil": {
+        "grant_rate": {
+          "mean": 0.2778,
+          "sd": 0.0962,
+          "ci95": 0.1089,
+          "n": 3,
+          "min": 0.1667,
+          "max": 0.3333
+        },
+        "support": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "loneliness": {
+          "mean": 0.8422,
+          "sd": 0.0301,
+          "ci95": 0.034,
+          "n": 3,
+          "min": 0.8121,
+          "max": 0.8722
+        },
+        "trust": {
+          "mean": 0.4307,
+          "sd": 0.0378,
+          "ci95": 0.0428,
+          "n": 3,
+          "min": 0.3879,
+          "max": 0.4593
+        },
+        "stress": {
+          "mean": 0.3443,
+          "sd": 0.01,
+          "ci95": 0.0114,
+          "n": 3,
+          "min": 0.3331,
+          "max": 0.3526
+        },
+        "provider_cost": {
+          "mean": 8.4,
+          "sd": 0.8544,
+          "ci95": 0.9668,
+          "n": 3,
+          "min": 7.6,
+          "max": 9.3
+        }
+      },
+      "fuerte": {
+        "grant_rate": {
+          "mean": 0.6111,
+          "sd": 0.0962,
+          "ci95": 0.1089,
+          "n": 3,
+          "min": 0.5,
+          "max": 0.6667
+        },
+        "support": {
+          "mean": 0.1825,
+          "sd": 0.1385,
+          "ci95": 0.1568,
+          "n": 3,
+          "min": 0.0689,
+          "max": 0.3368
+        },
+        "loneliness": {
+          "mean": 0.694,
+          "sd": 0.0638,
+          "ci95": 0.0722,
+          "n": 3,
+          "min": 0.6315,
+          "max": 0.7591
+        },
+        "trust": {
+          "mean": 0.5935,
+          "sd": 0.071,
+          "ci95": 0.0804,
+          "n": 3,
+          "min": 0.5172,
+          "max": 0.6576
+        },
+        "stress": {
+          "mean": 0.6956,
+          "sd": 0.1277,
+          "ci95": 0.1445,
+          "n": 3,
+          "min": 0.5484,
+          "max": 0.7773
+        },
+        "provider_cost": {
+          "mean": 30.5094,
+          "sd": 9.4326,
+          "ci95": 10.674,
+          "n": 3,
+          "min": 19.7648,
+          "max": 37.4274
+        }
+      },
+      "hypotheses_supported": 3,
+      "hypotheses_rejected": 0,
+      "hypotheses_inconclusive": 0,
+      "duration_seconds": 0.173,
+      "seeds": 127,
+      "population_size": 3
+    },
+    "anomalies": [],
+    "duration_seconds": 0.173
+  },
+  "EXP_17_L": {
+    "name": "Crisis de pareja, infidelidad y reconciliación",
+    "success": true,
+    "summary": "EXP_17_L: confianza, ruptura y reconciliación sin guion",
+    "hypotheses": [
+      {
+        "id": "H1",
+        "statement": "El descubrimiento de infidelidad reduce la confianza",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "mean trust before/after",
+        "value": "0.81 → 0.4862",
+        "detail": ""
+      },
+      {
+        "id": "H2",
+        "statement": "El desenlace no es uniforme entre personas y semillas",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "distinct outcomes",
+        "value": [
+          "forgiven_reconciliation",
+          "separation"
+        ],
+        "detail": ""
+      },
+      {
+        "id": "H3",
+        "statement": "La reconciliación es posible, pero no automática",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "reconciliations / separations",
+        "value": "2 / 12",
+        "detail": ""
+      }
+    ],
+    "metrics": {
+      "rows": [
+        {
+          "seed": 139,
+          "persona": "celoso",
+          "trust_before": 0.81,
+          "trust_after": 0.47,
+          "outcome": "separation",
+          "separated": true,
+          "reconciled": false,
+          "active": false,
+          "stage": "separated"
+        },
+        {
+          "seed": 139,
+          "persona": "confiado",
+          "trust_before": 0.81,
+          "trust_after": 0.535,
+          "outcome": "forgiven_reconciliation",
+          "separated": false,
+          "reconciled": false,
+          "active": true,
+          "stage": "dating"
+        },
+        {
+          "seed": 139,
+          "persona": "ambivalente",
+          "trust_before": 0.81,
+          "trust_after": 0.47,
+          "outcome": "separation",
+          "separated": true,
+          "reconciled": false,
+          "active": false,
+          "stage": "separated"
+        },
+        {
+          "seed": 139,
+          "persona": "pragmatico",
+          "trust_before": 0.81,
+          "trust_after": 0.535,
+          "outcome": "forgiven_reconciliation",
+          "separated": false,
+          "reconciled": false,
+          "active": true,
+          "stage": "dating"
+        },
+        {
+          "seed": 149,
+          "persona": "celoso",
+          "trust_before": 0.81,
+          "trust_after": 0.47,
+          "outcome": "separation",
+          "separated": true,
+          "reconciled": false,
+          "active": false,
+          "stage": "separated"
+        },
+        {
+          "seed": 149,
+          "persona": "confiado",
+          "trust_before": 0.81,
+          "trust_after": 0.535,
+          "outcome": "forgiven_reconciliation",
+          "separated": false,
+          "reconciled": false,
+          "active": true,
+          "stage": "dating"
+        },
+        {
+          "seed": 149,
+          "persona": "ambivalente",
+          "trust_before": 0.81,
+          "trust_after": 0.47,
+          "outcome": "separation",
+          "separated": true,
+          "reconciled": false,
+          "active": false,
+          "stage": "separated"
+        },
+        {
+          "seed": 149,
+          "persona": "pragmatico",
+          "trust_before": 0.81,
+          "trust_after": 0.47,
+          "outcome": "separation",
+          "separated": true,
+          "reconciled": false,
+          "active": false,
+          "stage": "separated"
+        },
+        {
+          "seed": 151,
+          "persona": "celoso",
+          "trust_before": 0.81,
+          "trust_after": 0.47,
+          "outcome": "separation",
+          "separated": true,
+          "reconciled": true,
+          "active": true,
+          "stage": "dating"
+        },
+        {
+          "seed": 151,
+          "persona": "confiado",
+          "trust_before": 0.81,
+          "trust_after": 0.535,
+          "outcome": "forgiven_reconciliation",
+          "separated": false,
+          "reconciled": false,
+          "active": true,
+          "stage": "dating"
+        },
+        {
+          "seed": 151,
+          "persona": "ambivalente",
+          "trust_before": 0.81,
+          "trust_after": 0.47,
+          "outcome": "separation",
+          "separated": true,
+          "reconciled": false,
+          "active": false,
+          "stage": "separated"
+        },
+        {
+          "seed": 151,
+          "persona": "pragmatico",
+          "trust_before": 0.81,
+          "trust_after": 0.47,
+          "outcome": "separation",
+          "separated": true,
+          "reconciled": false,
+          "active": false,
+          "stage": "separated"
+        },
+        {
+          "seed": 157,
+          "persona": "celoso",
+          "trust_before": 0.81,
+          "trust_after": 0.47,
+          "outcome": "separation",
+          "separated": true,
+          "reconciled": true,
+          "active": true,
+          "stage": "dating"
+        },
+        {
+          "seed": 157,
+          "persona": "confiado",
+          "trust_before": 0.81,
+          "trust_after": 0.47,
+          "outcome": "separation",
+          "separated": true,
+          "reconciled": false,
+          "active": false,
+          "stage": "separated"
+        },
+        {
+          "seed": 157,
+          "persona": "ambivalente",
+          "trust_before": 0.81,
+          "trust_after": 0.47,
+          "outcome": "separation",
+          "separated": true,
+          "reconciled": false,
+          "active": false,
+          "stage": "separated"
+        },
+        {
+          "seed": 157,
+          "persona": "pragmatico",
+          "trust_before": 0.81,
+          "trust_after": 0.47,
+          "outcome": "separation",
+          "separated": true,
+          "reconciled": false,
+          "active": false,
+          "stage": "separated"
+        }
+      ],
+      "distinct_outcomes": [
+        "forgiven_reconciliation",
+        "separation"
+      ],
+      "separations": 12,
+      "reconciliations": 2,
+      "trust_before": {
+        "mean": 0.81,
+        "sd": 0.0,
+        "ci95": 0.0,
+        "n": 16,
+        "min": 0.81,
+        "max": 0.81
+      },
+      "trust_after": {
+        "mean": 0.4862,
+        "sd": 0.0291,
+        "ci95": 0.0142,
+        "n": 16,
+        "min": 0.47,
+        "max": 0.535
+      },
+      "hypotheses_supported": 3,
+      "hypotheses_rejected": 0,
+      "hypotheses_inconclusive": 0,
+      "duration_seconds": 0.03,
+      "seeds": 139,
+      "population_size": 4
+    },
+    "anomalies": [],
+    "duration_seconds": 0.03
+  },
+  "EXP_17_M": {
+    "name": "Desarrollo psicológico longitudinal",
+    "success": true,
+    "summary": "EXP_17_M: 1, 5, 10 y 25 años de biografía",
+    "hypotheses": [
+      {
+        "id": "H1",
+        "statement": "La personalidad cambia de forma lenta y acotada, no por un solo evento",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "max |neuroticism base change| over 25 years",
+        "value": 0.024,
+        "detail": ""
+      },
+      {
+        "id": "H2",
+        "statement": "Las trayectorias divergen entre individuos bajo el mismo entorno",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "distinct chronic stress at 25 years",
+        "value": 2,
+        "detail": ""
+      },
+      {
+        "id": "H3",
+        "statement": "El aprendizaje de afrontamiento puede cambiar con la experiencia",
+        "status": "INCONCLUSIVE",
+        "metric": "coping preference changed",
+        "value": false,
+        "detail": ""
+      }
+    ],
+    "metrics": {
+      "results": {
+        "sensible": {
+          "1": {
+            "neuroticism_base": 0.8,
+            "chronic": 0.3116,
+            "control": 0.5449,
+            "hope": 1.0,
+            "crises": 0,
+            "beliefs": {
+              "world_is_safe": 0.437,
+              "people_are_reliable": 0.485,
+              "effort_pays_off": 0.462,
+              "self_efficacy": 0.474
+            },
+            "coping_top": "recreation"
+          },
+          "5": {
+            "neuroticism_base": 0.8,
+            "chronic": 0.3108,
+            "control": 0.5456,
+            "hope": 1.0,
+            "crises": 0,
+            "beliefs": {
+              "world_is_safe": 0.185,
+              "people_are_reliable": 0.427,
+              "effort_pays_off": 0.309,
+              "self_efficacy": 0.37
+            },
+            "coping_top": "recreation"
+          },
+          "10": {
+            "neuroticism_base": 0.8,
+            "chronic": 0.3108,
+            "control": 0.5456,
+            "hope": 1.0,
+            "crises": 0,
+            "beliefs": {
+              "world_is_safe": 0.0,
+              "people_are_reliable": 0.353,
+              "effort_pays_off": 0.118,
+              "self_efficacy": 0.241
+            },
+            "coping_top": "recreation"
+          },
+          "25": {
+            "neuroticism_base": 0.8,
+            "chronic": 0.3108,
+            "control": 0.5456,
+            "hope": 1.0,
+            "crises": 0,
+            "beliefs": {
+              "world_is_safe": 0.0,
+              "people_are_reliable": 0.129,
+              "effort_pays_off": 0.0,
+              "self_efficacy": 0.0
+            },
+            "coping_top": "recreation"
+          }
+        },
+        "resistente": {
+          "1": {
+            "neuroticism_base": 0.256,
+            "chronic": 0.7047,
+            "control": 0.3802,
+            "hope": 0.4233,
+            "crises": 20,
+            "beliefs": {
+              "world_is_safe": 0.448,
+              "people_are_reliable": 0.488,
+              "effort_pays_off": 0.469,
+              "self_efficacy": 0.478
+            },
+            "coping_top": "seek_community_support"
+          },
+          "5": {
+            "neuroticism_base": 0.28,
+            "chronic": 0.7036,
+            "control": 0.3815,
+            "hope": 0.4297,
+            "crises": 20,
+            "beliefs": {
+              "world_is_safe": 0.242,
+              "people_are_reliable": 0.44,
+              "effort_pays_off": 0.343,
+              "self_efficacy": 0.393
+            },
+            "coping_top": "seek_community_support"
+          },
+          "10": {
+            "neuroticism_base": 0.28,
+            "chronic": 0.7028,
+            "control": 0.3821,
+            "hope": 0.4308,
+            "crises": 20,
+            "beliefs": {
+              "world_is_safe": 0.0,
+              "people_are_reliable": 0.38,
+              "effort_pays_off": 0.187,
+              "self_efficacy": 0.286
+            },
+            "coping_top": "seek_community_support"
+          },
+          "25": {
+            "neuroticism_base": 0.28,
+            "chronic": 0.7038,
+            "control": 0.3813,
+            "hope": 0.4299,
+            "crises": 20,
+            "beliefs": {
+              "world_is_safe": 0.0,
+              "people_are_reliable": 0.195,
+              "effort_pays_off": 0.0,
+              "self_efficacy": 0.0
+            },
+            "coping_top": "seek_community_support"
+          }
+        }
+      },
+      "neuroticism_shift_max": 0.024,
+      "any_coping_change": false,
+      "hypotheses_supported": 2,
+      "hypotheses_rejected": 0,
+      "hypotheses_inconclusive": 1,
+      "duration_seconds": 13.635,
+      "seeds": 163,
+      "population_size": 2
+    },
+    "anomalies": [],
+    "duration_seconds": 13.635
+  },
+  "EXP_17_N": {
+    "name": "Diversidad conductual explicable",
+    "success": true,
+    "summary": "EXP_17_N: divergencia conductual con causas",
+    "hypotheses": [
+      {
+        "id": "H1",
+        "statement": "La población muestra diversidad conductual medible",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "normalized activity entropy",
+        "value": 0.749,
+        "detail": ""
+      },
+      {
+        "id": "H2",
+        "statement": "Parte de la divergencia se asocia a rasgos y estado, no solo a azar",
+        "status": "INCONCLUSIVE",
+        "metric": "corr(neuroticism, chronic) / corr(extraversion, #activities)",
+        "value": "0.097 / -0.038",
+        "detail": ""
+      },
+      {
+        "id": "H3",
+        "statement": "La diversidad agregada se mantiene al cambiar la semilla",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "normalized entropy across seeds 167/173/179",
+        "value": [
+          0.749,
+          0.7625,
+          0.7568
+        ],
+        "detail": ""
+      }
+    ],
+    "metrics": {
+      "entropy": 0.749,
+      "activity_counts": {
+        "travel": 57,
+        "teach_apprentice": 1,
+        "work": 33,
+        "socialize": 14,
+        "idle": 53,
+        "sleep": 68,
+        "participate_in_hobby": 1,
+        "eat": 8,
+        "rest": 3,
+        "commerce_sell": 2
+      },
+      "corr_neuroticism_chronic": 0.097,
+      "corr_extraversion_activities": -0.038,
+      "entropy_by_seed": [
+        0.749,
+        0.7625,
+        0.7568
+      ],
+      "seeds_pooled": [
+        167,
+        173,
+        179
+      ],
+      "pooled_observations": 60,
+      "hypotheses_supported": 2,
+      "hypotheses_rejected": 0,
+      "hypotheses_inconclusive": 1,
+      "duration_seconds": 2.488,
+      "seeds": 167,
+      "population_size": 20
+    },
+    "anomalies": [],
+    "duration_seconds": 2.488
+  },
+  "EXP_17_O": {
+    "name": "Condiciones adversarias y crisis múltiples",
+    "success": true,
+    "summary": "EXP_17_O: adversidad múltiple y contradictoria",
+    "hypotheses": [
+      {
+        "id": "H1",
+        "statement": "Las crisis compuestas producen mayor carga que una crisis única",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "peak/chronic compuesta vs única",
+        "value": "0.2216/0.5555 vs 0.1607/0.5552",
+        "detail": ""
+      },
+      {
+        "id": "H2",
+        "statement": "Los desenlaces no son homogéneos entre individuos y secuencias",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "distinct peak severities",
+        "value": 3,
+        "detail": ""
+      },
+      {
+        "id": "H3",
+        "statement": "Quedan consecuencias residuales tras las crisis",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "residual vulnerability / belief change",
+        "value": "residual_max=0.249, belief_min=0.293",
+        "detail": ""
+      }
+    ],
+    "metrics": {
+      "unica": {
+        "crises": {
+          "mean": 12.0,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 12.0,
+          "max": 12.0
+        },
+        "peak": {
+          "mean": 0.1607,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 0.1607,
+          "max": 0.1607
+        },
+        "residual": {
+          "mean": 0.2356,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 0.2356,
+          "max": 0.2356
+        },
+        "belief_safety": {
+          "mean": 0.4846,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 0.4846,
+          "max": 0.4846
+        },
+        "chronic": {
+          "mean": 0.5552,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 0.5552,
+          "max": 0.5552
+        }
+      },
+      "compuesta": {
+        "crises": {
+          "mean": 15.0,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 15.0,
+          "max": 15.0
+        },
+        "peak": {
+          "mean": 0.2216,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 0.2216,
+          "max": 0.2216
+        },
+        "residual": {
+          "mean": 0.2491,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 0.2491,
+          "max": 0.2491
+        },
+        "belief_safety": {
+          "mean": 0.2932,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 0.2932,
+          "max": 0.2932
+        },
+        "chronic": {
+          "mean": 0.5555,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 0.5555,
+          "max": 0.5555
+        }
+      },
+      "contradictoria": {
+        "crises": {
+          "mean": 10.0,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 10.0,
+          "max": 10.0
+        },
+        "peak": {
+          "mean": 0.1546,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 0.1546,
+          "max": 0.1546
+        },
+        "residual": {
+          "mean": 0.2343,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 0.2343,
+          "max": 0.2343
+        },
+        "belief_safety": {
+          "mean": 0.4466,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 0.4466,
+          "max": 0.4466
+        },
+        "chronic": {
+          "mean": 0.5555,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 0.5555,
+          "max": 0.5555
+        }
+      },
+      "hypotheses_supported": 3,
+      "hypotheses_rejected": 0,
+      "hypotheses_inconclusive": 0,
+      "duration_seconds": 0.645,
+      "seeds": 179,
+      "population_size": 3
+    },
+    "anomalies": [],
+    "duration_seconds": 0.645
+  },
+  "EXP_17_P": {
+    "name": "Recuperación, recaída y secuelas",
+    "success": true,
+    "summary": "EXP_17_P: recuperarse no es volver al punto de partida",
+    "hypotheses": [
+      {
+        "id": "H1",
+        "statement": "La crisis puede resolverse cuando las condiciones cambian",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "recovered within 120 days",
+        "value": "3/3",
+        "detail": ""
+      },
+      {
+        "id": "H2",
+        "statement": "La recaída es posible tras una recuperación",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "relapses observed",
+        "value": "3/3",
+        "detail": ""
+      },
+      {
+        "id": "H3",
+        "statement": "Quedan secuelas medibles después de la recuperación",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "max residual vulnerability",
+        "value": 0.2693,
+        "detail": ""
+      }
+    ],
+    "metrics": {
+      "rows": [
+        {
+          "first_crisis": 1,
+          "peak": 0.3423,
+          "recovered_at": 2,
+          "recovered": true,
+          "crises_total": 3,
+          "relapse": true,
+          "residual": 0.2693,
+          "residual_end": 0.0,
+          "control_end": 0.5723571675987824,
+          "trust_end": 0.49509286061698343
+        },
+        {
+          "first_crisis": 2,
+          "peak": 0.3423,
+          "recovered_at": 2,
+          "recovered": true,
+          "crises_total": 4,
+          "relapse": true,
+          "residual": 0.2693,
+          "residual_end": 0.0,
+          "control_end": 0.57096458589565,
+          "trust_end": 0.4881250950138041
+        },
+        {
+          "first_crisis": 2,
+          "peak": 0.3423,
+          "recovered_at": 2,
+          "recovered": true,
+          "crises_total": 3,
+          "relapse": true,
+          "residual": 0.2693,
+          "residual_end": 0.0,
+          "control_end": 0.5728467592246116,
+          "trust_end": 0.4983983746685944
+        }
+      ],
+      "recovered": 3,
+      "relapses": 3,
+      "hypotheses_supported": 3,
+      "hypotheses_rejected": 0,
+      "hypotheses_inconclusive": 0,
+      "duration_seconds": 0.675,
+      "seeds": 193,
+      "population_size": 1
+    },
+    "anomalies": [],
+    "duration_seconds": 0.675
+  },
+  "EXP_17_Q": {
+    "name": "Ablación causal de mecanismos",
+    "success": true,
+    "summary": "EXP_17_Q: qué cambia cuando se apaga cada mecanismo",
+    "hypotheses": [
+      {
+        "id": "H1",
+        "statement": "Desactivar la evaluación cambia la respuesta emocional y acumulativa",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "negative/chronic sin_evaluación vs completo",
+        "value": "1.6855/0.4281 vs 3.9931/0.4308",
+        "detail": ""
+      },
+      {
+        "id": "H2",
+        "statement": "Desactivar el afrontamiento cambia el curso del estrés",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "chronic sin_afrontamiento vs completo",
+        "value": "0.5355 vs 0.4308",
+        "detail": ""
+      },
+      {
+        "id": "H3",
+        "statement": "Desactivar el apoyo cambia la recuperación y la esperanza",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "hope sin_apoyo vs completo",
+        "value": "1.0 vs 0.8283",
+        "detail": ""
+      }
+    ],
+    "metrics": {
+      "completo": {
+        "chronic": {
+          "mean": 0.4308,
+          "sd": 0.1547,
+          "ci95": 0.175,
+          "n": 3,
+          "min": 0.3145,
+          "max": 0.6064
+        },
+        "crises": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "hope": {
+          "mean": 0.8283,
+          "sd": 0.2974,
+          "ci95": 0.3366,
+          "n": 3,
+          "min": 0.4848,
+          "max": 1.0
+        },
+        "negative": {
+          "mean": 3.9931,
+          "sd": 0.3234,
+          "ci95": 0.366,
+          "n": 3,
+          "min": 3.6433,
+          "max": 4.2813
+        },
+        "coping": {
+          "mean": 105.0,
+          "sd": 77.0779,
+          "ci95": 87.2218,
+          "n": 3,
+          "min": 16.0,
+          "max": 150.0
+        },
+        "control": {
+          "mean": 0.5139,
+          "sd": 0.1176,
+          "ci95": 0.1331,
+          "n": 3,
+          "min": 0.3798,
+          "max": 0.5995
+        }
+      },
+      "sin_evaluacion": {
+        "chronic": {
+          "mean": 0.4281,
+          "sd": 0.1435,
+          "ci95": 0.1624,
+          "n": 3,
+          "min": 0.3222,
+          "max": 0.5914
+        },
+        "crises": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "hope": {
+          "mean": 0.8366,
+          "sd": 0.2831,
+          "ci95": 0.3203,
+          "n": 3,
+          "min": 0.5097,
+          "max": 1.0
+        },
+        "negative": {
+          "mean": 1.6855,
+          "sd": 0.2377,
+          "ci95": 0.2689,
+          "n": 3,
+          "min": 1.5471,
+          "max": 1.9599
+        },
+        "coping": {
+          "mean": 105.0,
+          "sd": 77.0779,
+          "ci95": 87.2218,
+          "n": 3,
+          "min": 16.0,
+          "max": 150.0
+        },
+        "control": {
+          "mean": 0.5151,
+          "sd": 0.1097,
+          "ci95": 0.1241,
+          "n": 3,
+          "min": 0.3895,
+          "max": 0.5924
+        }
+      },
+      "sin_afrontamiento": {
+        "chronic": {
+          "mean": 0.5355,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 0.5355,
+          "max": 0.5355
+        },
+        "crises": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "hope": {
+          "mean": 0.555,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 0.555,
+          "max": 0.555
+        },
+        "negative": {
+          "mean": 4.2419,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 4.2419,
+          "max": 4.2419
+        },
+        "coping": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "control": {
+          "mean": 0.4748,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 0.4748,
+          "max": 0.4748
+        }
+      },
+      "sin_apoyo": {
+        "chronic": {
+          "mean": 0.3716,
+          "sd": 0.0001,
+          "ci95": 0.0001,
+          "n": 3,
+          "min": 0.3716,
+          "max": 0.3717
+        },
+        "crises": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "hope": {
+          "mean": 1.0,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 1.0,
+          "max": 1.0
+        },
+        "negative": {
+          "mean": 4.198,
+          "sd": 0.0297,
+          "ci95": 0.0336,
+          "n": 3,
+          "min": 4.1695,
+          "max": 4.2287
+        },
+        "coping": {
+          "mean": 150.0,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "n": 3,
+          "min": 150.0,
+          "max": 150.0
+        },
+        "control": {
+          "mean": 0.5625,
+          "sd": 0.0,
+          "ci95": 0.0001,
+          "n": 3,
+          "min": 0.5624,
+          "max": 0.5625
+        }
+      },
+      "hypotheses_supported": 3,
+      "hypotheses_rejected": 0,
+      "hypotheses_inconclusive": 0,
+      "duration_seconds": 0.865,
+      "seeds": 211,
+      "population_size": 4
+    },
+    "anomalies": [],
+    "duration_seconds": 0.865
+  },
+  "EXP_17_R": {
+    "name": "Reproducibilidad determinista",
+    "success": true,
+    "summary": "EXP_17_R: determinismo cuando se exige",
+    "hypotheses": [
+      {
+        "id": "H1",
+        "statement": "La misma semilla y las mismas condiciones reproducen la trayectoria",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "state signatures equal",
+        "value": true,
+        "detail": ""
+      },
+      {
+        "id": "H2",
+        "statement": "Cambiar una condición individual cambia la trayectoria",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "neuroticism 0.65 vs 0.15 differs",
+        "value": true,
+        "detail": ""
+      },
+      {
+        "id": "H3",
+        "statement": "La semilla sólo importa en los mecanismos estocásticos",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "seed 229 vs 233 differs / coping attempts",
+        "value": "True / 86",
+        "detail": ""
+      }
+    ],
+    "metrics": {
+      "a": {
+        "chronic": 0.312776,
+        "control": 0.591692,
+        "hope": 1.0,
+        "crises": 0,
+        "coping": 86,
+        "timeline_len": 92,
+        "prefs": {
+          "recreation": 0.3203,
+          "reduce_expenses": 0.1579,
+          "rest": 0.2946,
+          "seek_community_support": 0.4343,
+          "sell_belongings": 0.4469,
+          "spiritual_support": 0.3124
+        }
+      },
+      "b": {
+        "chronic": 0.312776,
+        "control": 0.591692,
+        "hope": 1.0,
+        "crises": 0,
+        "coping": 86,
+        "timeline_len": 92,
+        "prefs": {
+          "recreation": 0.3203,
+          "reduce_expenses": 0.1579,
+          "rest": 0.2946,
+          "seek_community_support": 0.4343,
+          "sell_belongings": 0.4469,
+          "spiritual_support": 0.3124
+        }
+      },
+      "c": {
+        "chronic": 0.245663,
+        "control": 0.646292,
+        "hope": 1.0,
+        "crises": 0,
+        "coping": 82,
+        "timeline_len": 88,
+        "prefs": {
+          "recreation": 0.3005,
+          "reduce_expenses": 0.1253,
+          "rest": 0.3632,
+          "seek_community_support": 0.4348,
+          "sell_belongings": 0.4045,
+          "spiritual_support": 0.3153
+        }
+      },
+      "d": {
+        "chronic": 0.30958,
+        "control": 0.593683,
+        "hope": 1.0,
+        "crises": 0,
+        "coping": 85,
+        "timeline_len": 91,
+        "prefs": {
+          "recreation": 0.3204,
+          "reduce_expenses": 0.1465,
+          "rest": 0.2946,
+          "seek_community_support": 0.3969,
+          "sell_belongings": 0.4469,
+          "spiritual_support": 0.315
+        }
+      },
+      "same_seed_equal": true,
+      "hypotheses_supported": 3,
+      "hypotheses_rejected": 0,
+      "hypotheses_inconclusive": 0,
+      "duration_seconds": 0.259,
+      "seeds": 229,
+      "population_size": 2
+    },
+    "anomalies": [],
+    "duration_seconds": 0.259
+  },
+  "EXP_17_S": {
+    "name": "Rendimiento sostenido por población",
+    "success": true,
+    "summary": "EXP_17_S: rendimiento sostenido 20–1000",
+    "hypotheses": [
+      {
+        "id": "H1",
+        "statement": "El coste por individuo no crece linealmente con la población (LOD)",
+        "status": "INCONCLUSIVE",
+        "metric": "ms/agent 20 → 1000",
+        "value": "0.0015 → 0.0024",
+        "detail": ""
+      },
+      {
+        "id": "H2",
+        "statement": "1000 individuos se actualizan sin fallo ni crecimiento descontrolado",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "RSS at 1000",
+        "value": "108.5 MB",
+        "detail": ""
+      },
+      {
+        "id": "H3",
+        "statement": "El checkpoint psicológico escala de forma manejable",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "checkpoint chars at 1000",
+        "value": 1558327,
+        "detail": ""
+      }
+    ],
+    "metrics": {
+      "rows": [
+        {
+          "population": 20,
+          "mean_ms_tick": 0.03,
+          "p95_ms_tick": 0.03,
+          "ms_per_agent": 0.0015,
+          "rss_mb": 90.8,
+          "state_payload_chars": 31487,
+          "active_crises": 0
+        },
+        {
+          "population": 100,
+          "mean_ms_tick": 0.19,
+          "p95_ms_tick": 0.18,
+          "ms_per_agent": 0.0019,
+          "rss_mb": 92.0,
+          "state_payload_chars": 156127,
+          "active_crises": 0
+        },
+        {
+          "population": 500,
+          "mean_ms_tick": 1.07,
+          "p95_ms_tick": 1.21,
+          "ms_per_agent": 0.0021,
+          "rss_mb": 95.1,
+          "state_payload_chars": 779327,
+          "active_crises": 0
+        },
+        {
+          "population": 1000,
+          "mean_ms_tick": 2.42,
+          "p95_ms_tick": 2.33,
+          "ms_per_agent": 0.0024,
+          "rss_mb": 108.5,
+          "state_payload_chars": 1558327,
+          "active_crises": 0
+        }
+      ],
+      "baseline_rss_mb": 90.6,
+      "rss_after_mb": 96.3,
+      "slopes": [
+        1.2666666666666666,
+        1.1052631578947367,
+        1.1428571428571428
+      ],
+      "hypotheses_supported": 2,
+      "hypotheses_rejected": 0,
+      "hypotheses_inconclusive": 1,
+      "duration_seconds": 1.927,
+      "seeds": 239,
+      "population_size": 1000
+    },
+    "anomalies": [],
+    "duration_seconds": 1.927
+  },
+  "EXP_17_T": {
+    "name": "Integración en la simulación completa",
+    "success": true,
+    "summary": "EXP_17_T: la psicología dentro de SimulationRunner",
+    "hypotheses": [
+      {
+        "id": "H1",
+        "statement": "La capa psicológica participa en el flujo real y produce cambios observables",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "appraisals / coping attempts",
+        "value": "783.0 / 39",
+        "detail": ""
+      },
+      {
+        "id": "H2",
+        "statement": "El estado psicológico aparece en decisiones y en la observabilidad",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "decision traces with psych factor / snapshots",
+        "value": "3840 / 5",
+        "detail": ""
+      },
+      {
+        "id": "H3",
+        "statement": "El estado y la línea de tiempo sobreviven a un checkpoint y recarga",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "metric": "restored states / population / timeline rows",
+        "value": "20 / 20 / 485",
+        "detail": ""
+      }
+    ],
+    "metrics": {
+      "overview": {
+        "individuals": 20,
+        "mean_stress": 0.1505,
+        "mean_acute_stress": 0.1183,
+        "mean_self_control": 0.7824,
+        "mean_hope": 0.7286,
+        "mean_loneliness": 0.2142,
+        "active_crises": 0,
+        "crises_total": 0,
+        "coping_attempts": 39,
+        "support_requests": 39,
+        "support_grants": 31,
+        "stats": {
+          "appraisals": 783.0,
+          "coping_attempts": 39.0,
+          "support_requests": 31.0,
+          "support_grants": 31.0,
+          "crises_started": 0.0,
+          "crises_recovered": 0.0,
+          "relapses": 0.0,
+          "timeline_entries": 0.0
+        }
+      },
+      "decision_traces_with_psych": 3840,
+      "timeline_rows": 485,
+      "restored_states": 20,
+      "restored_population": 20,
+      "reload_samples": [
+        {
+          "uid": "ea825ad2-bab1-584c-bb97-2b5237a56583",
+          "chronic": 0.0513,
+          "control": 0.8924
+        },
+        {
+          "uid": "b862c0ed-be5f-57c8-9597-58f80e4ffad8",
+          "chronic": 0.2118,
+          "control": 0.7372
+        },
+        {
+          "uid": "686974d0-f04a-54a8-b7d9-e9f6ebe7a7f0",
+          "chronic": 0.2614,
+          "control": 0.6198
+        },
+        {
+          "uid": "69c426a8-b222-5c65-bbd8-0cd091eb0227",
+          "chronic": 0.1558,
+          "control": 0.7803
+        },
+        {
+          "uid": "313f4c09-5a7d-547e-9697-5f7a48407285",
+          "chronic": 0.1395,
+          "control": 0.7775
+        }
+      ],
+      "snapshot_sample": {
+        "human_uid": "ea825ad2-bab1-584c-bb97-2b5237a56583",
+        "name": "Carlos Rivera Flores",
+        "lod": "MACRO",
+        "constitution": {
+          "reactivity": 0.4259,
+          "regulation_capacity": 0.7946,
+          "resilience": 0.7555,
+          "loss_sensitivity": 0.4816,
+          "threat_sensitivity": 0.4226,
+          "social_sensitivity": 0.6801,
+          "impulsivity": 0.4131,
+          "self_control_baseline": 0.8611
+        },
+        "state": {
+          "acute_stress": 0.0,
+          "chronic_stress": 0.0513,
+          "anxiety": 0.6222,
+          "fear": 0.685,
+          "sadness": 0.8156,
+          "anger": 0.0654,
+          "loneliness": 0.1782,
+          "frustration": 0.4171,
+          "hope": 0.7846,
+          "trust": 0.6752,
+          "uncertainty": 0.2952,
+          "motivation": 0.8092,
+          "mental_fatigue": 0.1088,
+          "self_control": 0.8924,
+          "perceived_support": 0.8459,
+          "wellbeing": 0.8437,
+          "load": 0.0749
+        },
+        "beliefs": {
+          "world_is_safe": 0.318,
+          "people_are_reliable": 0.458,
+          "effort_pays_off": 0.353,
+          "self_efficacy": 0.372
+        },
+        "support": {
+          "network_size": 17,
+          "intimate_ties": 3,
+          "family_ties": 1,
+          "friend_ties": 0,
+          "partner_tie": 0.971,
+          "objective_support": 0.773,
+          "perceived_support": 0.769,
+          "reciprocity_balance": 0.03,
+          "isolation": 0.227,
+          "burden": 0.001,
+          "closest": [
+            [
+              "b862c0ed-be5f-57c8-9597-58f80e4ffad8",
+              0.971
+            ],
+            [
+              "686974d0-f04a-54a8-b7d9-e9f6ebe7a7f0",
+              0.833
+            ],
+            [
+              "ce156d3c-3746-5173-a687-1279668609f6",
+              0.789
+            ],
+            [
+              "fdb51962-fc87-5d06-9241-dd39a4c0d24e",
+              0.733
+            ],
+            [
+              "f362b986-d165-5ede-aab4-cae702b3c6f5",
+              0.564
+            ],
+            [
+              "8e45d818-03c3-56cc-b300-6111f8b774a6",
+              0.564
+            ]
+          ]
+        },
+        "crisis": null,
+        "crisis_history": [],
+        "coping": {
+          "preferences": {
+            "seek_community_support": 0.4218
+          },
+          "attempts": {
+            "seek_community_support": 2
+          },
+          "recent": [
+            {
+              "strategy": "seek_community_support",
+              "category": "problem_focused",
+              "tick": 160,
+              "relief": 0.2612,
+              "long_term_delta": 0.0,
+              "cost": 0.04,
+              "support": 0.4014,
+              "note": "Buscar apoyo comunitario: apoyo de b862c0ed-be5f-57c8-9597-58f80e4ffad8"
+            },
+            {
+              "strategy": "seek_community_support",
+              "category": "problem_focused",
+              "tick": 192,
+              "relief": 0.2612,
+              "long_term_delta": 0.0,
+              "cost": 0.04,
+              "support": 0.4078,
+              "note": "Buscar apoyo comunitario: apoyo de b862c0ed-be5f-57c8-9597-58f80e4ffad8"
+            }
+          ]
+        },
+        "appraisals": [
+          {
+            "appraisal_id": "67e31e6868974f4b8f41609243132738",
+            "event_id": "09c15776-fee8-4e38-8e3f-26f7c520b8c4",
+            "event_type": "misunderstanding_occurred",
+            "tick": 188,
+            "goal_congruence": -0.3911,
+            "desirability": -0.3911,
+            "expectedness": 0.6,
+            "agency": "self",
+            "certainty": 0.7539,
+            "control": 0.3396,
+            "personal_importance": 0.3666,
+            "value_congruence": 0.0,
+            "relationship_relevance": 0.0,
+            "emotions": {
+              "sadness": 0.0304,
+              "fear": 0.0208,
+              "anxiety": 0.0323,
+              "disappointment": 0.0367,
+              "frustration": 0.0397,
+              "shame": 0.0159
+            },
+            "confidence": 0.7548,
+            "narrative": "misunderstanding_occurred: resultado negativo, causado por mí mismo, parcialmente previsto, con poco margen de acción; emoción dominante frustration.",
+            "consequences": [
+              "acute_stress=0.368; regulation=0.890"
+            ]
+          },
+          {
+            "appraisal_id": "64c97887950446c49f32299c6e3f8f00",
+            "event_id": "f5f92139-25e8-4508-ba26-f13f3e38bb68",
+            "event_type": "misunderstanding_occurred",
+            "tick": 188,
+            "goal_congruence": -0.3911,
+            "desirability": -0.3911,
+            "expectedness": 0.6,
+            "agency": "self",
+            "certainty": 0.7539,
+            "control": 0.3392,
+            "personal_importance": 0.3666,
+            "value_congruence": 0.0,
+            "relationship_relevance": 0.0,
+            "emotions": {
+              "sadness": 0.0308,
+              "fear": 0.0232,
+              "anxiety": 0.0339,
+              "disappointment": 0.037,
+              "frustration": 0.0395,
+              "shame": 0.0166
+            },
+            "confidence": 0.7548,
+            "narrative": "misunderstanding_occurred: resultado negativo, causado por mí mismo, parcialmente previsto, con poco margen de acción; emoción dominante frustration.",
+            "consequences": [
+              "acute_stress=0.389; regulation=0.890"
+            ]
+          },
+          {
+            "appraisal_id": "2bbb89a69c4c417f9e6f9278471ff0a5",
+            "event_id": "4af86057-72ac-4371-b780-213ddb175c07",
+            "event_type": "misunderstanding_occurred",
+            "tick": 192,
+            "goal_congruence": -0.3911,
+            "desirability": -0.3911,
+            "expectedness": 0.6,
+            "agency": "self",
+            "certainty": 0.7539,
+            "control": 0.3388,
+            "personal_importance": 0.3666,
+            "value_congruence": 0.0,
+            "relationship_relevance": 0.0,
+            "emotions": {
+              "sadness": 0.0282,
+              "fear": 0.0235,
+              "anxiety": 0.0351,
+              "disappointment": 0.0342,
+              "frustration": 0.0401,
+              "shame": 0.0163
+            },
+            "confidence": 0.7548,
+            "narrative": "misunderstanding_occurred: resultado negativo, causado por mí mismo, parcialmente previsto, con poco margen de acción; emoción dominante frustration.",
+            "consequences": [
+              "acute_stress=0.411; regulation=0.890"
+            ]
+          },
+          {
+            "appraisal_id": "e2eb2a204d1e4890a891f88303cda483",
+            "event_id": "b9f1af2b-1cde-4f7f-9d0f-c4780458170a",
+            "event_type": "misunderstanding_occurred",
+            "tick": 192,
+            "goal_congruence": -0.3911,
+            "desirability": -0.3911,
+            "expectedness": 0.6,
+            "agency": "self",
+            "certainty": 0.7539,
+            "control": 0.3384,
+            "personal_importance": 0.3666,
+            "value_congruence": 0.0,
+            "relationship_relevance": 0.0,
+            "emotions": {
+              "sadness": 0.029,
+              "fear": 0.0237,
+              "anxiety": 0.0352,
+              "disappointment": 0.0368,
+              "frustration": 0.0388,
+              "shame": 0.0176
+            },
+            "confidence": 0.7548,
+            "narrative": "misunderstanding_occurred: resultado negativo, causado por mí mismo, parcialmente previsto, con poco margen de acción; emoción dominante frustration.",
+            "consequences": [
+              "acute_stress=0.432; regulation=0.890"
+            ]
+          },
+          {
+            "appraisal_id": "b6252595a9f54b969340007d1f01dcdd",
+            "event_id": "fcabeb2a-c8ff-4af8-a5ee-61c7cf1cf2b8",
+            "event_type": "misunderstanding_occurred",
+            "tick": 192,
+            "goal_congruence": -0.3911,
+            "desirability": -0.3911,
+            "expectedness": 0.6,
+            "agency": "self",
+            "certainty": 0.7539,
+            "control": 0.3379,
+            "personal_importance": 0.3666,
+            "value_congruence": 0.0,
+            "relationship_relevance": 0.0,
+            "emotions": {
+              "sadness": 0.0327,
+              "fear": 0.0208,
+              "anxiety": 0.0362,
+              "disappointment": 0.0388,
+              "frustration": 0.0384,
+              "shame": 0.0157
+            },
+            "confidence": 0.7548,
+            "narrative": "misunderstanding_occurred: resultado negativo, causado por mí mismo, parcialmente previsto, con poco margen de acción; emoción dominante disappointment.",
+            "consequences": [
+              "acute_stress=0.453; regulation=0.890"
+            ]
+          }
+        ],
+        "timeline": [
+          {
+            "record_id": "c77580082b7f4bf29ee89160eaa8259c",
+            "tick": 182,
+            "kind": "event",
+            "summary": "misunderstanding_occurred: resultado negativo, causado por mí mismo, parcialmente previsto, con poco margen de acción; emoción dominante frustration.",
+            "valence": -0.1434,
+            "importance": 0.3666,
+            "location_id": null,
+            "related_humans": [],
+            "source_event_id": "3e0fa127-ccd1-4397-afbf-d498a994ef7a",
+            "source": "simulation",
+            "payload": {
+              "event_type": "misunderstanding_occurred",
+              "agency": "self",
+              "control": 0.3407,
+              "expectedness": 0.6,
+              "emotions": {
+                "sadness": 0.0291,
+                "fear": 0.0214,
+                "anxiety": 0.0365,
+                "disappointment": 0.036,
+                "frustration": 0.0407,
+                "shame": 0.0166
+              }
+            }
+          },
+          {
+            "record_id": "17cacd018d7a4408be9efe9bd2d4af06",
+            "tick": 184,
+            "kind": "event",
+            "summary": "misunderstanding_occurred: resultado negativo, causado por mí mismo, parcialmente previsto, con poco margen de acción; emoción dominante disappointment.",
+            "valence": -0.1434,
+            "importance": 0.3666,
+            "location_id": null,
+            "related_humans": [],
+            "source_event_id": "91f6a068-a088-4783-bbdb-96983e7edc44",
+            "source": "simulation",
+            "payload": {
+              "event_type": "misunderstanding_occurred",
+              "agency": "self",
+              "control": 0.3403,
+              "expectedness": 0.6,
+              "emotions": {
+                "sadness": 0.0319,
+                "fear": 0.0213,
+                "anxiety": 0.0364,
+                "disappointment": 0.0387,
+                "frustration": 0.0356,
+                "shame": 0.0166
+              }
+            }
+          },
+          {
+            "record_id": "a962765a93fd4238b89ca2a62383a2d7",
+            "tick": 186,
+            "kind": "event",
+            "summary": "misunderstanding_occurred: resultado negativo, causado por mí mismo, parcialmente previsto, con poco margen de acción; emoción dominante frustration.",
+            "valence": -0.1434,
+            "importance": 0.3666,
+            "location_id": null,
+            "related_humans": [],
+            "source_event_id": "6b4ac1cc-21be-4a50-8248-bd3935f9b742",
+            "source": "simulation",
+            "payload": {
+              "event_type": "misunderstanding_occurred",
+              "agency": "self",
+              "control": 0.3413,
+              "expectedness": 0.6,
+              "emotions": {
+                "sadness": 0.0299,
+                "fear": 0.0225,
+                "anxiety": 0.0372,
+                "disappointment": 0.0341,
+                "frustration": 0.0389,
+                "shame": 0.0181
+              }
+            }
+          },
+          {
+            "record_id": "6d2484d05ca845a5a515da84b76fedfb",
+            "tick": 186,
+            "kind": "event",
+            "summary": "misunderstanding_occurred: resultado negativo, causado por mí mismo, parcialmente previsto, con poco margen de acción; emoción dominante disappointment.",
+            "valence": -0.1434,
+            "importance": 0.3666,
+            "location_id": null,
+            "related_humans": [],
+            "source_event_id": "17e7dcde-360b-4684-92fa-517207e127f8",
+            "source": "simulation",
+            "payload": {
+              "event_type": "misunderstanding_occurred",
+              "agency": "self",
+              "control": 0.3409,
+              "expectedness": 0.6,
+              "emotions": {
+                "sadness": 0.0294,
+                "fear": 0.0204,
+                "anxiety": 0.036,
+                "disappointment": 0.0381,
+                "frustration": 0.0358,
+                "shame": 0.0166
+              }
+            }
+          },
+          {
+            "record_id": "fa16fcf6668341bbb2b9b32fe7979614",
+            "tick": 186,
+            "kind": "event",
+            "summary": "misunderstanding_occurred: resultado negativo, causado por mí mismo, parcialmente previsto, con poco margen de acción; emoción dominante anxiety.",
+            "valence": -0.1434,
+            "importance": 0.3666,
+            "location_id": null,
+            "related_humans": [],
+            "source_event_id": "4d914de1-ca62-4204-ad82-9f7cb4030293",
+            "source": "simulation",
+            "payload": {
+              "event_type": "misunderstanding_occurred",
+              "agency": "self",
+              "control": 0.3404,
+              "expectedness": 0.6,
+              "emotions": {
+                "sadness": 0.0288,
+                "fear": 0.0234,
+                "anxiety": 0.0358,
+                "disappointment": 0.0345,
+                "frustration": 0.0357,
+                "shame": 0.0173
+              }
+            }
+          },
+          {
+            "record_id": "fd29efbd050a421bb49161776ba045cb",
+            "tick": 186,
+            "kind": "event",
+            "summary": "misunderstanding_occurred: resultado negativo, causado por mí mismo, parcialmente previsto, con poco margen de acción; emoción dominante frustration.",
+            "valence": -0.1434,
+            "importance": 0.3666,
+            "location_id": null,
+            "related_humans": [],
+            "source_event_id": "83582e32-086a-4db4-a42e-40ed315a9d32",
+            "source": "simulation",
+            "payload": {
+              "event_type": "misunderstanding_occurred",
+              "agency": "self",
+              "control": 0.34,
+              "expectedness": 0.6,
+              "emotions": {
+                "sadness": 0.0312,
+                "fear": 0.0232,
+                "anxiety": 0.0363,
+                "disappointment": 0.0371,
+                "frustration": 0.0382,
+                "shame": 0.018
+              }
+            }
+          },
+          {
+            "record_id": "f87ab461296d48848df60496303ddc6a",
+            "tick": 188,
+            "kind": "event",
+            "summary": "misunderstanding_occurred: resultado negativo, causado por mí mismo, parcialmente previsto, con poco margen de acción; emoción dominante frustration.",
+            "valence": -0.1434,
+            "importance": 0.3666,
+            "location_id": null,
+            "related_humans": [],
+            "source_event_id": "09c15776-fee8-4e38-8e3f-26f7c520b8c4",
+            "source": "simulation",
+            "payload": {
+              "event_type": "misunderstanding_occurred",
+              "agency": "self",
+              "control": 0.3396,
+              "expectedness": 0.6,
+              "emotions": {
+                "sadness": 0.0304,
+                "fear": 0.0208,
+                "anxiety": 0.0323,
+                "disappointment": 0.0367,
+                "frustration": 0.0397,
+                "shame": 0.0159
+              }
+            }
+          },
+          {
+            "record_id": "f55c6c0def52419b8fb5b581e8ca6e72",
+            "tick": 188,
+            "kind": "event",
+            "summary": "misunderstanding_occurred: resultado negativo, causado por mí mismo, parcialmente previsto, con poco margen de acción; emoción dominante frustration.",
+            "valence": -0.1434,
+            "importance": 0.3666,
+            "location_id": null,
+            "related_humans": [],
+            "source_event_id": "f5f92139-25e8-4508-ba26-f13f3e38bb68",
+            "source": "simulation",
+            "payload": {
+              "event_type": "misunderstanding_occurred",
+              "agency": "self",
+              "control": 0.3392,
+              "expectedness": 0.6,
+              "emotions": {
+                "sadness": 0.0308,
+                "fear": 0.0232,
+                "anxiety": 0.0339,
+                "disappointment": 0.037,
+                "frustration": 0.0395,
+                "shame": 0.0166
+              }
+            }
+          },
+          {
+            "record_id": "210bcdebedde4e4cb90722d98233ef47",
+            "tick": 192,
+            "kind": "event",
+            "summary": "misunderstanding_occurred: resultado negativo, causado por mí mismo, parcialmente previsto, con poco margen de acción; emoción dominante frustration.",
+            "valence": -0.1434,
+            "importance": 0.3666,
+            "location_id": null,
+            "related_humans": [],
+            "source_event_id": "4af86057-72ac-4371-b780-213ddb175c07",
+            "source": "simulation",
+            "payload": {
+              "event_type": "misunderstanding_occurred",
+              "agency": "self",
+              "control": 0.3388,
+              "expectedness": 0.6,
+              "emotions": {
+                "sadness": 0.0282,
+                "fear": 0.0235,
+                "anxiety": 0.0351,
+                "disappointment": 0.0342,
+                "frustration": 0.0401,
+                "shame": 0.0163
+              }
+            }
+          },
+          {
+            "record_id": "84d65600f24a4a19b98ecddaa6acedff",
+            "tick": 192,
+            "kind": "event",
+            "summary": "misunderstanding_occurred: resultado negativo, causado por mí mismo, parcialmente previsto, con poco margen de acción; emoción dominante frustration.",
+            "valence": -0.1434,
+            "importance": 0.3666,
+            "location_id": null,
+            "related_humans": [],
+            "source_event_id": "b9f1af2b-1cde-4f7f-9d0f-c4780458170a",
+            "source": "simulation",
+            "payload": {
+              "event_type": "misunderstanding_occurred",
+              "agency": "self",
+              "control": 0.3384,
+              "expectedness": 0.6,
+              "emotions": {
+                "sadness": 0.029,
+                "fear": 0.0237,
+                "anxiety": 0.0352,
+                "disappointment": 0.0368,
+                "frustration": 0.0388,
+                "shame": 0.0176
+              }
+            }
+          },
+          {
+            "record_id": "71c4c70743ca4b2099865e20e633dbcb",
+            "tick": 192,
+            "kind": "event",
+            "summary": "misunderstanding_occurred: resultado negativo, causado por mí mismo, parcialmente previsto, con poco margen de acción; emoción dominante disappointment.",
+            "valence": -0.1434,
+            "importance": 0.3666,
+            "location_id": null,
+            "related_humans": [],
+            "source_event_id": "fcabeb2a-c8ff-4af8-a5ee-61c7cf1cf2b8",
+            "source": "simulation",
+            "payload": {
+              "event_type": "misunderstanding_occurred",
+              "agency": "self",
+              "control": 0.3379,
+              "expectedness": 0.6,
+              "emotions": {
+                "sadness": 0.0327,
+                "fear": 0.0208,
+                "anxiety": 0.0362,
+                "disappointment": 0.0388,
+                "frustration": 0.0384,
+                "shame": 0.0157
+              }
+            }
+          },
+          {
+            "record_id": "0c6e10ccf02d4cb2ab5f1d67ad592b10",
+            "tick": 192,
+            "kind": "coping",
+            "summary": "Afrontamiento: seek_community_support (problem_focused)",
+            "valence": 0.0112,
+            "importance": 0.35,
+            "location_id": null,
+            "related_humans": [],
+            "source_event_id": null,
+            "source": "simulation",
+            "payload": {
+              "strategy": "seek_community_support",
+              "category": "problem_focused",
+              "relief": 0.2612,
+              "support": 0.4078,
+              "cost": 0.04
+            }
+          }
+        ],
+        "memories": [
+          {
+            "memory_id": "e56bf616-42dd-4ee3-9f23-656246bc2147",
+            "original": "activity_completed: {'activity': 'rest'}",
+            "reconstructed": "activity_completed: {'activity': 'rest'} [recordado con más calidez que en su momento]",
+            "fidelity": 0.88,
+            "confidence": 0.66,
+            "distortions": [],
+            "contradicts": [],
+            "age_days": 0.0
+          },
+          {
+            "memory_id": "5db0c438-f412-40ff-ab1e-9511b049a2f2",
+            "original": "misunderstanding_occurred: {'target_kind': 'human', 'target_id': 'f830fbeb-08ff-55a5-a82b-d670fde0fdd1', 'channel': 'visual', 'clarity': 0.577, 'claim': 'Volví a ver a la misma persona que antes por aquí. Parecía conversando.', 'confidence': 0.45, 'biases': ['prior_based_inference'], 'alternatives': ['Podría tratarse de otra persona por completo.', 'Parecía conversando, pero pudo haber estado descansando.'], 'coordinate_provenance': 'synthetic_local_map'}",
+            "reconstructed": "misunderstanding_occurred: {'target_kind': 'human', 'target_id': 'f830fbeb-08ff-55a5-a82b-d670fde0fdd1', 'channel': 'visual', 'clarity': 0.577, 'claim': 'Volví a ver a la misma persona que antes por aquí. Parecía conversando.', 'confidence': 0.45, 'biases': ['prior_based_inference'], 'alternatives': ['Podría tratarse de otra persona por completo.', 'Parecía conversando, pero pudo haber estado descansando.'], 'coordinate_provenance': 'synthetic_local_map'} [recordado con más calidez que en su momento]",
+            "fidelity": 0.91,
+            "confidence": 0.6825,
+            "distortions": [],
+            "contradicts": [],
+            "age_days": 0.0
+          },
+          {
+            "memory_id": "22ed8dc6-ab49-4f93-82a6-8f4380362517",
+            "original": "misunderstanding_occurred: {'target_kind': 'human', 'target_id': '6d0d5ac1-5cc8-5a26-b53f-edf80393ad30', 'channel': 'visual', 'clarity': 0.566, 'claim': 'Volví a ver a la misma persona que antes por aquí. Parecía descansando.', 'confidence': 0.45, 'biases': ['prior_based_inference'], 'alternatives': ['Podría tratarse de otra persona por completo.', 'Parecía descansando, pero pudo haber estado descansando.'], 'coordinate_provenance': 'synthetic_local_map'}",
+            "reconstructed": "misunderstanding_occurred: {'target_kind': 'human', 'target_id': '6d0d5ac1-5cc8-5a26-b53f-edf80393ad30', 'channel': 'visual', 'clarity': 0.566, 'claim': 'Volví a ver a la misma persona que antes por aquí. Parecía descansando.', 'confidence': 0.45, 'biases': ['prior_based_inference'], 'alternatives': ['Podría tratarse de otra persona por completo.', 'Parecía descansando, pero pudo haber estado descansando.'], 'coordinate_provenance': 'synthetic_local_map'} [recordado con más calidez que en su momento]",
+            "fidelity": 0.91,
+            "confidence": 0.6825,
+            "distortions": [],
+            "contradicts": [],
+            "age_days": 0.0
+          },
+          {
+            "memory_id": "d72176d4-f23d-473f-95a0-20ad69aa1c4c",
+            "original": "misunderstanding_occurred: {'target_kind': 'human', 'target_id': '313f4c09-5a7d-547e-9697-5f7a48407285', 'channel': 'visual', 'clarity': 0.524, 'claim': 'Volví a ver a la misma persona que antes por aquí. Parecía comprando.', 'confidence': 0.45, 'biases': ['prior_based_inference'], 'alternatives': ['Podría tratarse de otra persona por completo.', 'Parecía comprando, pero pudo haber estado descansando.'], 'coordinate_provenance': 'synthetic_local_map'}",
+            "reconstructed": "misunderstanding_occurred: {'target_kind': 'human', 'target_id': '313f4c09-5a7d-547e-9697-5f7a48407285', 'channel': 'visual', 'clarity': 0.524, 'claim': 'Volví a ver a la misma persona que antes por aquí. Parecía comprando.', 'confidence': 0.45, 'biases': ['prior_based_inference'], 'alternatives': ['Podría tratarse de otra persona por completo.', 'Parecía comprando, pero pudo haber estado descansando.'], 'coordinate_provenance': 'synthetic_local_map'} [recordado con más calidez que en su momento]",
+            "fidelity": 0.91,
+            "confidence": 0.6825,
+            "distortions": [],
+            "contradicts": [],
+            "age_days": 0.0
+          },
+          {
+            "memory_id": "0f9a376d-5dde-4aa8-b027-6adc7cdbb247",
+            "original": "coping_strategy_used: {'episode_id': '84c0ab5fa118451eaad8e3c5040d4f77', 'strategy': 'seek_community_support', 'category': 'problem_focused', 'utility': 0.4303, 'relief': 0.2612, 'support_received': 0.4078, 'cost': 0.04, 'provenance': 'adaptive_coping_v1'}",
+            "reconstructed": "coping_strategy_used: {'episode_id': '84c0ab5fa118451eaad8e3c5040d4f77', 'strategy': 'seek_community_support', 'category': 'problem_focused', 'utility': 0.4303, 'relief': 0.2612, 'support_received': 0.4078, 'cost': 0.04, 'provenance': 'adaptive_coping_v1'} [recordado con más calidez que en su momento]",
+            "fidelity": 0.907,
+            "confidence": 0.6803,
+            "distortions": [],
+            "contradicts": [],
+            "age_days": 0.0
+          }
+        ],
+        "habits": [],
+        "decision_modifiers": {
+          "psychological_load": 0.0749,
+          "rest_weight": 0.0381,
+          "social_weight": 0.0535,
+          "work_weight": 0.1383,
+          "planning_horizon": 0.88,
+          "risk_perception": 0.5896,
+          "help_seeking": 0.651,
+          "avoidance": 0.0507,
+          "impulsivity": 0.4131,
+          "crisis_severity": 0.0,
+          "crisis_kind": "",
+          "coping_preference_problem": 0.5
+        }
+      },
+      "hypotheses_supported": 3,
+      "hypotheses_rejected": 0,
+      "hypotheses_inconclusive": 0,
+      "duration_seconds": 2.185,
+      "seeds": 241,
+      "population_size": 20
+    },
+    "anomalies": [],
+    "duration_seconds": 2.185
+  }
+}

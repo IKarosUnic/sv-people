@@ -881,6 +881,68 @@
                 </div>`;
         }
 
+        // Phase 1.7 — integrated psychological state, coping, crisis and
+        // reconstructed memory.  Every value comes from the backend engine.
+        const psych = d.psychology || {};
+        const ps = psych.state || {};
+        let psychHtml = "<div style='color:var(--text-muted); font-style:italic;'>Sin estado psicológico disponible.</div>";
+        if (psych.human_uid) {
+            const bar = (label, value, color) => `
+                <div class="trait-bar-row">
+                    <div class="trait-label-row"><span>${label}</span><span>${Math.round((value || 0) * 100)}%</span></div>
+                    <div class="trait-track"><div class="trait-fill" style="width:${Math.round((value || 0) * 100)}%; background:${color};"></div></div>
+                </div>`;
+            const crisis = psych.crisis;
+            const crisisHtml = crisis ? `
+                <div style="margin:8px 0; padding:6px; border-left:3px solid var(--accent-amber); background:var(--bg-base); font-size:11px;">
+                    <strong>Crisis activa: ${crisis.kind}</strong> · severidad ${Math.round(crisis.severity * 100)}% · ${crisis.duration_ticks} ticks<br>
+                    ${(crisis.behaviours || []).join(" · ")}<br>
+                    <span style="color:var(--text-muted);">Causas: ${Object.entries(crisis.causes || {}).map(([k, v]) => `${k}=${v}`).join(", ")}</span>
+                </div>` : "<div style='font-size:10px; color:var(--text-muted); margin:4px 0;'>Sin crisis activa. Historial: " + ((psych.crisis_history || []).length) + " episodios.</div>";
+            const support = psych.support || {};
+            const timeline = (psych.timeline || []).slice(-5).reverse().map((t) => `
+                <div style="font-size:10px; margin-bottom:3px; border-bottom:1px solid var(--border-subtle); padding-bottom:2px;">
+                    <span style="font-family:var(--font-mono); color:var(--accent-sky);">[T${t.tick}]</span> ${t.summary}
+                </div>`).join("");
+            const coping = (psych.coping?.recent || []).slice(-3).reverse().map((c) => `
+                <div style="font-size:10px; margin-bottom:3px;">
+                    <strong>${c.strategy}</strong> (${c.category}) · alivio ${Math.round(c.relief * 100)}% · largo plazo ${c.long_term_delta >= 0 ? "+" : ""}${c.long_term_delta}
+                </div>`).join("");
+            const remembered = (psych.memories || [])[0];
+            psychHtml = `
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+                    <div>
+                        ${bar("Estrés agudo", ps.acute_stress, "#f59e0b")}
+                        ${bar("Estrés crónico", ps.chronic_stress, "#ef4444")}
+                        ${bar("Autocontrol", ps.self_control, "#38bdf8")}
+                        ${bar("Esperanza", ps.hope, "#22c55e")}
+                    </div>
+                    <div>
+                        ${bar("Fatiga mental", ps.mental_fatigue, "#a78bfa")}
+                        ${bar("Soledad", ps.loneliness, "#94a3b8")}
+                        ${bar("Apoyo percibido", ps.perceived_support, "#14b8a6")}
+                        ${bar("Bienestar (descriptivo)", ps.wellbeing, "#eab308")}
+                    </div>
+                </div>
+                <div style="font-size:10px; color:var(--text-muted); margin-top:6px;">
+                    LOD psicológico: <strong>${psych.lod}</strong> · Red: <strong>${support.network_size || 0}</strong> vínculos ·
+                    Íntimos: <strong>${support.intimate_ties || 0}</strong> · Creencias: ${Object.entries(psych.beliefs || {}).map(([k, v]) => `${k}=${v}`).join(", ")}
+                </div>
+                ${crisisHtml}
+                <div style="font-size:11px; font-weight:700; margin-top:6px;">Afrontamiento reciente</div>
+                ${coping || "<div style='font-size:10px; color:var(--text-muted);'>Sin intentos registrados.</div>"}
+                <div style="font-size:11px; font-weight:700; margin-top:6px;">Línea de tiempo</div>
+                ${timeline || "<div style='font-size:10px; color:var(--text-muted);'>Sin acontecimientos.</div>"}
+                ${remembered ? `<div style="font-size:10px; margin-top:6px; padding:4px; background:var(--bg-base);">
+                    <strong>Recuerdo reconstruido</strong> (fidelidad ${Math.round(remembered.fidelity * 100)}%):<br>
+                    ${remembered.reconstructed}<br>
+                    <span style="color:var(--text-muted);">${(remembered.distortions || []).join(", ")}</span>
+                </div>` : ""}
+                <div style="font-size:9px; color:var(--text-muted); margin-top:6px;">
+                    Modelo funcional, no diagnóstico clínico. Estados y recuerdos son construcciones de la simulación.
+                </div>`;
+        }
+
         let memoriesHtml = "";
         if (d.recent_memories && d.recent_memories.length > 0) {
             d.recent_memories.forEach((m) => {
@@ -959,6 +1021,11 @@
                 <div class="dossier-box">
                     <h4>Percepción Subjetiva (lo que esta persona notó)</h4>
                     ${perceptionHtml}
+                </div>
+
+                <div class="dossier-box">
+                    <h4>Estado Psicológico Integrado (Phase 1.7)</h4>
+                    ${psychHtml}
                 </div>
 
                 <div class="dossier-box">

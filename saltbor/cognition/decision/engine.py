@@ -80,6 +80,10 @@ class DecisionContext:
     invitation_offered_treat: bool = False
     personal_preferences: dict[str, Any] = field(default_factory=dict)
 
+    # Phase 1.7 bounded psychological modulation.  Small, explicit weights;
+    # a strong goal or a critical need must still be able to win.
+    psychological: dict[str, Any] = field(default_factory=dict)
+
 
 class DecisionEngine:
     """Multi-attribute utility decision engine with bounded rationality and cognitive traceability."""
@@ -618,6 +622,56 @@ class DecisionEngine:
             )
 
         # -------------------------------------------------------------------
+        # 7b. Psychological Load Modulation (Phase 1.7)
+        #
+        # Bounded rationality under stress: the agent does not lose the ability
+        # to reason, it changes which options look worth doing.  The modifiers
+        # are produced by RegulationEngine and are individually grounded.
+        # -------------------------------------------------------------------
+        psych = context.psychological or {}
+        if psych:
+            load = float(psych.get("psychological_load", 0.0))
+            rest_w = float(psych.get("rest_weight", 0.0))
+            social_w = float(psych.get("social_weight", 0.0))
+            work_w = float(psych.get("work_weight", 0.0))
+            avoidance = float(psych.get("avoidance", 0.0))
+            risk_perception = float(psych.get("risk_perception", 0.0))
+            crisis_severity = float(psych.get("crisis_severity", 0.0))
+            crisis_kind = str(psych.get("crisis_kind", ""))
+            for opt in options:
+                act = opt.action_type
+                delta = 0.0
+                if act in (ActivityType.REST, ActivityType.SLEEP):
+                    delta += 0.24 * rest_w + 0.08 * avoidance
+                elif act in (ActivityType.SOCIALIZE, ActivityType.ATTEND_CELEBRATION, ActivityType.COMMUNITY_MEETING):
+                    delta += 0.22 * social_w - 0.10 * avoidance
+                    if crisis_kind == "withdrawal":
+                        delta -= 0.16 * crisis_severity
+                elif act in (
+                    ActivityType.WORK, ActivityType.STUDY, ActivityType.LEARN_TRADE,
+                    ActivityType.SEARCH_EMPLOYMENT, ActivityType.APPLY_FOR_JOB,
+                    ActivityType.TEACH_APPRENTICE, ActivityType.BUSINESS_CREATE,
+                ):
+                    delta += 0.20 * work_w - 0.10 * load
+                elif act in (
+                    ActivityType.COMMERCE_BUY, ActivityType.PURCHASE_GOODS,
+                    ActivityType.SEEK_CREDIT, ActivityType.REPAY_DEBT,
+                ):
+                    delta -= 0.10 * (1.0 - risk_perception) * crisis_severity
+                elif act in (
+                    ActivityType.TRAVEL, ActivityType.EXERCISE, ActivityType.EXPLORE_LOCATION,
+                ):
+                    delta -= 0.06 * risk_perception * load
+                elif act in (ActivityType.EAT, ActivityType.COOK):
+                    delta += 0.06 * float(psych.get("avoidance", 0.0))
+                elif act in (ActivityType.SEEK_MEDICAL_CARE, ActivityType.REST_RECOVER):
+                    delta += 0.10 * float(psych.get("help_seeking", 0.0))
+
+                if abs(delta) > 0.005:
+                    opt.expected_utility += delta
+                    opt.reasoning += f" [Psych: load={load:.2f}, delta={delta:+.2f}]"
+
+        # -------------------------------------------------------------------
         # 8. Emotional Associations Modulation (Location Aversion & Place Affinity)
         # -------------------------------------------------------------------
         if memory and hasattr(memory, "get_location_association"):
@@ -711,6 +765,14 @@ class DecisionEngine:
             dominant_factors.append(f"Goal: {context.active_goals[0].description}")
         if brain_outcome:
             dominant_factors.append(f"Brain Deliberation ({brain_outcome.action_name})")
+        if context.psychological:
+            dominant_factors.append(
+                f"Psychological load ({float(context.psychological.get('psychological_load', 0.0)):.2f})"
+            )
+            if context.psychological.get("crisis_severity", 0) > 0:
+                dominant_factors.append(
+                    f"Crisis: {context.psychological.get('crisis_kind', 'unknown')}"
+                )
 
         trace = DecisionTrace(
             chosen_action=chosen.action_type,

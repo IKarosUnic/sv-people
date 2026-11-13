@@ -143,6 +143,9 @@ class MemoryEngine:
             if event.target_human_id:
                 assoc.append(event.target_human_id)
 
+            tags = [event.event_type.value, event.category.value]
+            for emotion_name in charges:
+                tags.append(f"emotion:{emotion_name}")
             rec = EpisodicRecord(
                 summary=summary_text,
                 tick=event.tick,
@@ -151,6 +154,8 @@ class MemoryEngine:
                 associated_humans=assoc,
                 location_id=event.location_id,
                 emotional_associations=charges,
+                context_tags=tags,
+                source_event_id=str(event.event_id),
             )
             self.episodic.store(rec)
 

@@ -202,6 +202,7 @@ class ExtensionRuntime:
             "romance": self.runner.romance_engine.to_dict(),
             "world_interaction": self.runner.world_interaction.to_dict(),
             "perception": self.runner.perception.to_dict(),
+            "psychology": self.runner.psychology.to_dict(),
             "life_events": self.life_events.to_dict(),
             "caregiving_history": list(self.runner.family_caregiving.caregiving_history),
             "causal_graph": self.runner.causal_graph.to_dict(),
@@ -229,6 +230,13 @@ class ExtensionRuntime:
             self.runner.world_interaction.load_dict(data["world_interaction"])
         if data.get("perception"):
             self.runner.perception.load_dict(data["perception"])
+        if data.get("psychology"):
+            self.runner.psychology.load_dict(data["psychology"])
+            for human in self.runner.population.get_all():
+                self.runner.psychology.ensure(human)
+            self.runner._psych_event_cursor = len(
+                getattr(self.runner.event_bus, "event_log", [])
+            )
         if data.get("life_events"):
             self.life_events.load_dict(data["life_events"])
             self.life_events._identity_factory = self.runner.identity_factory

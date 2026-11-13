@@ -14,6 +14,17 @@ from saltbor.core.types import EventCategory, EventID, HumanID, LocationID, Tick
 class EventType(enum.Enum):
     """Catalog of simulation event types."""
 
+    # --- Psychological realism (Phase 1.7) ---
+    APPRAISAL_FORMED = "appraisal_formed"
+    COPING_STRATEGY_USED = "coping_strategy_used"
+    COPING_OUTCOME_RECORDED = "coping_outcome_recorded"
+    PSYCHOLOGICAL_CRISIS_STARTED = "psychological_crisis_started"
+    PSYCHOLOGICAL_CRISIS_RECOVERED = "psychological_crisis_recovered"
+    PSYCHOLOGICAL_RELAPSE = "psychological_relapse"
+    SOCIAL_SUPPORT_REQUESTED = "social_support_requested"
+    SOCIAL_SUPPORT_GRANTED = "social_support_granted"
+    SOCIAL_SUPPORT_REFUSED = "social_support_refused"
+
     # --- Perception & Epistemic (Phase 1.6) ---
     PERCEPTION_OBTAINED = "perception_obtained"
     HAZARD_PERCEIVED = "hazard_perceived"
@@ -342,6 +353,15 @@ EVENT_CATEGORIES: dict[EventType, EventCategory] = {
     EventType.INFIDELITY_DISCOVERED: EventCategory.SOCIAL,
     EventType.RELATIONSHIP_SEPARATED: EventCategory.SOCIAL,
     EventType.DIVORCE_FINALIZED: EventCategory.SOCIAL,
+    EventType.APPRAISAL_FORMED: EventCategory.PERSONAL,
+    EventType.COPING_STRATEGY_USED: EventCategory.PERSONAL,
+    EventType.COPING_OUTCOME_RECORDED: EventCategory.PERSONAL,
+    EventType.PSYCHOLOGICAL_CRISIS_STARTED: EventCategory.PERSONAL,
+    EventType.PSYCHOLOGICAL_CRISIS_RECOVERED: EventCategory.PERSONAL,
+    EventType.PSYCHOLOGICAL_RELAPSE: EventCategory.PERSONAL,
+    EventType.SOCIAL_SUPPORT_REQUESTED: EventCategory.SOCIAL,
+    EventType.SOCIAL_SUPPORT_GRANTED: EventCategory.SOCIAL,
+    EventType.SOCIAL_SUPPORT_REFUSED: EventCategory.SOCIAL,
     EventType.PERCEPTION_OBTAINED: EventCategory.COGNITIVE,
     EventType.HAZARD_PERCEIVED: EventCategory.COGNITIVE,
     EventType.MISUNDERSTANDING_OCCURRED: EventCategory.COGNITIVE,

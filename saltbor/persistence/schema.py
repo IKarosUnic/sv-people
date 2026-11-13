@@ -9,7 +9,7 @@ from saltbor.persistence.database import DatabaseManager
 logger = logging.getLogger(__name__)
 
 # Current schema version — bump when making breaking changes.
-_SCHEMA_VERSION: int = 3
+_SCHEMA_VERSION: int = 4
 
 
 class SchemaManager:
@@ -407,6 +407,22 @@ class SchemaManager:
     )
     """
 
+    _TABLE_PSYCHOLOGY_TIMELINE = """
+    CREATE TABLE IF NOT EXISTS psychology_timeline (
+        human_uid       TEXT    NOT NULL,
+        record_id       TEXT    NOT NULL,
+        tick            INTEGER NOT NULL,
+        kind            TEXT    NOT NULL DEFAULT 'event',
+        summary         TEXT    NOT NULL DEFAULT '',
+        valence         REAL    NOT NULL DEFAULT 0.0,
+        importance      REAL    NOT NULL DEFAULT 0.5,
+        location_id     TEXT,
+        payload_json    TEXT    NOT NULL DEFAULT '{}',
+        PRIMARY KEY (human_uid, record_id),
+        FOREIGN KEY (human_uid) REFERENCES humans(uid) ON DELETE CASCADE
+    )
+    """
+
     # ------------------------------------------------------------------
     # Indexes
     # ------------------------------------------------------------------
@@ -434,6 +450,8 @@ class SchemaManager:
         "CREATE INDEX IF NOT EXISTS idx_geo_establishments_cat ON geo_establishments(category)",
         "CREATE INDEX IF NOT EXISTS idx_geo_entities_dept ON geo_entities(department_code)",
         "CREATE INDEX IF NOT EXISTS idx_geo_entities_level ON geo_entities(level)",
+        # Phase 1.7 psychological trajectories
+        "CREATE INDEX IF NOT EXISTS idx_psych_timeline_human_tick ON psychology_timeline(human_uid, tick)",
     ]
 
     # ------------------------------------------------------------------
@@ -474,6 +492,7 @@ class SchemaManager:
             cls._TABLE_HOUSING_UNITS,
             cls._TABLE_HOUSING_LEASES,
             cls._TABLE_COMMERCIAL_ESTABLISHMENTS,
+            cls._TABLE_PSYCHOLOGY_TIMELINE,
         ):
             conn.execute(ddl)
 
@@ -482,9 +501,9 @@ class SchemaManager:
 
         conn.commit()
 
-        # Store schema version if not already present.
+        # Store schema version, migrating non-destructively from earlier ones.
         current = cls.get_schema_version(db)
-        if current is None:
+        if current is None or current < _SCHEMA_VERSION:
             cls.set_schema_version(db, _SCHEMA_VERSION)
 
         logger.info("Schema ready (version %s).", cls.get_schema_version(db))

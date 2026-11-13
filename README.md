@@ -10,7 +10,22 @@ Phase 0.4 introduces **Social Complexity, Biological Lifecycle, Dynamic Economy 
 - **Continuous Spatial Movement**: 2D continuous waypoint navigation, repulsive vector collision avoidance steering, casual proximity encounters, and physical postures with carrying burden penalties.
 - **Scalability & Cognitive LOD**: 4 execution tiers (LOD 0 Full Cognition, LOD 1 Routine, LOD 2 Event-Driven Macro-Steps, LOD 3 Dormant Historical Archive) and $O(1)$ 2D Spatial Grid Partitioning, enabling sustained throughput across scaled populations.
 
-### Phase 1.6 — Geographic Intelligence, Perception & World Interaction (current)
+### Phase 1.7 — Psychological Realism & Human Fragility (current)
+
+- **Integrated psychology**: a persistent `PsychologicalState` inside every `SyntheticHuman`, driven by events from the existing bus and stepped by `SimulationRunner`. It orchestrates existing emotions, Big Five personality, memory, decisions, body, relationships and economy instead of duplicating them.
+- **Individual OCC appraisal**: the same event is appraised through each person's goals, values, expectations, agency, control and relationship. A layoff can produce joy in someone who hated the job and frustration in the family's sole earner.
+- **Adaptive coping**: 26 problem-, emotion- and avoidance-focused strategies with prerequisites, immediate relief, deferred costs, social consequences, observed outcomes and EMA learning. The evasion-learning hypothesis is reported as **rejected**, not hidden.
+- **Crisis as a process**: pressure vs. individual resistance and threshold, with onset, duration, consequences, recovery, residual vulnerability and relapse. Recovery and relapse were reproduced experimentally (3/3).
+- **Reconstructive memory**: associative index (person/place/tag/emotion/recency/importance), imperfect reconstruction, affective bias, contradictions and forgetting.
+- **Social support and body↔mind**: granted/refused support with provider cost and stigma; hunger, sleep, pain, illness and money feed stress and self-control, which in turn affect eating, rest and health.
+- **Longitudinal development**: slow, bounded Big Five drift over years, plus LOD (FULL 1, ROUTINE 2, MACRO 8, DORMANT 24 ticks).
+- **Experiments EXP_17_A … EXP_17_T**: 20 experiments, 60 hypotheses — **53 supported, 5 inconclusive, 2 rejected**. Multi-seed, controls, effect sizes and confidence intervals where applicable.
+- **API/UI**: `/api/psychology/{overview,individual,timeline,social}`, psychological fields in the roster and dossier, and a dedicated frontend panel.
+- **Persistence**: SQLite schema v4 with `psychology_timeline`, plus full state in the `phase15_extension` checkpoint.
+
+See `SALTBOR_PHASE_1_7_AUDIT.md`, `SALTBOR_PHASE_1_7_FINAL_REPORT.md` and `THIRD_PARTY_NOTICES.md`.
+
+### Phase 1.6 — Geographic Intelligence, Perception & World Interaction
 
 - **OpenStreetMap foundation**: dependency-free ESRI Shapefile reader plus a normalized SQLite geography database, ingested from the Geofabrik El Salvador extract with per-feature provenance (source URL, acquisition date, ODbL 1.0 license, CRS, validation state). Executed build: **151,251 features in 30.6 s** — 121,344 roads, 10,887 landuse, 8,011 POIs, 4,433 waterways, 2,657 places; buildings (989) are explicitly **partial** (pilot bbox only).
 - **Real road routing**: `OSMRoadNetwork` builds its topology from actual OSM geometry, supports walking and driving with class speeds and one-way tags, and returns explicit failure reasons instead of teleporting agents.
@@ -20,7 +35,7 @@ Phase 0.4 introduces **Social Complexity, Biological Lifecycle, Dynamic Economy 
 
 See `SALTBOR_PHASE_1_6_AUDIT.md`, `SALTBOR_PHASE_1_6_OSM_GEOGRAPHY.md` and `SALTBOR_PHASE_1_6_FINAL_REPORT.md`. Known limitations are listed there explicitly (checkpoint stalls, pilot-only buildings, no map rendering, CNR licensing unresolved).
 
-Crucially, **Saltbor does not require a Large Language Model (LLM) or external API for any simulation mechanic**. The entire core simulation operates deterministically and algorithmically with sub-millisecond execution times (~1.06 ms per tick for 20 humans) and a lightweight footprint (~4.35 KB per human).
+Crucially, **Saltbor does not require a Large Language Model (LLM) or external API for any simulation mechanic**. The core simulation remains deterministic and algorithmic; Phase 1.7 adds a measured psychological layer (0.032 ms/tick for 20 isolated agents, 2.3 ms/tick for 1,000). See `docs/reports/phase17_benchmark.json` for current figures.
 
 ---
 
@@ -203,7 +218,7 @@ The new experimental laboratory (`saltbor.simulation.laboratory`) introduces for
 
 ## Running Automated Tests
 
-Run the complete automated test suite (84 tests) with pytest:
+Run the complete automated test suite (561 tests) with pytest:
 
 ```bash
 uv run --extra dev pytest -v
@@ -228,13 +243,15 @@ pytest -v
 - **Section 19 Authentic Salvadoran Integration Tests**: 10 experiments (`EXP_SV_01` through `EXP_SV_10`) in `tests/test_experiments/test_salvadoran_experiments.py` covering urban/rural differentiation, canícula/temporales, informal markets, and remesas.
 - **Phase 0.8 Real Geographic World & El Salvador Integration**: 31 tests (20 experiments `EXP_08_A` through `EXP_08_T` in `tests/test_experiments/test_phase08_territorial_experiments.py` and 11 unit/integration tests in `tests/test_world/test_phase08_geography.py`) verifying the 2024 administrative restructuring (14 departments, 44 municipalities, 262 districts), CNR/Google Maps/OSM cartographic sources, real establishments with 7 validation states, spatial indexing with Dijkstra multimodal navigation, river bridges across Río Lempa, natural obstacle avoidance, pupusería unit economics, walking-radius fiado microcredit, individual epistemic spatial cognition, and 100% offline-first SQLite persistence.
 
-Total tests: **531 passing automated tests** across all phases with 0 regressions (`python -m pytest -q`). Phase 1.6 added 52: perception (11), OSM pipeline and routing (11), viewport GeoJSON (5), experiment suite (22), API contracts (3).
+Total tests: **561 passing automated tests** across all phases with 0 regressions (`python -m pytest -q`). Phase 1.7 added 30: psychology (6), experiments (21), API contracts (3). Phase 1.6 added 52: perception (11), OSM pipeline and routing (11), viewport GeoJSON (5), experiment suite (22), API contracts (3).
 
 ---
 
 ## Performance & Resource Measurements
 
-> Superseded for Phase 1.6 by `docs/reports/phase16_benchmark.json`: sustained runs measure **0.65–0.80 ms per agent per tick** (50 → 200 agents) with a checkpoint stall of 0.9–3.3 s once per simulated day. The figures below describe the earlier, smaller configurations.
+> Superseded for Phase 1.7 by `docs/reports/phase17_benchmark.json`: the isolated psychological engine costs **0.032 ms/tick at 20 agents, 2.3 ms/tick at 1,000 and 31.7–54.9 ms/tick at 10,000** (448 MB RSS at 10k); a full 20-agent simulation runs at **7.3 ms/tick** and 100 agents at **82.1 ms/tick** with SQLite WAL. The figures below describe earlier, smaller configurations.
+
+> Phase 1.6 reference: sustained runs measure **0.65–0.80 ms per agent per tick** (50 → 200 agents) with a checkpoint stall of 0.9–3.3 s once per simulated day (`docs/reports/phase16_benchmark.json`).
 
 - **Tick Duration**: ~0.68 ms per tick with 20 individuals.
 - **Simulation Speed**: ~800 – 1,000 ticks per second (> 8 simulated days per wall-clock second).

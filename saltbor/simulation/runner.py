@@ -145,6 +145,7 @@ from saltbor.health.engine import HealthEngine
 from saltbor.accidents.engine import MisfortuneEngine
 from saltbor.social.romance.engine import RomanceEngine
 from saltbor.cognition.perception.engine import PerceptionEngine
+from saltbor.psychology.engine import PsychologicalEngine
 from saltbor.world.interaction.world_human_engine import WorldHumanInteractionEngine
 from saltbor.lifecycle.family.caregiving import FamilyCaregivingEngine
 from saltbor.simulation.extension_runtime import ExtensionRuntime
@@ -175,7 +176,7 @@ class SimulationRunner:
         # Social & Population
         self.social = SocialEngine()
         self.population = PopulationRegistry()
-        self.identity_factory = IdentityFactory()
+        self.identity_factory = IdentityFactory(seed=self.config.random_seed)
         self.lod_manager = CognitiveLODManager()
 
         # Phase 0.5 Societal, Cultural, and Economic Systems
@@ -252,6 +253,8 @@ class SimulationRunner:
         self.misfortune_engine = MisfortuneEngine(seed=seed)
         self.romance_engine = RomanceEngine(seed=seed)
         self.perception = PerceptionEngine(seed=seed)
+        self.psychology = PsychologicalEngine(seed=seed)
+        self._psych_event_cursor = 0
         self.world_interaction = WorldHumanInteractionEngine(seed=seed)
         self.world_human_engine = self.world_interaction
         self.family_caregiving = FamilyCaregivingEngine()
@@ -1278,6 +1281,13 @@ class SimulationRunner:
             humans = self.human_repo.load_all()
             for h in humans:
                 self.population.register(h)
+            if humans:
+                # Deterministic UIDs are derived from serial + seed.  Without
+                # advancing the factory, new agents added after a checkpoint
+                # load would reuse existing serials and overwrite people.
+                self.identity_factory.advance_to(
+                    max(int(h.identity.serial) for h in humans) + 1
+                )
 
             saved_rels = self.rel_repo.load_all()
             for r in saved_rels:
@@ -1316,6 +1326,13 @@ class SimulationRunner:
 
         # Restore extension domain state, or reconstruct initial unions/households.
         self.extension.initialize(load_existing=load_existing)
+
+        # Phase 1.7: guarantee a psychological state for every living person.
+        # The state is created from the individual's Big Five if this is a new
+        # population, or restored from the extension checkpoint if resuming.
+        for human in self.population.get_all():
+            self.psychology.ensure(human)
+        self._psych_event_cursor = len(getattr(self.event_bus, "event_log", []))
 
         # Emit simulation started event
         self.event_bus.emit(
@@ -1440,6 +1457,27 @@ class SimulationRunner:
         # accidents, disasters, romance, family lifecycle).
         self.extension.step(current_tick)
 
+        # Phase 1.7: appraise the events that actually reached each person in
+        # this tick, then advance the psychological state.  The cursor prevents
+        # replaying history and keeps the cost proportional to new events.
+        event_log = getattr(self.event_bus, "event_log", [])
+        new_events = event_log[self._psych_event_cursor:]
+        if new_events:
+            self._psych_event_cursor = len(event_log)
+            self.psychology.process_events(
+                new_events,
+                self.population,
+                social=self.social,
+            )
+        self.psychology.step_population(
+            self.population,
+            current_tick,
+            social=self.social,
+            event_bus=self.event_bus,
+            lod_manager=self.lod_manager,
+            tick_minutes=self.config.tick_duration_minutes,
+        )
+
         # Periodic checkpointing
         if current_tick % self.config.checkpoint_interval_ticks == 0:
             self.checkpoint()
@@ -1513,11 +1551,18 @@ class SimulationRunner:
             self.state_repo.save_tick(self.clock.current_tick)
 
             # Phase 1.5 Extension: health, romance, accidents, family lifecycle,
-            # territorial interaction and the causal DAG.
+            # territorial interaction, perception, psychological state and the
+            # causal DAG.
             try:
                 self.state_repo.save_state("phase15_extension", self.extension.to_dict())
             except Exception as ex:
                 logger.warning("Error persisting Phase 1.5 extension state: %s", ex)
+
+            # Phase 1.7: durable autobiographical timeline (incremental rows).
+            try:
+                self.psychology.persist_timeline(self.db)
+            except Exception as ex:
+                logger.warning("Error persisting psychological timeline: %s", ex)
 
             # Persist Phase 0.5 Societal Entities
             if self.cultural_repo:
