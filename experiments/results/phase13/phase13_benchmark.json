@@ -1,0 +1,39 @@
+{
+  "timestamp": "2026-11-10T21:35:00",
+  "micro_benchmarks": {
+    "profile_10k_train_ops_ms": 14.53,
+    "profile_per_op_us": 1.453,
+    "meta_learning_5k_cycles_ms": 100.34,
+    "meta_learning_per_cycle_us": 20.067
+  },
+  "population_scaling": [
+    {
+      "population_size": 20,
+      "duration_40_ticks_sec": 0.219,
+      "ticks_per_second": 182.8,
+      "ms_per_tick": 5.47,
+      "peak_memory_mb": 2.33
+    },
+    {
+      "population_size": 50,
+      "duration_40_ticks_sec": 0.525,
+      "ticks_per_second": 76.2,
+      "ms_per_tick": 13.12,
+      "peak_memory_mb": 5.13
+    },
+    {
+      "population_size": 100,
+      "duration_40_ticks_sec": 1.357,
+      "ticks_per_second": 29.5,
+      "ms_per_tick": 33.91,
+      "peak_memory_mb": 9.88
+    },
+    {
+      "population_size": 200,
+      "duration_40_ticks_sec": 2.97,
+      "ticks_per_second": 13.5,
+      "ms_per_tick": 74.26,
+      "peak_memory_mb": 19.49
+    }
+  ]
+}

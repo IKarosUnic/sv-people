@@ -28,13 +28,34 @@ class LocationRegistry:
 
     def get(self, location_id: LocationID) -> Location:
         """Retrieve a location by ID. Raises KeyError if not found."""
-        if location_id not in self._locations:
+        loc = self.get_optional(location_id)
+        if loc is None:
             raise KeyError(f"Location '{location_id}' not found.")
-        return self._locations[location_id]
+        return loc
 
     def get_optional(self, location_id: LocationID) -> Optional[Location]:
-        """Retrieve a location by ID, or None if not found."""
-        return self._locations.get(location_id)
+        """Retrieve a location by ID, with alias resolution, or None if not found."""
+        if location_id in self._locations:
+            return self._locations[location_id]
+        aliases = {
+            "mercado_municipal": "mercado_central",
+            "parque_central": "plaza_central",
+            "alcaldia": "casa_comunal",
+            "alcaldia_comunal": "casa_comunal",
+            "juzgado": "casa_comunal",
+            "tribunal_de_paz": "casa_comunal",
+            "tiendita": "mercado_central",
+            "tienda_san_pedro": "mercado_central",
+            "remesas": "mercado_central",
+            "agencia_remesas": "mercado_central",
+            "banco": "cooperativa_agricola",
+            "caja_de_credito": "cooperativa_agricola",
+            "laboratorio_agricola": "cooperativa_agricola",
+        }
+        target = aliases.get(location_id)
+        if target and target in self._locations:
+            return self._locations[target]
+        return None
 
     def get_by_type(self, location_type: LocationType) -> list[Location]:
         """Return all locations matching the given type."""
@@ -63,7 +84,7 @@ class LocationRegistry:
         return min(candidates, key=lambda loc: distance(p, Position(*loc.position)))
 
     @classmethod
-    def create_saltbor_map(cls) -> LocationRegistry:
+    def create_saltbor_map(cls, include_civilization_nodes: bool = False) -> LocationRegistry:
         """Build and populate the initial Saltbor settlement map (~500m x 500m)."""
         registry = cls()
 
@@ -78,7 +99,11 @@ class LocationRegistry:
                 position=(250.0, 250.0),
                 bounding_box=BoundingBox(min_x=230.0, min_y=230.0, max_x=270.0, max_y=270.0),
                 schedule=LocationSchedule(always_open=True),
-                available_activities=[ActivityType.SOCIALIZE, ActivityType.RELAX, ActivityType.TRAVEL],
+                available_activities=[
+                    ActivityType.SOCIALIZE, ActivityType.RELAX, ActivityType.TRAVEL,
+                    ActivityType.COMMUNITY_MEETING, ActivityType.ATTEND_CELEBRATION,
+                    ActivityType.SHARE_DISCOVERY, ActivityType.COOPERATE,
+                ],
                 capacity=60,
                 description="The lively central square of Saltbor with a fountain, benches, and shade trees.",
                 is_outdoor=True,
@@ -219,12 +244,126 @@ class LocationRegistry:
                 position=(210.0, 210.0),
                 bounding_box=BoundingBox(min_x=195.0, min_y=195.0, max_x=225.0, max_y=225.0),
                 schedule=LocationSchedule(default_hours=(8, 22)),
-                available_activities=[ActivityType.SOCIALIZE, ActivityType.RELAX, ActivityType.STUDY],
+                available_activities=[
+                    ActivityType.SOCIALIZE, ActivityType.RELAX, ActivityType.STUDY,
+                    ActivityType.COMMUNITY_MEETING, ActivityType.COMMUNITY_PROPOSAL,
+                    ActivityType.ORGANIZE_EVENT, ActivityType.SEEK_MEDIATION,
+                ],
                 capacity=40,
                 description="Community center for meetings, cultural workshops, and celebrations.",
                 is_outdoor=False,
             )
         )
+
+        # -------------------------------------------------------------------
+        # Phase 1.4 Civilization Institutional & Economic Nodes
+        # -------------------------------------------------------------------
+        if include_civilization_nodes:
+            registry.register(
+                Location(
+                    location_id="alcaldia_comunal",
+                    name="Sede ADESCO y Alcaldía Comunal",
+                    location_type=LocationType.PUBLIC_SPACE,
+                    position=(240.0, 230.0),
+                    bounding_box=BoundingBox(min_x=225.0, min_y=215.0, max_x=255.0, max_y=245.0),
+                    schedule=LocationSchedule(default_hours=(7, 18)),
+                    available_activities=[
+                        ActivityType.COMMUNITY_MEETING, ActivityType.COMMUNITY_PROPOSAL,
+                        ActivityType.SEEK_MEDIATION, ActivityType.COOPERATE,
+                    ],
+                    capacity=30,
+                    description="Headquarters of ADESCO and communal civic leadership.",
+                    is_outdoor=False,
+                )
+            )
+
+            registry.register(
+                Location(
+                    location_id="tribunal_de_paz",
+                    name="Juzgado de Paz y Mediación",
+                    location_type=LocationType.WORKPLACE,
+                    position=(260.0, 220.0),
+                    bounding_box=BoundingBox(min_x=245.0, min_y=205.0, max_x=275.0, max_y=235.0),
+                    schedule=LocationSchedule(default_hours=(8, 16)),
+                    available_activities=[
+                        ActivityType.LITIGATE, ActivityType.SEEK_MEDIATION, ActivityType.WORK,
+                    ],
+                    capacity=20,
+                    description="Judicial courtroom for dispute resolution, hearings, and statutory settlements.",
+                    is_outdoor=False,
+                )
+            )
+
+            registry.register(
+                Location(
+                    location_id="tienda_san_pedro",
+                    name="Tienda y Pulpería San Pedro",
+                    location_type=LocationType.COMMERCIAL,
+                    position=(200.0, 260.0),
+                    bounding_box=BoundingBox(min_x=190.0, min_y=250.0, max_x=210.0, max_y=270.0),
+                    schedule=LocationSchedule(default_hours=(6, 21)),
+                    available_activities=[
+                        ActivityType.COMMERCE_BUY, ActivityType.COMMERCE_SELL,
+                        ActivityType.SEEK_CREDIT, ActivityType.REPAY_DEBT, ActivityType.SOCIALIZE,
+                    ],
+                    capacity=15,
+                    resources={"basic_grains": 120, "dairy_and_eggs": 50},
+                    description="Neighborhood grocery store with cash sales, fractional purchases, and fiado ledger.",
+                    is_outdoor=False,
+                )
+            )
+
+            registry.register(
+                Location(
+                    location_id="agencia_remesas",
+                    name="Agencia de Remesas y Envíos",
+                    location_type=LocationType.COMMERCIAL,
+                    position=(270.0, 270.0),
+                    bounding_box=BoundingBox(min_x=260.0, min_y=260.0, max_x=280.0, max_y=280.0),
+                    schedule=LocationSchedule(default_hours=(8, 17)),
+                    available_activities=[
+                        ActivityType.RECEIVE_REMITTANCE, ActivityType.WORK,
+                    ],
+                    capacity=15,
+                    description="Financial agency handling incoming family remittances from the diaspora.",
+                    is_outdoor=False,
+                )
+            )
+
+            registry.register(
+                Location(
+                    location_id="caja_de_credito",
+                    name="Caja de Crédito Rural",
+                    location_type=LocationType.COMMERCIAL,
+                    position=(230.0, 290.0),
+                    bounding_box=BoundingBox(min_x=220.0, min_y=280.0, max_x=240.0, max_y=300.0),
+                    schedule=LocationSchedule(default_hours=(8, 16)),
+                    available_activities=[
+                        ActivityType.SEEK_CREDIT, ActivityType.REPAY_DEBT, ActivityType.WORK,
+                    ],
+                    capacity=15,
+                    description="Community credit cooperative and microfinance institution.",
+                    is_outdoor=False,
+                )
+            )
+
+            registry.register(
+                Location(
+                    location_id="laboratorio_agricola",
+                    name="Centro Experimental Agroecológico",
+                    location_type=LocationType.EDUCATIONAL,
+                    position=(170.0, 330.0),
+                    bounding_box=BoundingBox(min_x=150.0, min_y=310.0, max_x=190.0, max_y=350.0),
+                    schedule=LocationSchedule(default_hours=(7, 17)),
+                    available_activities=[
+                        ActivityType.CONDUCT_EXPERIMENT, ActivityType.SHARE_DISCOVERY,
+                        ActivityType.STUDY, ActivityType.WORK,
+                    ],
+                    capacity=20,
+                    description="Agricultural experimentation grounds for testing crops, biofertilizers, and hypotheses.",
+                    is_outdoor=True,
+                )
+            )
 
         # -------------------------------------------------------------------
         # 7. Residential Houses (Housing the 20 individuals)

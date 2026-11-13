@@ -10,6 +10,16 @@ Phase 0.4 introduces **Social Complexity, Biological Lifecycle, Dynamic Economy 
 - **Continuous Spatial Movement**: 2D continuous waypoint navigation, repulsive vector collision avoidance steering, casual proximity encounters, and physical postures with carrying burden penalties.
 - **Scalability & Cognitive LOD**: 4 execution tiers (LOD 0 Full Cognition, LOD 1 Routine, LOD 2 Event-Driven Macro-Steps, LOD 3 Dormant Historical Archive) and $O(1)$ 2D Spatial Grid Partitioning, enabling sustained throughput across scaled populations.
 
+### Phase 1.6 — Geographic Intelligence, Perception & World Interaction (current)
+
+- **OpenStreetMap foundation**: dependency-free ESRI Shapefile reader plus a normalized SQLite geography database, ingested from the Geofabrik El Salvador extract with per-feature provenance (source URL, acquisition date, ODbL 1.0 license, CRS, validation state). Executed build: **151,251 features in 30.6 s** — 121,344 roads, 10,887 landuse, 8,011 POIs, 4,433 waterways, 2,657 places; buildings (989) are explicitly **partial** (pilot bbox only).
+- **Real road routing**: `OSMRoadNetwork` builds its topology from actual OSM geometry, supports walking and driving with class speeds and one-way tags, and returns explicit failure reasons instead of teleporting agents.
+- **Perception engine**: agents only know what they perceived. Acuity depends on age, fatigue, health, stress, night and rain; clarity gates identity and detail, so a stranger is **never** identity-resolved; interpretations carry named biases and alternative readings; testimony is discounted by credibility × trust; memory encoding is salience-gated; randomness derives from the deterministic identity serial so seeds reproduce across processes.
+- **Experiments EXP_16_A … EXP_16_T** (61 hypotheses) covering perception, interpretation, development, bias, physical cost, romance, infidelity, illness, environmental exposure, accidents, caregiving, institutional access, degradation and recovery, causal cascades, trajectories, generations, navigation, LOD performance and an integrated 96-tick run.
+- **API/UI**: `/api/perception/*`, `/api/geography/{manifest,features,route,ecological_profile}`, a perception block in the individual dossier, and an OSM attribution badge in the frontend.
+
+See `SALTBOR_PHASE_1_6_AUDIT.md`, `SALTBOR_PHASE_1_6_OSM_GEOGRAPHY.md` and `SALTBOR_PHASE_1_6_FINAL_REPORT.md`. Known limitations are listed there explicitly (checkpoint stalls, pilot-only buildings, no map rendering, CNR licensing unresolved).
+
 Crucially, **Saltbor does not require a Large Language Model (LLM) or external API for any simulation mechanic**. The entire core simulation operates deterministically and algorithmically with sub-millisecond execution times (~1.06 ms per tick for 20 humans) and a lightweight footprint (~4.35 KB per human).
 
 ---
@@ -218,11 +228,13 @@ pytest -v
 - **Section 19 Authentic Salvadoran Integration Tests**: 10 experiments (`EXP_SV_01` through `EXP_SV_10`) in `tests/test_experiments/test_salvadoran_experiments.py` covering urban/rural differentiation, canícula/temporales, informal markets, and remesas.
 - **Phase 0.8 Real Geographic World & El Salvador Integration**: 31 tests (20 experiments `EXP_08_A` through `EXP_08_T` in `tests/test_experiments/test_phase08_territorial_experiments.py` and 11 unit/integration tests in `tests/test_world/test_phase08_geography.py`) verifying the 2024 administrative restructuring (14 departments, 44 municipalities, 262 districts), CNR/Google Maps/OSM cartographic sources, real establishments with 7 validation states, spatial indexing with Dijkstra multimodal navigation, river bridges across Río Lempa, natural obstacle avoidance, pupusería unit economics, walking-radius fiado microcredit, individual epistemic spatial cognition, and 100% offline-first SQLite persistence.
 
-Total tests: **226 passing automated tests** across all phases with 0 regressions.
+Total tests: **526 passing automated tests** across all phases with 0 regressions (`python -m pytest -q`). Phase 1.6 added 47: perception (11), OSM pipeline and routing (11), experiment suite (22), API contracts (3).
 
 ---
 
 ## Performance & Resource Measurements
+
+> Superseded for Phase 1.6 by `docs/reports/phase16_benchmark.json`: sustained runs measure **0.65–0.80 ms per agent per tick** (50 → 200 agents) with a checkpoint stall of 0.9–3.3 s once per simulated day. The figures below describe the earlier, smaller configurations.
 
 - **Tick Duration**: ~0.68 ms per tick with 20 individuals.
 - **Simulation Speed**: ~800 – 1,000 ticks per second (> 8 simulated days per wall-clock second).

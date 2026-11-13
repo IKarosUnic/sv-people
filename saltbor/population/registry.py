@@ -37,6 +37,21 @@ class PopulationRegistry:
         self._by_serial[human.identity.serial] = human
         self._location_index_valid = False
 
+    def unregister(self, human_id: HumanID) -> Optional[SyntheticHuman]:
+        """Remove an individual from the directory."""
+        human = self._by_id.pop(human_id, None)
+        if human is not None:
+            self._by_serial.pop(human.identity.serial, None)
+            self._location_index_valid = False
+        return human
+
+    def clear(self) -> None:
+        """Clear all registered individuals."""
+        self._by_id.clear()
+        self._by_serial.clear()
+        self._by_location.clear()
+        self._location_index_valid = False
+
     def get(self, human_id: HumanID) -> SyntheticHuman:
         """Retrieve by UUID."""
         if human_id not in self._by_id:

@@ -1,0 +1,50 @@
+{
+  "zone_id": "san_salvador_centro",
+  "name": "Zona Piloto — San Salvador Centro Histórico",
+  "bbox": {
+    "min_lat": 13.693,
+    "min_lon": -89.202,
+    "max_lat": 13.704,
+    "max_lon": -89.186,
+    "center_lat": 13.6978,
+    "center_lon": -89.1915
+  },
+  "projection": "EPSG:4326 (WGS84)",
+  "layers": {
+    "streets": {
+      "file": "streets.geojson",
+      "feature_count": 807,
+      "size_kb": 862.0
+    },
+    "buildings": {
+      "file": "buildings.geojson",
+      "feature_count": 966,
+      "size_kb": 1397.8
+    },
+    "parks": {
+      "file": "parks.geojson",
+      "feature_count": 46,
+      "size_kb": 105.6
+    },
+    "nature_water": {
+      "file": "nature_water.geojson",
+      "feature_count": 11,
+      "size_kb": 15.7
+    },
+    "boundaries": {
+      "file": "boundaries.geojson",
+      "feature_count": 2,
+      "size_kb": 2.4
+    },
+    "poi": {
+      "file": "poi.geojson",
+      "feature_count": 4,
+      "size_kb": 4.0
+    },
+    "elevation": {
+      "file": "elevation.geojson",
+      "feature_count": 10,
+      "size_kb": 14.1
+    }
+  }
+}

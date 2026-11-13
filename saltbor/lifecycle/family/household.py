@@ -168,5 +168,18 @@ class HouseholdRegistry:
                 # Remove empty household
                 self._households.pop(hid, None)
 
+    def move_human(self, uid: HumanID, household_id: str) -> None:
+        """Move an individual between households (cohabitation, displacement)."""
+        target = self._households.get(household_id)
+        if target is None:
+            return
+        old_id = self._human_to_household.get(uid)
+        if old_id and old_id in self._households and old_id != household_id:
+            self._households[old_id].remove_member(uid)
+            if not self._households[old_id].members:
+                self._households.pop(old_id, None)
+        target.add_member(uid)
+        self._human_to_household[uid] = household_id
+
     def all_households(self) -> list[Household]:
         return list(self._households.values())

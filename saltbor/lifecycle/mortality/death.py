@@ -39,6 +39,10 @@ class MortalityEngine:
     def is_deceased(self, uid: HumanID) -> bool:
         return uid in self._deceased_registry
 
+    def mark_deceased(self, uid: HumanID) -> None:
+        """Record a death that was executed by the integrated life-course coordinator."""
+        self._deceased_registry.add(uid)
+
     def calculate_mortality_hazard(
         self,
         human: SyntheticHuman,

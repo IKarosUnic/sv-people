@@ -8,6 +8,10 @@ build/
 develop-eggs/
 dist/
 downloads/
+# Derived geographic artifacts: rebuild with
+#   python -m saltbor.datasets.gis.pipeline --download
+# (ODbL 1.0 derivative, not source data; kept out of version control)
+saltbor/datasets/gis/ingested/
 eggs/
 .eggs/
 lib/

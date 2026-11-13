@@ -1,0 +1,598 @@
+{
+  "timestamp": 1794538759.1704612,
+  "total_experiments": 17,
+  "passed": 17,
+  "failed": 0,
+  "total_runtime_seconds": 0.8874235999992379,
+  "experiments": [
+    {
+      "experiment_id": "EXP_15_EXT_01",
+      "name": "Romantic Relationship Formation & Courtship",
+      "description": "Two unpartnered individuals with positive attraction date and advance from interest to formal dating.",
+      "success": true,
+      "summary": "Romantic relationship successfully advanced to dating with 4 dates.",
+      "hypotheses": [
+        {
+          "hypothesis": "Repeated courtship dates increase mutual affection, trust, and commitment",
+          "predicted": true,
+          "observed": true,
+          "status": "HYPOTHESIS_SUPPORTED"
+        }
+      ],
+      "duration_sec": 0.013037699999586039,
+      "metrics": {
+        "initial_affection": 0.45,
+        "final_affection": 0.77,
+        "dates_count": 4,
+        "final_stage": "dating"
+      },
+      "raw_data": {
+        "relationship": {
+          "relationship_id": "rom_b8eb58dd",
+          "partner_a_id": "ba1bc6af-403f-4bb7-833c-6f23ee78bdc9",
+          "partner_b_id": "f7010212-6318-4769-84a9-8ac3b6b254af",
+          "stage": "dating",
+          "dims_a": {
+            "attraction": 0.83,
+            "affection": 0.77,
+            "trust": 0.7,
+            "commitment": 0.44,
+            "compatibility": 0.5,
+            "communication_quality": 0.5,
+            "jealousy": 0.1,
+            "conflict_level": 0.0
+          },
+          "dims_b": {
+            "attraction": 0.75,
+            "affection": 0.77,
+            "trust": 0.7,
+            "commitment": 0.44,
+            "compatibility": 0.5,
+            "communication_quality": 0.5,
+            "jealousy": 0.1,
+            "conflict_level": 0.0
+          },
+          "shared_memories_count": 4,
+          "dates_count": 4,
+          "start_tick": 1,
+          "marriage_tick": null,
+          "separation_tick": null,
+          "infidelities_count": 0,
+          "is_active": true
+        }
+      }
+    },
+    {
+      "experiment_id": "EXP_15_EXT_02",
+      "name": "Jealousy Emergence and Infidelity Dynamics",
+      "description": "An individual in a low-commitment relationship encounters an attractive third party, leading to an affair.",
+      "success": true,
+      "summary": "Secret infidelity emerged under low commitment and high conflict.",
+      "hypotheses": [
+        {
+          "hypothesis": "Low commitment and high friction make infidelity plausible under third-party attraction",
+          "predicted": true,
+          "observed": true,
+          "status": "HYPOTHESIS_SUPPORTED"
+        }
+      ],
+      "duration_sec": 0.0016120000000228174,
+      "metrics": {
+        "infidelity_occurred": true,
+        "is_discovered": false,
+        "wayward_partner": "ca125523-7555-468a-8a4c-e89a7800e8de",
+        "post_commitment": 0.05000000000000002
+      },
+      "raw_data": {}
+    },
+    {
+      "experiment_id": "EXP_15_EXT_03",
+      "name": "Infidelity Discovery, Trust Collapse & Separation",
+      "description": "Discovery of secret infidelity destroys betrayed partner trust, causing relationship termination.",
+      "success": true,
+      "summary": "Discovery collapsed trust to 0.25 resulting in cohabiting.",
+      "hypotheses": [
+        {
+          "hypothesis": "Infidelity discovery causes catastrophic trust collapse and confrontation outcome",
+          "predicted": true,
+          "observed": true,
+          "status": "HYPOTHESIS_SUPPORTED"
+        }
+      ],
+      "duration_sec": 0.0015277000002242858,
+      "metrics": {
+        "discovered": true,
+        "collapsed_trust": 0.25,
+        "outcome": "forgiven_reconciliation",
+        "relationship_active": true
+      },
+      "raw_data": {}
+    },
+    {
+      "experiment_id": "EXP_15_EXT_04",
+      "name": "Unrequited Love, Heartbreak Grief & Recovery",
+      "description": "An individual experiencing heartbreak processes emotional grief with measurable recovery.",
+      "success": true,
+      "summary": "Heartbreak recovery progressed to 0.10.",
+      "hypotheses": [
+        {
+          "hypothesis": "Heartbreak recovery progresses gradually over consecutive ticks",
+          "predicted": true,
+          "observed": true,
+          "status": "HYPOTHESIS_SUPPORTED"
+        }
+      ],
+      "duration_sec": 0.0005538000004889909,
+      "metrics": {
+        "initial_pain": 0.8,
+        "recovery_progress": 0.1000000000000001,
+        "is_healed": false
+      },
+      "raw_data": {}
+    },
+    {
+      "experiment_id": "EXP_15_EXT_05",
+      "name": "Family Caregiving & Intergenerational Elder Support",
+      "description": "Adult child provides care and living allowance to an elderly relative with reduced health.",
+      "success": true,
+      "summary": "Elder received physical care and $15 support transfer from adult child.",
+      "hypotheses": [
+        {
+          "hypothesis": "Elder care stabilizes elderly health and transfers support funds strictly from child savings",
+          "predicted": true,
+          "observed": true,
+          "status": "HYPOTHESIS_SUPPORTED"
+        }
+      ],
+      "duration_sec": 0.0009695999997347826,
+      "metrics": {
+        "elder_money_after": 20.0,
+        "caregiver_money_after": 65.0,
+        "elder_health": 0.5700000000000001
+      },
+      "raw_data": {}
+    },
+    {
+      "experiment_id": "EXP_15_EXT_06",
+      "name": "Child Dependency, Parental Care & Attachment",
+      "description": "Parent performs childcare: child hunger is relieved and affection emotion is formed.",
+      "success": true,
+      "summary": "Childcare successfully reduced hunger and generated affection attachment.",
+      "hypotheses": [
+        {
+          "hypothesis": "Parental childcare reduces child hunger and fosters affection emotion",
+          "predicted": true,
+          "observed": true,
+          "status": "HYPOTHESIS_SUPPORTED"
+        }
+      ],
+      "duration_sec": 0.0010333000000173342,
+      "metrics": {
+        "child_hunger_after": 0.29999999999999993,
+        "child_has_affection": true
+      },
+      "raw_data": {}
+    },
+    {
+      "experiment_id": "EXP_15_EXT_07",
+      "name": "Illness Onset, Symptom Progression & Clinical Recovery",
+      "description": "Individual contracts illness, presents to clinic, receives treatment, and recovers safely.",
+      "success": true,
+      "summary": "Patient contracted waterborne illness, received clinical treatment, and stabilized.",
+      "hypotheses": [
+        {
+          "hypothesis": "Clinical treatment halts illness degradation and initiates recovery",
+          "predicted": true,
+          "observed": true,
+          "status": "HYPOTHESIS_SUPPORTED"
+        }
+      ],
+      "duration_sec": 0.0005835000001752633,
+      "metrics": {
+        "treated": true,
+        "final_health": 0.6399999999999997,
+        "ticks_active": 24
+      },
+      "raw_data": {}
+    },
+    {
+      "experiment_id": "EXP_15_EXT_08",
+      "name": "Infectious Disease Airborne Transmission & Contact Patterns",
+      "description": "Contagious individual interacts in co-located space with peers; transmission occurs based on susceptibility.",
+      "success": true,
+      "summary": "Infected host transmitted contagion to 1 co-located contact(s).",
+      "hypotheses": [
+        {
+          "hypothesis": "Airborne respiratory infection transmits selectively to co-located susceptible peers",
+          "predicted": true,
+          "observed": true,
+          "status": "HYPOTHESIS_SUPPORTED"
+        }
+      ],
+      "duration_sec": 0.0018413999996482744,
+      "metrics": {
+        "contacts_exposed": 3,
+        "infected_count": 1,
+        "infected_uids": [
+          "d2a8c901-0edb-4861-8ffc-04cd5158d021"
+        ]
+      },
+      "raw_data": {}
+    },
+    {
+      "experiment_id": "EXP_15_EXT_09",
+      "name": "Medical Access Inequality, Clinic Capacity & Triage",
+      "description": "Small clinic fills to maximum capacity; subsequent presenting patient is turned away.",
+      "success": true,
+      "summary": "Dispensary admitted 2/2 and correctly rejected excess patient.",
+      "hypotheses": [
+        {
+          "hypothesis": "Health clinics strictly enforce physical capacity limits, turning away overflow",
+          "predicted": true,
+          "observed": true,
+          "status": "HYPOTHESIS_SUPPORTED"
+        }
+      ],
+      "duration_sec": 0.0013632000000143307,
+      "metrics": {
+        "capacity": 2,
+        "treated": 2,
+        "rejected_count": 1
+      },
+      "raw_data": {}
+    },
+    {
+      "experiment_id": "EXP_15_EXT_10",
+      "name": "Traffic Accidents & Contextual Environmental Hazards",
+      "description": "High rainfall and severe driver fatigue elevate traffic accident risk and cause damage.",
+      "success": true,
+      "summary": "Traffic accident triggered with $36.64 damage.",
+      "hypotheses": [
+        {
+          "hypothesis": "Severe fatigue combined with stormy weather triggers traffic accident risk",
+          "predicted": true,
+          "observed": true,
+          "status": "HYPOTHESIS_SUPPORTED"
+        }
+      ],
+      "duration_sec": 0.0005677999997715233,
+      "metrics": {
+        "accident_id": "acc_02e73448",
+        "severity": 0.84,
+        "property_damage_usd": 36.64,
+        "driver_injured": true
+      },
+      "raw_data": {}
+    },
+    {
+      "experiment_id": "EXP_15_EXT_11",
+      "name": "Workplace Injuries & Fatigue Hazard Multipliers",
+      "description": "Exhausted agricultural laborer operating tools incurs workplace trauma.",
+      "success": true,
+      "summary": "Workplace trauma occurred during hazardous agricultural task under exhaustion.",
+      "hypotheses": [
+        {
+          "hypothesis": "Workplace injury occurs when operating hazardous tools under severe fatigue",
+          "predicted": true,
+          "observed": true,
+          "status": "HYPOTHESIS_SUPPORTED"
+        }
+      ],
+      "duration_sec": 0.0005437999998321175,
+      "metrics": {
+        "incident_id": "work_a6f40b92",
+        "severity": 0.74,
+        "laborer_conditions": 1
+      },
+      "raw_data": {}
+    },
+    {
+      "experiment_id": "EXP_15_EXT_12",
+      "name": "Flooding, Road Blockage & Household Displacement",
+      "description": "Severe river flooding blocks access routes and degrades residential habitability.",
+      "success": true,
+      "summary": "Flooding disaster blocked roads and displaced 2 individuals.",
+      "hypotheses": [
+        {
+          "hypothesis": "Severe flooding blocks access roads and causes residential displacement",
+          "predicted": true,
+          "observed": true,
+          "status": "HYPOTHESIS_SUPPORTED"
+        }
+      ],
+      "duration_sec": 7.409999943774892e-05,
+      "metrics": {
+        "disaster_type": "flooding",
+        "roads_blocked": [
+          "carretera_los_chorros",
+          "camino_puente_suchitoto"
+        ],
+        "dwelling_quality_after": 0.5,
+        "displaced_count": 2
+      },
+      "raw_data": {}
+    },
+    {
+      "experiment_id": "EXP_15_EXT_13",
+      "name": "Environmental Water Pollution & Community Cleanup Faena",
+      "description": "Untreated waste accumulation pollutes water source; community collective action restores it.",
+      "success": true,
+      "summary": "Community faena restored river potability to 0.75.",
+      "hypotheses": [
+        {
+          "hypothesis": "Community faena mobilizes collective action to restore water potability",
+          "predicted": true,
+          "observed": true,
+          "status": "HYPOTHESIS_SUPPORTED"
+        }
+      ],
+      "duration_sec": 3.790000027947826e-05,
+      "metrics": {
+        "initial_cleanliness": 0.4,
+        "restored_cleanliness": 0.75,
+        "waste_removed_kg": 250.0
+      },
+      "raw_data": {}
+    },
+    {
+      "experiment_id": "EXP_15_EXT_14",
+      "name": "Crime, Theft & Strict Monetary Conservation",
+      "description": "Theft incident transfers funds from victim to perpetrator, rigorously preserving total money.",
+      "success": true,
+      "summary": "Theft of $25 transferred strictly; conserved total money $87.00.",
+      "hypotheses": [
+        {
+          "hypothesis": "Total currency is strictly conserved during theft without creation or deletion",
+          "predicted": true,
+          "observed": true,
+          "status": "HYPOTHESIS_SUPPORTED"
+        }
+      ],
+      "duration_sec": 0.0009501999993517529,
+      "metrics": {
+        "total_currency_before": 87.0,
+        "total_currency_after": 87.0,
+        "victim_balance": 60.0,
+        "thief_balance": 27.0
+      },
+      "raw_data": {}
+    },
+    {
+      "experiment_id": "EXP_15_EXT_15",
+      "name": "Acute Financial Shock, Informal Day Labor & Recovery",
+      "description": "Individual suffering financial drainage works as an agricultural day laborer to survive.",
+      "success": true,
+      "summary": "Informal agricultural labor restored balance from $1.20 to $8.40.",
+      "hypotheses": [
+        {
+          "hypothesis": "Informal day labor provides immediate emergency cash liquidity",
+          "predicted": true,
+          "observed": true,
+          "status": "HYPOTHESIS_SUPPORTED"
+        }
+      ],
+      "duration_sec": 0.00047360000007756753,
+      "metrics": {
+        "initial_money": 1.2,
+        "earned_usd": 7.2,
+        "recovered_balance": 8.4
+      },
+      "raw_data": {}
+    },
+    {
+      "experiment_id": "EXP_15_EXT_16",
+      "name": "Multi-System Causal Cascade Traceability",
+      "description": "Torrential rainfall triggers flood, road blockage, travel delay, and community restoration.",
+      "success": true,
+      "summary": "Acyclic causal graph successfully traced complete chain from tropical storm to road reopening.",
+      "hypotheses": [
+        {
+          "hypothesis": "All cascading consequences link recursively to ancestor causes in DAG without cycles",
+          "predicted": true,
+          "observed": true,
+          "status": "HYPOTHESIS_SUPPORTED"
+        }
+      ],
+      "duration_sec": 0.0001129000002038083,
+      "metrics": {
+        "causal_chain_depth": 3,
+        "root_cause_type": "disaster_occurred",
+        "consequences_count": 3
+      },
+      "raw_data": {
+        "explanation": {
+          "target_event": {
+            "event_id": "51886a66-e9c7-4d1f-8a32-cd1873b0f255",
+            "event_type": "road_reopened",
+            "tick": 6,
+            "description": "Reapertura de vía tras faena comunitaria",
+            "location_id": null,
+            "coordinates": null,
+            "affected_uids": [],
+            "cause_event_ids": [
+              "6e389685-c61e-49f5-bf2c-971d619b7c26"
+            ],
+            "consequence_event_ids": [],
+            "importance": 0.7,
+            "metadata": {
+              "cleared_by": "ADESCO Suchitoto"
+            }
+          },
+          "causal_chain_length": 3,
+          "ancestor_causes": [
+            {
+              "event_id": "5c9199ab-1683-4aa0-9c82-1cb7b247cecf",
+              "event_type": "disaster_occurred",
+              "tick": 1,
+              "description": "Tormenta tropical con precipitación extraordinaria de 55 mm",
+              "location_id": null,
+              "coordinates": null,
+              "affected_uids": [],
+              "cause_event_ids": [],
+              "consequence_event_ids": [
+                "3f6ca512-cc8c-49b1-ac82-5b02e3fbe78b"
+              ],
+              "importance": 0.9,
+              "metadata": {
+                "weather": "Tormenta Tropical",
+                "rainfall_mm": 55.0
+              }
+            },
+            {
+              "event_id": "3f6ca512-cc8c-49b1-ac82-5b02e3fbe78b",
+              "event_type": "disaster_occurred",
+              "tick": 2,
+              "description": "Desbordamiento del Río Suchiacel",
+              "location_id": null,
+              "coordinates": null,
+              "affected_uids": [],
+              "cause_event_ids": [
+                "5c9199ab-1683-4aa0-9c82-1cb7b247cecf"
+              ],
+              "consequence_event_ids": [
+                "6e389685-c61e-49f5-bf2c-971d619b7c26"
+              ],
+              "importance": 0.85,
+              "metadata": {
+                "disaster": "Inundación Río Suchiacel"
+              }
+            },
+            {
+              "event_id": "6e389685-c61e-49f5-bf2c-971d619b7c26",
+              "event_type": "road_blocked",
+              "tick": 3,
+              "description": "Corte de vía en Los Chorros",
+              "location_id": null,
+              "coordinates": null,
+              "affected_uids": [],
+              "cause_event_ids": [
+                "3f6ca512-cc8c-49b1-ac82-5b02e3fbe78b"
+              ],
+              "consequence_event_ids": [
+                "51886a66-e9c7-4d1f-8a32-cd1873b0f255"
+              ],
+              "importance": 0.75,
+              "metadata": {
+                "road": "carretera_los_chorros"
+              }
+            }
+          ],
+          "consequences_count": 0,
+          "descendant_consequences": [],
+          "narrative_explanation": "Event 'road_reopened' occurred at tick 6 at general territory. Triggered by 3 prior cause(s): [Tick 1] disaster_occurred: Tormenta tropical con precipitación extraordinaria de 55 mm; [Tick 2] disaster_occurred: Desbordamiento del Río Suchiacel; [Tick 3] road_blocked: Corte de vía en Los Chorros."
+        }
+      }
+    },
+    {
+      "experiment_id": "EXP_15_EXT_17",
+      "name": "Multi-Seed Robustness, Uncertainty & Null Outcomes",
+      "description": "Stochastic hazard, contagion, water and romance mechanisms are re-run across five seeds to measure spread and confirm that null outcomes remain reachable.",
+      "success": true,
+      "summary": "Across 5 seeds: traffic accident rate 0.0000-0.0200 (dry/rested) vs 0.1467-0.2467 (storm/fatigued); zero-infection trials 0.53-0.68; romance formations 20-20 of 20.",
+      "hypotheses": [
+        {
+          "hypothesis": "Contextual risk ordering (storm + fatigue vs dry + rested) is stable across seeds",
+          "predicted": true,
+          "observed": true,
+          "status": "HYPOTHESIS_SUPPORTED"
+        },
+        {
+          "hypothesis": "Not every exposure produces infection; null trials persist across seeds",
+          "predicted": true,
+          "observed": true,
+          "status": "HYPOTHESIS_SUPPORTED"
+        },
+        {
+          "hypothesis": "Potable water produces no illness while contaminated water does",
+          "predicted": true,
+          "observed": true,
+          "status": "HYPOTHESIS_SUPPORTED"
+        },
+        {
+          "hypothesis": "Stochastic rates differ between seeds, so uncertainty must be reported",
+          "predicted": true,
+          "observed": true,
+          "status": "HYPOTHESIS_SUPPORTED"
+        },
+        {
+          "hypothesis": "Romantic interest can fail: wide age-gap pairings are partly filtered out",
+          "predicted": true,
+          "observed": true,
+          "status": "HYPOTHESIS_SUPPORTED"
+        }
+      ],
+      "duration_sec": 0.8619801000004372,
+      "metrics": {
+        "seeds": [
+          7,
+          13,
+          42,
+          99,
+          2024
+        ],
+        "low_risk_accident_rates": [
+          0.02,
+          0.0133,
+          0.0067,
+          0.0,
+          0.02
+        ],
+        "high_risk_accident_rates": [
+          0.24,
+          0.2467,
+          0.2067,
+          0.1467,
+          0.2333
+        ],
+        "low_risk_accident_rate_mean": 0.012,
+        "high_risk_accident_rate_mean": 0.2147,
+        "high_risk_rate_std": 0.0366,
+        "per_contact_transmission_rates": [
+          0.0958,
+          0.0792,
+          0.0833,
+          0.0542,
+          0.0958
+        ],
+        "zero_infection_trial_fractions": [
+          0.525,
+          0.575,
+          0.55,
+          0.675,
+          0.525
+        ],
+        "clean_water_illness_rates": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "contaminated_water_illness_rates": [
+          0.285,
+          0.215,
+          0.275,
+          0.235,
+          0.375
+        ],
+        "romance_formations": [
+          20,
+          20,
+          20,
+          20,
+          20
+        ],
+        "age_gap_romance_formations": [
+          11,
+          12,
+          13,
+          12,
+          11
+        ],
+        "risk_ordering_stable": true,
+        "null_outcomes_possible": true
+      },
+      "raw_data": {}
+    }
+  ]
+}

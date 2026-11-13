@@ -124,6 +124,28 @@ class Serializer:
                 for g in getattr(human.autonomy, "goals", [])
             ]
 
+        # Phase 1.5 extension state (health, romance and family links).
+        # Stored inside physical_state_json so existing databases keep working
+        # without a schema migration.
+        extension_data = {
+            "active_health_conditions": [
+                c.to_dict() if hasattr(c, "to_dict") else dict(c)
+                for c in getattr(human, "active_health_conditions", [])
+            ],
+            "health_history": list(getattr(human, "health_history", [])),
+            "romantic_partner_id": getattr(human, "romantic_partner_id", None),
+            "heartbreak_state": (
+                human.heartbreak_state.to_dict()
+                if getattr(human, "heartbreak_state", None) is not None
+                and hasattr(human.heartbreak_state, "to_dict")
+                else None
+            ),
+            "dependent_children_ids": list(getattr(human, "dependent_children_ids", [])),
+            "caregiver_ids": list(getattr(human, "caregiver_ids", [])),
+            "elderly_dependents_ids": list(getattr(human, "elderly_dependents_ids", [])),
+        }
+        physical_data["extension"] = extension_data
+
         # Personality traits  — dict[str, {base_value, current_value, drift_rate}]
         personality_data: dict[str, Any] = {}
         if hasattr(human, "personality") and human.personality is not None:

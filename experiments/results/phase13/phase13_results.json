@@ -1,0 +1,293 @@
+{
+  "EXP_13_A": {
+    "name": "Desarrollo Cognitivo Individual y Compensaciones",
+    "success": true,
+    "summary": "Capacidades entrenadas aumentaron (+0.154) sin incremento uniforme general (+0.000).",
+    "metrics": {
+      "mean_trained_gain": 0.1542,
+      "mean_untrained_gain": 0.0,
+      "trained_vs_untrained_ratio": 154.19,
+      "seeds_evaluated": 5
+    },
+    "duration_seconds": 0.01334,
+    "hypotheses": [
+      {
+        "hypothesis": "El entrenamiento específico produce desarrollo cognitivo diferenciado con compensaciones de presupuesto.",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_13_B": {
+    "name": "Aprendizaje de Segundo Orden (Aprender a Aprender)",
+    "success": true,
+    "summary": "Agentes con meta-aprendizaje cambiaron de estrategia (12.7 cambios) rindiendo 42.3 XP vs 9.0 XP.",
+    "metrics": {
+      "mean_meta_xp": 42.33,
+      "mean_fixed_xp": 9.0,
+      "mean_strategy_switches": 12.67,
+      "relative_gain_multiplier": 4.7
+    },
+    "duration_seconds": 0.00457,
+    "hypotheses": [
+      {
+        "hypothesis": "El aprendizaje de segundo orden detecta métodos ineficaces y pivota hacia estrategias óptimas.",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_13_C": {
+    "name": "Plasticidad Cognitiva, Curvas de Práctica y Atrofia",
+    "success": true,
+    "summary": "Rendimientos decrecientes validados: ganancia novato (0.0523) superó a experto (0.0070) por factor 7.5x. Atrofia normal (0.014) > sobreaprendizaje (0.007).",
+    "metrics": {
+      "gain_novice": 0.0523,
+      "gain_expert": 0.007,
+      "diminishing_ratio": 7.45,
+      "decay_normal": 0.0136,
+      "decay_overlearned": 0.0068
+    },
+    "duration_seconds": 3e-05,
+    "hypotheses": [
+      {
+        "hypothesis": "La plasticidad sigue curvas asintóticas no lineales y el desuso prolongado degrada competencias no consolidadas.",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_13_D": {
+    "name": "Divergencia Cognitiva Individual",
+    "success": true,
+    "summary": "Gemelos idénticos divergieron significativamente: distancia L2 = 0.611, L1 = 1.211, máxima disparidad = 0.353.",
+    "metrics": {
+      "mean_l2_divergence": 0.611,
+      "mean_l1_divergence": 1.2113,
+      "mean_max_disparity": 0.3527,
+      "twin_pairs_tested": 5
+    },
+    "duration_seconds": 0.01178,
+    "hypotheses": [
+      {
+        "hypothesis": "Individuos con condiciones iniciales idénticas divergen en su perfil cognitivo debido a experiencias y entornos diferenciados.",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_13_E": {
+    "name": "Descubrimiento de Conocimiento Autónomo",
+    "success": true,
+    "summary": "Ciclo científico de 8 etapas completado: resultado 'supported', creencia actualizada a 'verified_knowledge' (confianza 0.600).",
+    "metrics": {
+      "stages_completed": 8,
+      "outcome_status": "supported",
+      "final_belief_type": "verified_knowledge",
+      "confidence": 0.6,
+      "transmission_hop_count": 1
+    },
+    "duration_seconds": 0.00107,
+    "hypotheses": [
+      {
+        "hypothesis": "El agente navega las 8 etapas del pensamiento científico sin recetas fijas, validando empíricamente la hipótesis.",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_13_F": {
+    "name": "Razonamiento Científico, Conclusiones Erróneas y Refutación",
+    "success": true,
+    "summary": "Sesgo de muestra pequeña detectado (resultado inicial 'false_conclusion', confianza 0.55). Replicación ampliada corrigió el error hacia 'refuted' (confianza 0.36).",
+    "metrics": {
+      "initial_outcome": "false_conclusion",
+      "initial_confidence": 0.55,
+      "final_outcome": "refuted",
+      "final_confidence": 0.356,
+      "final_belief_type": "refuted_knowledge"
+    },
+    "duration_seconds": 0.00111,
+    "hypotheses": [
+      {
+        "hypothesis": "El motor permite conclusiones falsas ante muestras reducidas y las refuta ante evidencia experimental sistemática.",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_13_G": {
+    "name": "Transmisión Cultural Imperfecta y Mutación",
+    "success": true,
+    "summary": "Transmisión completada en 5 saltos (4/5 exitosos). Variantes emergentes: 3. Fidelidad media: 0.925.",
+    "metrics": {
+      "transmission_successes": 4,
+      "variants_created": 3,
+      "mean_fidelity": 0.925,
+      "total_traditions_in_network": 2
+    },
+    "duration_seconds": 0.00447,
+    "hypotheses": [
+      {
+        "hypothesis": "La transmisión cultural no es fotostática; exhibe variación estocástica y mutación según capacidades.",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_13_H": {
+    "name": "Fragmentación Cultural por Partición Social",
+    "success": true,
+    "summary": "Fragmentación cultural verificada: tradición original conservada por grupo A (N=6) y rama divergente adoptada por grupo B (N=6), delta parámetro = 12.0 cm.",
+    "metrics": {
+      "original_parameter": 30.0,
+      "divergent_parameter": 42.0,
+      "parameter_difference": 12.0,
+      "adopters_group_a": 6,
+      "adopters_group_b": 6
+    },
+    "duration_seconds": 8e-05,
+    "hypotheses": [
+      {
+        "hypothesis": "La partición social conduce a ramificaciones culturales divergentes con deriva paramétrica medible.",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_13_I": {
+    "name": "Transmisión Intergeneracional y Extinción Cultural",
+    "success": true,
+    "summary": "Transmisión intergeneracional exitosa para Alfarería (aprendiz incorporado); Extinción cultural verificada para Añil Silvestre tras defunción del único conocedor.",
+    "metrics": {
+      "preserved_tradition_adopters": 2,
+      "is_preserved_active": true,
+      "extinct_tradition_id": "trad_arti_45005d",
+      "is_extinct": true
+    },
+    "duration_seconds": 5e-05,
+    "hypotheses": [
+      {
+        "hypothesis": "Las tradiciones se preservan mediante relevo generacional y se extinguen si fallecen sus portadores sin transmisión previa.",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_13_J": {
+    "name": "Educación Distribuida y Emergencia de Talleres",
+    "success": true,
+    "summary": "Taller emergió espontáneamente ('Taller Comunitario de Textiles de san_sebastian_textil'). Ganancia en taller (0.094) superó a autodidacta (0.044) en +115.2%.",
+    "metrics": {
+      "institution_name": "Taller Comunitario de Textiles de san_sebastian_textil",
+      "institution_type": "workshop",
+      "apprentices_enrolled": 3,
+      "workshop_mean_gain": 0.0942,
+      "autodidact_gain": 0.0438,
+      "pedagogical_advantage_pct": 115.2
+    },
+    "duration_seconds": 0.00341,
+    "hypotheses": [
+      {
+        "hypothesis": "Las instituciones educativas emergen ante demanda y recursos, acelerando la competencia frente al autoaprendizaje aislado.",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_13_K": {
+    "name": "Resolución Colectiva de Problemas y Fricción",
+    "success": true,
+    "summary": "Resultados colectivos divergentes: Equipo alineado -> solved; Equipo con conflicto -> failed; Pensamiento de grupo con propuesta viciada -> failed.",
+    "metrics": {
+      "aligned_outcome": "solved",
+      "conflicted_outcome": "failed",
+      "groupthink_outcome": "failed",
+      "disagreements_in_conflicted": 4
+    },
+    "duration_seconds": 0.00015,
+    "hypotheses": [
+      {
+        "hypothesis": "La cooperación no garantiza el éxito; depende de incentivos alineados y de la validez objetiva de las propuestas.",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_13_L": {
+    "name": "Desarrollo Cognitivo Bajo Escasez y Privación",
+    "success": true,
+    "summary": "Impuesto cognitivo por escasez verificado: memoria efectiva reducida de 0.56 a 0.36; ganancia de aprendizaje penalizada en 42.4%.",
+    "metrics": {
+      "effective_wm_scarce": 0.364,
+      "effective_wm_abundant": 0.56,
+      "gain_scarce": 0.0249,
+      "gain_abundant": 0.0433,
+      "deprivation_tax_pct": 42.4
+    },
+    "duration_seconds": 0.00169,
+    "hypotheses": [
+      {
+        "hypothesis": "La privación crónica de recursos y el hambre reducen el ancho de banda atencional e inhiben el aprendizaje.",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_13_M": {
+    "name": "Envejecimiento Cognitivo y Retención de Saberes",
+    "success": true,
+    "summary": "Senescencia diferenciada demostrada: plasticidad fluida disminuye en vejez (0.56 vs joven 1.00), pero sabiduría cristalizada persiste (0.89, nivel=0.85).",
+    "metrics": {
+      "young_fluid_plasticity": 1.0,
+      "senior_fluid_plasticity": 0.56,
+      "senior_crystallized_plasticity": 0.89,
+      "senior_causal_understanding": 0.85
+    },
+    "duration_seconds": 0.00165,
+    "hypotheses": [
+      {
+        "hypothesis": "El envejecimiento biológico afecta predominantemente capacidades fluidas, preservando la comprensión causal acumulada.",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_13_N": {
+    "name": "Adaptación Conductual y Estabilidad de Rasgos",
+    "success": true,
+    "summary": "Estabilidad de rasgos basales confirmada (deriva = 0.002 <= 0.05). Adaptación cautelosa adquirida (delta actual = +0.010).",
+    "metrics": {
+      "base_trait_drift": 0.002,
+      "current_adaptation_delta": 0.0098,
+      "is_base_stable": true
+    },
+    "duration_seconds": 0.00138,
+    "hypotheses": [
+      {
+        "hypothesis": "Las experiencias significativas modifican estados y hábitos cautelosos sin alterar caóticamente los rasgos estables basales.",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "verified": true
+      }
+    ]
+  },
+  "EXP_13_O": {
+    "name": "Evolución Cognitiva y Cultural Longitudinal",
+    "success": true,
+    "summary": "Divergencia longitudinal multi-semilla confirmada en 5 sociedades: distancia media = 1.373 > 0.50.",
+    "metrics": {
+      "mean_inter_societal_divergence": 1.3733,
+      "societies_simulated": 5,
+      "min_divergence": 0.3617,
+      "max_divergence": 2.3394
+    },
+    "duration_seconds": 0.02333,
+    "hypotheses": [
+      {
+        "hypothesis": "Las sociedades artificiales expuestas a dinámicas cognitivas y culturales abiertas divergen hacia estados históricos diferenciados.",
+        "status": "HYPOTHESIS_SUPPORTED",
+        "verified": true
+      }
+    ]
+  }
+}

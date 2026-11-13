@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import sys
 from typing import Any, Optional
+from uuid import UUID
 
 from saltbor.cognition.memory.consolidation import MemoryConsolidator
 from saltbor.cognition.memory.episodic import EpisodicMemory, EpisodicRecord
@@ -80,8 +81,20 @@ class MemoryEngine:
         return self.location_associations.get(location_id, {"valence": 0.0, "intensity": 0.0})
 
     def get_human_association(self, human_id: HumanID) -> dict[str, float]:
-        """Return emotional association for a given human, or neutral default."""
-        return self.human_associations.get(human_id, {"valence": 0.0, "intensity": 0.0})
+        """Return emotional association for a given human, or neutral default.
+
+        Associations are keyed by ``HumanID``, but callers such as the API and
+        the perception engine often hold the identifier as a string.  Looking a
+        ``str`` up directly would silently return the neutral default and make
+        a familiar person look like a stranger, so the key is normalised.
+        """
+        association = self.human_associations.get(human_id)
+        if association is None and isinstance(human_id, str):
+            try:
+                association = self.human_associations.get(UUID(human_id))
+            except (ValueError, AttributeError, TypeError):
+                association = None
+        return association if association is not None else {"valence": 0.0, "intensity": 0.0}
 
     def record_event(
         self,

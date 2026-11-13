@@ -1,0 +1,696 @@
+{
+  "type": "FeatureCollection",
+  "name": "saltbor_elevation_san_salvador_centro",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  },
+  "metadata": {
+    "zone": "san_salvador_centro",
+    "feature_count": 10
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "elev_635m",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -89.187455,
+            13.693
+          ],
+          [
+            -89.187719,
+            13.694
+          ],
+          [
+            -89.187931,
+            13.695
+          ],
+          [
+            -89.188089,
+            13.696
+          ],
+          [
+            -89.188195,
+            13.697
+          ],
+          [
+            -89.188248,
+            13.698
+          ],
+          [
+            -89.188248,
+            13.699
+          ],
+          [
+            -89.188195,
+            13.7
+          ],
+          [
+            -89.188089,
+            13.701
+          ],
+          [
+            -89.187931,
+            13.702
+          ],
+          [
+            -89.187719,
+            13.703
+          ],
+          [
+            -89.187455,
+            13.704
+          ]
+        ]
+      },
+      "properties": {
+        "feature_id": "elev_635m",
+        "elevation_m": 635,
+        "contour_interval_m": 5,
+        "name": "Curva de Nivel 635 msnm",
+        "validation_state": "ESTIMATED",
+        "source": "IGN_MARN_Modelo_Digital_Elevacion",
+        "fetch_date": "2024-05-10",
+        "license": "Public_Domain_SV",
+        "known_accuracy": "metric"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "elev_640m",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -89.188909,
+            13.693
+          ],
+          [
+            -89.189174,
+            13.694
+          ],
+          [
+            -89.189385,
+            13.695
+          ],
+          [
+            -89.189544,
+            13.696
+          ],
+          [
+            -89.18965,
+            13.697
+          ],
+          [
+            -89.189702,
+            13.698
+          ],
+          [
+            -89.189702,
+            13.699
+          ],
+          [
+            -89.18965,
+            13.7
+          ],
+          [
+            -89.189544,
+            13.701
+          ],
+          [
+            -89.189385,
+            13.702
+          ],
+          [
+            -89.189174,
+            13.703
+          ],
+          [
+            -89.188909,
+            13.704
+          ]
+        ]
+      },
+      "properties": {
+        "feature_id": "elev_640m",
+        "elevation_m": 640,
+        "contour_interval_m": 5,
+        "name": "Curva de Nivel 640 msnm",
+        "validation_state": "ESTIMATED",
+        "source": "IGN_MARN_Modelo_Digital_Elevacion",
+        "fetch_date": "2024-05-10",
+        "license": "Public_Domain_SV",
+        "known_accuracy": "metric"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "elev_645m",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -89.190364,
+            13.693
+          ],
+          [
+            -89.190628,
+            13.694
+          ],
+          [
+            -89.19084,
+            13.695
+          ],
+          [
+            -89.190998,
+            13.696
+          ],
+          [
+            -89.191104,
+            13.697
+          ],
+          [
+            -89.191157,
+            13.698
+          ],
+          [
+            -89.191157,
+            13.699
+          ],
+          [
+            -89.191104,
+            13.7
+          ],
+          [
+            -89.190998,
+            13.701
+          ],
+          [
+            -89.19084,
+            13.702
+          ],
+          [
+            -89.190628,
+            13.703
+          ],
+          [
+            -89.190364,
+            13.704
+          ]
+        ]
+      },
+      "properties": {
+        "feature_id": "elev_645m",
+        "elevation_m": 645,
+        "contour_interval_m": 5,
+        "name": "Curva de Nivel 645 msnm",
+        "validation_state": "ESTIMATED",
+        "source": "IGN_MARN_Modelo_Digital_Elevacion",
+        "fetch_date": "2024-05-10",
+        "license": "Public_Domain_SV",
+        "known_accuracy": "metric"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "elev_650m",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -89.191818,
+            13.693
+          ],
+          [
+            -89.192083,
+            13.694
+          ],
+          [
+            -89.192294,
+            13.695
+          ],
+          [
+            -89.192453,
+            13.696
+          ],
+          [
+            -89.192559,
+            13.697
+          ],
+          [
+            -89.192612,
+            13.698
+          ],
+          [
+            -89.192612,
+            13.699
+          ],
+          [
+            -89.192559,
+            13.7
+          ],
+          [
+            -89.192453,
+            13.701
+          ],
+          [
+            -89.192294,
+            13.702
+          ],
+          [
+            -89.192083,
+            13.703
+          ],
+          [
+            -89.191818,
+            13.704
+          ]
+        ]
+      },
+      "properties": {
+        "feature_id": "elev_650m",
+        "elevation_m": 650,
+        "contour_interval_m": 5,
+        "name": "Curva de Nivel 650 msnm",
+        "validation_state": "ESTIMATED",
+        "source": "IGN_MARN_Modelo_Digital_Elevacion",
+        "fetch_date": "2024-05-10",
+        "license": "Public_Domain_SV",
+        "known_accuracy": "metric"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "elev_655m",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -89.193273,
+            13.693
+          ],
+          [
+            -89.193537,
+            13.694
+          ],
+          [
+            -89.193749,
+            13.695
+          ],
+          [
+            -89.193907,
+            13.696
+          ],
+          [
+            -89.194013,
+            13.697
+          ],
+          [
+            -89.194066,
+            13.698
+          ],
+          [
+            -89.194066,
+            13.699
+          ],
+          [
+            -89.194013,
+            13.7
+          ],
+          [
+            -89.193907,
+            13.701
+          ],
+          [
+            -89.193749,
+            13.702
+          ],
+          [
+            -89.193537,
+            13.703
+          ],
+          [
+            -89.193273,
+            13.704
+          ]
+        ]
+      },
+      "properties": {
+        "feature_id": "elev_655m",
+        "elevation_m": 655,
+        "contour_interval_m": 5,
+        "name": "Curva de Nivel 655 msnm",
+        "validation_state": "ESTIMATED",
+        "source": "IGN_MARN_Modelo_Digital_Elevacion",
+        "fetch_date": "2024-05-10",
+        "license": "Public_Domain_SV",
+        "known_accuracy": "metric"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "elev_660m",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -89.194727,
+            13.693
+          ],
+          [
+            -89.194992,
+            13.694
+          ],
+          [
+            -89.195203,
+            13.695
+          ],
+          [
+            -89.195362,
+            13.696
+          ],
+          [
+            -89.195468,
+            13.697
+          ],
+          [
+            -89.195521,
+            13.698
+          ],
+          [
+            -89.195521,
+            13.699
+          ],
+          [
+            -89.195468,
+            13.7
+          ],
+          [
+            -89.195362,
+            13.701
+          ],
+          [
+            -89.195203,
+            13.702
+          ],
+          [
+            -89.194992,
+            13.703
+          ],
+          [
+            -89.194727,
+            13.704
+          ]
+        ]
+      },
+      "properties": {
+        "feature_id": "elev_660m",
+        "elevation_m": 660,
+        "contour_interval_m": 5,
+        "name": "Curva de Nivel 660 msnm",
+        "validation_state": "ESTIMATED",
+        "source": "IGN_MARN_Modelo_Digital_Elevacion",
+        "fetch_date": "2024-05-10",
+        "license": "Public_Domain_SV",
+        "known_accuracy": "metric"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "elev_665m",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -89.196182,
+            13.693
+          ],
+          [
+            -89.196446,
+            13.694
+          ],
+          [
+            -89.196658,
+            13.695
+          ],
+          [
+            -89.196817,
+            13.696
+          ],
+          [
+            -89.196922,
+            13.697
+          ],
+          [
+            -89.196975,
+            13.698
+          ],
+          [
+            -89.196975,
+            13.699
+          ],
+          [
+            -89.196922,
+            13.7
+          ],
+          [
+            -89.196817,
+            13.701
+          ],
+          [
+            -89.196658,
+            13.702
+          ],
+          [
+            -89.196446,
+            13.703
+          ],
+          [
+            -89.196182,
+            13.704
+          ]
+        ]
+      },
+      "properties": {
+        "feature_id": "elev_665m",
+        "elevation_m": 665,
+        "contour_interval_m": 5,
+        "name": "Curva de Nivel 665 msnm",
+        "validation_state": "ESTIMATED",
+        "source": "IGN_MARN_Modelo_Digital_Elevacion",
+        "fetch_date": "2024-05-10",
+        "license": "Public_Domain_SV",
+        "known_accuracy": "metric"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "elev_670m",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -89.197636,
+            13.693
+          ],
+          [
+            -89.197901,
+            13.694
+          ],
+          [
+            -89.198112,
+            13.695
+          ],
+          [
+            -89.198271,
+            13.696
+          ],
+          [
+            -89.198377,
+            13.697
+          ],
+          [
+            -89.19843,
+            13.698
+          ],
+          [
+            -89.19843,
+            13.699
+          ],
+          [
+            -89.198377,
+            13.7
+          ],
+          [
+            -89.198271,
+            13.701
+          ],
+          [
+            -89.198112,
+            13.702
+          ],
+          [
+            -89.197901,
+            13.703
+          ],
+          [
+            -89.197636,
+            13.704
+          ]
+        ]
+      },
+      "properties": {
+        "feature_id": "elev_670m",
+        "elevation_m": 670,
+        "contour_interval_m": 5,
+        "name": "Curva de Nivel 670 msnm",
+        "validation_state": "ESTIMATED",
+        "source": "IGN_MARN_Modelo_Digital_Elevacion",
+        "fetch_date": "2024-05-10",
+        "license": "Public_Domain_SV",
+        "known_accuracy": "metric"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "elev_675m",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -89.199091,
+            13.693
+          ],
+          [
+            -89.199355,
+            13.694
+          ],
+          [
+            -89.199567,
+            13.695
+          ],
+          [
+            -89.199726,
+            13.696
+          ],
+          [
+            -89.199831,
+            13.697
+          ],
+          [
+            -89.199884,
+            13.698
+          ],
+          [
+            -89.199884,
+            13.699
+          ],
+          [
+            -89.199831,
+            13.7
+          ],
+          [
+            -89.199726,
+            13.701
+          ],
+          [
+            -89.199567,
+            13.702
+          ],
+          [
+            -89.199355,
+            13.703
+          ],
+          [
+            -89.199091,
+            13.704
+          ]
+        ]
+      },
+      "properties": {
+        "feature_id": "elev_675m",
+        "elevation_m": 675,
+        "contour_interval_m": 5,
+        "name": "Curva de Nivel 675 msnm",
+        "validation_state": "ESTIMATED",
+        "source": "IGN_MARN_Modelo_Digital_Elevacion",
+        "fetch_date": "2024-05-10",
+        "license": "Public_Domain_SV",
+        "known_accuracy": "metric"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "elev_680m",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -89.200545,
+            13.693
+          ],
+          [
+            -89.20081,
+            13.694
+          ],
+          [
+            -89.201021,
+            13.695
+          ],
+          [
+            -89.20118,
+            13.696
+          ],
+          [
+            -89.201286,
+            13.697
+          ],
+          [
+            -89.201339,
+            13.698
+          ],
+          [
+            -89.201339,
+            13.699
+          ],
+          [
+            -89.201286,
+            13.7
+          ],
+          [
+            -89.20118,
+            13.701
+          ],
+          [
+            -89.201021,
+            13.702
+          ],
+          [
+            -89.20081,
+            13.703
+          ],
+          [
+            -89.200545,
+            13.704
+          ]
+        ]
+      },
+      "properties": {
+        "feature_id": "elev_680m",
+        "elevation_m": 680,
+        "contour_interval_m": 5,
+        "name": "Curva de Nivel 680 msnm",
+        "validation_state": "ESTIMATED",
+        "source": "IGN_MARN_Modelo_Digital_Elevacion",
+        "fetch_date": "2024-05-10",
+        "license": "Public_Domain_SV",
+        "known_accuracy": "metric"
+      }
+    }
+  ]
+}

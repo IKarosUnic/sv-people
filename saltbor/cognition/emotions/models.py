@@ -26,6 +26,14 @@ EMOTION_VALENCE: dict[EmotionType, float] = {
     EmotionType.LONELINESS: -0.75,
     EmotionType.SHAME: -0.5,
     EmotionType.GUILT: -0.4,
+    EmotionType.STRESS: -0.7,
+    EmotionType.GRIEF: -0.9,
+    EmotionType.HOPE: 0.8,
+    EmotionType.PRIDE: 0.75,
+    EmotionType.REGRET: -0.65,
+    EmotionType.RELIEF: 0.85,
+    EmotionType.RESENTMENT: -0.8,
+    EmotionType.JEALOUSY: -0.75,
 }
 
 # Default per-tick decay rates based on biological/psychological half-lives.
@@ -45,6 +53,14 @@ EMOTION_DEFAULT_DECAY: dict[EmotionType, float] = {
     EmotionType.LONELINESS: 0.015,
     EmotionType.SHAME: 0.035,
     EmotionType.GUILT: 0.025,
+    EmotionType.STRESS: 0.025,
+    EmotionType.GRIEF: 0.008,
+    EmotionType.HOPE: 0.02,
+    EmotionType.PRIDE: 0.025,
+    EmotionType.REGRET: 0.02,
+    EmotionType.RELIEF: 0.04,
+    EmotionType.RESENTMENT: 0.012,
+    EmotionType.JEALOUSY: 0.02,
 }
 
 

@@ -318,13 +318,37 @@ def cmd_audit(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_serve(args: argparse.Namespace) -> int:
+    """Launch the interactive visual simulation environment web server."""
+    from saltbor.visualization.server import run_server
+
+    if getattr(args, "open_browser", False):
+        import threading
+        import webbrowser
+        def _open():
+            time.sleep(1.2)
+            webbrowser.open(f"http://{args.host}:{args.port}/")
+        threading.Thread(target=_open, daemon=True).start()
+
+    run_server(host=args.host, port=args.port, seed=args.seed, db_path=args.db)
+    return 0
+
+
 def main() -> int:
     """CLI argument routing."""
     parser = argparse.ArgumentParser(
         prog="saltbor",
-        description="Saltbor — Synthetic Human and Society Simulation (Phase 0.1)",
+        description="Saltbor — Synthetic Human and Society Simulation",
     )
     subparsers = parser.add_subparsers(dest="command", help="Simulation command to execute")
+
+    # serve command (Phase 1.3-V)
+    serve_parser = subparsers.add_parser("serve", help="Launch interactive visual simulation web environment")
+    serve_parser.add_argument("--host", type=str, default="127.0.0.1", help="Host interface to bind (default: 127.0.0.1)")
+    serve_parser.add_argument("--port", type=int, default=8000, help="Port to listen on (default: 8000)")
+    serve_parser.add_argument("--seed", type=int, default=42, help="Master random seed for reproducibility")
+    serve_parser.add_argument("--db", type=str, default="saltbor.db", help="Path to SQLite persistence database")
+    serve_parser.add_argument("--open-browser", action="store_true", help="Automatically launch web browser on startup")
 
     # audit command
     subparsers.add_parser("audit", help="Run Phase 0.5 Performance and Scaling Audit")
@@ -362,7 +386,9 @@ def main() -> int:
 
     args = parser.parse_args()
 
-    if args.command == "run" or args.command is None:
+    if args.command == "serve":
+        return cmd_serve(args)
+    elif args.command == "run" or args.command is None:
         if args.command is None:
             # Default to running 96 ticks
             args = parser.parse_args(["run", "--ticks", "96", "--report-interval", "24"])

@@ -1,4 +1,4 @@
-"""Institutions and collective governance package for Saltbor Phase 0.5."""
+"""Institutions and collective governance package for Saltbor Phase 0.5 & Phase 1.3."""
 
 from saltbor.institutions.governance import (
     GovernanceEngine,
@@ -21,9 +21,21 @@ from saltbor.institutions.model import (
     MemberRole,
     SocialInstitution,
 )
+from saltbor.institutions.education import (
+    ApprenticeshipAgreement,
+    DistributedEducationEngine,
+    EducationalInstitution,
+    EducationalInstitutionType,
+    EducationalRole,
+)
 
 __all__ = [
+    "ApprenticeshipAgreement",
     "CommunityLegalCode",
+    "DistributedEducationEngine",
+    "EducationalInstitution",
+    "EducationalInstitutionType",
+    "EducationalRole",
     "GovernanceEngine",
     "InstitutionalPolicy",
     "InstitutionalProposal",

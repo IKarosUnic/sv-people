@@ -58,6 +58,28 @@ class DecisionContext:
     home_location_id: Optional[LocationID] = None
     work_location_id: Optional[LocationID] = None
 
+    # Phase 1.4 Civilization Integration Context Signals
+    has_active_dispute: bool = False
+    has_remittance_pending: bool = False
+    has_pending_loan: bool = False
+    has_cuchubal_turn: bool = False
+    is_community_assembly_active: bool = False
+    is_festival_active: bool = False
+    is_mentor: bool = False
+    is_apprentice: bool = False
+    active_curiosity_anomaly: Optional[str] = None
+    active_dispute_target: Optional[HumanID] = None
+
+    # Phase 1.5 Everyday Life, Labor & Housing Context Signals
+    is_unemployed: bool = False
+    is_homeless: bool = False
+    has_unpaid_rent: bool = False
+    has_social_invitation: bool = False
+    invitation_activity: Optional[ActivityType] = None
+    invitation_location_id: Optional[LocationID] = None
+    invitation_offered_treat: bool = False
+    personal_preferences: dict[str, Any] = field(default_factory=dict)
+
 
 class DecisionEngine:
     """Multi-attribute utility decision engine with bounded rationality and cognitive traceability."""
@@ -83,6 +105,7 @@ class DecisionEngine:
         # Trait values
         conscientiousness = personality.get_trait("conscientiousness")
         extraversion = personality.get_trait("extraversion")
+        agreeableness = personality.get_trait("agreeableness")
         openness = personality.get_trait("openness")
         neuroticism = personality.get_trait("neuroticism")
         risk_tolerance = personality.get_trait("risk_tolerance")
@@ -196,12 +219,26 @@ class DecisionEngine:
             social_util -= anxiety * 0.35  # Fear / social withdrawal
         if "social" in active_goal_categories or (primary_goal and primary_goal.category in ("social", "reconciliation")):
             social_util += 0.4
-        if len(context.nearby_humans) > 0:
-            social_util += 0.3
+        
+        nearby_count = len(context.nearby_humans)
+        if 0 < nearby_count <= 12:
+            social_util += 0.25  # Pleasant company
+        elif nearby_count > 25:
+            social_util -= 0.15  # Avoid extreme overcrowding / noise
+
+        # Distribute socializing destinations to prevent single-node gridlock
+        social_nodes = ["plaza_central", "plaza_libertad", "parque_cuscatlan", "mercado_central", "casa_comunal"]
+        if context.current_location_id in social_nodes and nearby_count >= 1:
+            social_target = context.current_location_id
+        else:
+            # Deterministically disperse across town using agent's current coordinates/hour
+            loc_hash = abs(hash(str(context.current_location_id) + str(context.hour_int))) % len(social_nodes)
+            social_target = social_nodes[loc_hash]
+
         options.append(
             ActionOption(
                 action_type=ActivityType.SOCIALIZE,
-                target_location_id="plaza_central",
+                target_location_id=social_target,
                 expected_utility=social_util,
                 reasoning=f"Connecting with neighbors (social need={effective_social_drive:.2f}, extraversion={extraversion:.2f}).",
             )
@@ -261,6 +298,324 @@ class DecisionEngine:
                 reasoning="Taking quiet personal leisure time.",
             )
         )
+
+        # -------------------------------------------------------------------
+        # Phase 1.4 Civilization Integration Opportunities
+        # -------------------------------------------------------------------
+        # 9. COMMUNITY_MEETING / ADESCO Assembly
+        if context.is_daytime and (context.is_community_assembly_active or "community" in active_goal_categories or (conscientiousness > 0.65 and agreeableness > 0.65)):
+            comm_util = 0.35 + (agreeableness * 0.35) + (conscientiousness * 0.20) - (exhaustion * 0.3)
+            options.append(
+                ActionOption(
+                    action_type=ActivityType.COMMUNITY_MEETING,
+                    target_location_id="plaza_central",
+                    expected_utility=comm_util,
+                    reasoning=f"Attending community assembly / ADESCO meeting (agreeableness={agreeableness:.2f}).",
+                )
+            )
+
+        # 10. LITIGATE / SEEK_MEDIATION (Triggered by active dispute or intense conflict)
+        if context.has_active_dispute or frustration > 0.60:
+            if agreeableness >= 0.50:
+                med_util = 0.45 + (agreeableness * 0.35) + (patience * 0.25)
+                options.append(
+                    ActionOption(
+                        action_type=ActivityType.SEEK_MEDIATION,
+                        target_location_id="alcaldia_comunal",
+                        expected_utility=med_util,
+                        reasoning="Seeking peaceful communal mediation for dispute.",
+                    )
+                )
+            else:
+                lit_util = 0.40 + (frustration * 0.40) + ((1.0 - agreeableness) * 0.30) - (fear * 0.20)
+                options.append(
+                    ActionOption(
+                        action_type=ActivityType.LITIGATE,
+                        target_location_id="tribunal_de_paz",
+                        expected_utility=lit_util,
+                        reasoning="Filing formal judicial lawsuit before the tribunal.",
+                    )
+                )
+
+        # 11. COMMERCE_SELL / COMMERCE_BUY (Market and Pulpería informal commerce)
+        if context.is_daytime and (8 <= context.hour_int <= 17):
+            if "commerce" in active_goal_categories or (context.work_location_id and "mercado" in context.work_location_id):
+                sell_util = 0.45 + (conscientiousness * 0.35) + (extraversion * 0.20)
+                options.append(
+                    ActionOption(
+                        action_type=ActivityType.COMMERCE_SELL,
+                        target_location_id=context.work_location_id or "mercado_municipal",
+                        expected_utility=sell_util,
+                        reasoning="Selling goods and groceries at market stall or corner store.",
+                    )
+                )
+            if hunger > 0.25 and context.current_money >= 3.0:
+                buy_util = 0.40 + (hunger * 0.60)
+                target_store = "tienda_san_pedro" if context.current_money < 30.0 else "mercado_central"
+                options.append(
+                    ActionOption(
+                        action_type=ActivityType.COMMERCE_BUY,
+                        target_location_id=target_store,
+                        expected_utility=buy_util,
+                        reasoning=f"Buying daily staples and household provisions at {target_store}.",
+                    )
+                )
+
+        # 12. RECEIVE_REMITTANCE (When a family transfer from abroad has arrived)
+        if context.has_remittance_pending and context.is_daytime:
+            rem_util = 0.80 + ((1.0 - min(1.0, context.current_money / 50.0)) * 0.35)
+            options.append(
+                ActionOption(
+                    action_type=ActivityType.RECEIVE_REMITTANCE,
+                    target_location_id="agencia_remesas",
+                    expected_utility=rem_util,
+                    reasoning="Collecting monthly family remittance from relatives abroad.",
+                )
+            )
+
+        # 13. SEEK_CREDIT / REPAY_DEBT
+        if context.has_pending_loan and context.current_money >= 10.0:
+            repay_util = 0.40 + (conscientiousness * 0.45)
+            options.append(
+                ActionOption(
+                    action_type=ActivityType.REPAY_DEBT,
+                    target_location_id="caja_de_credito",
+                    expected_utility=repay_util,
+                    reasoning="Repaying credit installment or settling fiado balance.",
+                )
+            )
+        elif context.current_money < 15.0 and ("financial" in active_goal_categories or conscientiousness > 0.60):
+            credit_util = 0.35 + ((1.0 - min(1.0, context.current_money / 20.0)) * 0.35)
+            options.append(
+                ActionOption(
+                    action_type=ActivityType.SEEK_CREDIT,
+                    target_location_id="caja_de_credito",
+                    expected_utility=credit_util,
+                    reasoning="Applying for micro-credit or emergency grocery credit.",
+                )
+            )
+
+        # 14. TEACH_APPRENTICE / LEARN_TRADE (Mentorship & Distributed Education)
+        if context.is_daytime and (8 <= context.hour_int <= 16):
+            if context.is_mentor:
+                teach_util = 0.45 + (agreeableness * 0.35) + (conscientiousness * 0.25)
+                options.append(
+                    ActionOption(
+                        action_type=ActivityType.TEACH_APPRENTICE,
+                        target_location_id=context.work_location_id or "taller_artesanal",
+                        expected_utility=teach_util,
+                        reasoning="Instructing apprentice in craft techniques at workshop.",
+                    )
+                )
+            elif context.is_apprentice or "skill" in active_goal_categories:
+                learn_util = 0.50 + (openness * 0.35) + (curiosity * 0.30)
+                options.append(
+                    ActionOption(
+                        action_type=ActivityType.LEARN_TRADE,
+                        target_location_id="taller_artesanal",
+                        expected_utility=learn_util,
+                        reasoning="Practicing trade skills under master supervision.",
+                    )
+                )
+
+        # 15. CONDUCT_EXPERIMENT (Scientific inquiry)
+        if context.is_daytime and (curiosity > 0.50 or openness > 0.70 or context.active_curiosity_anomaly is not None):
+            exp_util = 0.40 + (curiosity * 0.45) + (openness * 0.30)
+            options.append(
+                ActionOption(
+                    action_type=ActivityType.CONDUCT_EXPERIMENT,
+                    target_location_id="laboratorio_agricola",
+                    expected_utility=exp_util,
+                    reasoning=f"Conducting empirical test on hypothesis (curiosity={curiosity:.2f}).",
+                )
+            )
+
+        # 16. ATTEND_CELEBRATION / COOPERATE
+        if context.is_festival_active and exhaustion < 0.6:
+            fest_util = 0.50 + (extraversion * 0.40) + (mood * 0.20)
+            options.append(
+                ActionOption(
+                    action_type=ActivityType.ATTEND_CELEBRATION,
+                    target_location_id="plaza_central",
+                    expected_utility=fest_util,
+                    reasoning="Participating in community patron saint festival.",
+                )
+            )
+
+        # -------------------------------------------------------------------
+        # Phase 1.5 Everyday Life, Commercial, Labor, Housing & Leisure Options
+        # -------------------------------------------------------------------
+
+        # 17. Commercial Browsing, Window Shopping & Price Comparison
+        if context.is_daytime and (7 <= context.hour_int <= 19):
+            # Window shopping: admire goods without entering or spending
+            if curiosity > 0.35 or openness > 0.45 or context.current_money < 20.0:
+                win_util = 0.28 + (curiosity * 0.30) + (openness * 0.15)
+                options.append(
+                    ActionOption(
+                        action_type=ActivityType.WINDOW_SHOPPING,
+                        target_location_id="mercado_central",
+                        expected_utility=win_util,
+                        reasoning="Observing goods and window shopping without spending money.",
+                    )
+                )
+
+            # Browsing store: inspect goods inside store out of curiosity
+            if curiosity > 0.45:
+                browse_util = 0.30 + (curiosity * 0.35) + (openness * 0.20)
+                options.append(
+                    ActionOption(
+                        action_type=ActivityType.BROWSE_STORE,
+                        target_location_id="tienda_san_pedro",
+                        expected_utility=browse_util,
+                        reasoning="Browsing corner store shelves to see new items and check inventory.",
+                    )
+                )
+
+            # Price comparison: smart consumer market survey
+            if conscientiousness > 0.45:
+                comp_util = 0.29 + (conscientiousness * 0.35)
+                options.append(
+                    ActionOption(
+                        action_type=ActivityType.COMPARE_PRICES,
+                        target_location_id="mercado_central",
+                        expected_utility=comp_util,
+                        reasoning="Surveying prices across market vendors to budget carefully.",
+                    )
+                )
+
+        # 18. DINE_OUT (Eating prepared food at pupusería or comedor)
+        if (7 <= context.hour_int <= 21) and hunger > 0.25:
+            dining_pref = context.personal_preferences.get("dining_out_affinity", 0.5)
+            if context.current_money >= 3.50 or context.invitation_offered_treat:
+                dine_util = 0.35 + (hunger * 0.50) + (extraversion * 0.20) + (dining_pref * 0.25)
+                options.append(
+                    ActionOption(
+                        action_type=ActivityType.DINE_OUT,
+                        target_location_id="comedor_dona_maria",
+                        expected_utility=dine_util,
+                        reasoning="Dine out for hot pupusas and social chatter at comedor.",
+                    )
+                )
+
+        # 19. Leisure: VISIT_PARK, SEEK_ENTERTAINMENT, SPORT, HOBBY
+        if context.is_daytime and exhaustion < 0.70:
+            park_pref = context.personal_preferences.get("park_walking_preference", 0.6)
+            park_util = 0.32 + (park_pref * 0.25) + (openness * 0.20) + (anxiety * 0.25)
+            options.append(
+                ActionOption(
+                    action_type=ActivityType.VISIT_PARK,
+                    target_location_id="parque_la_ceiba",
+                    expected_utility=park_util,
+                    reasoning="Visiting park under ceiba trees for fresh air and stress relief.",
+                )
+            )
+
+            # Hobby
+            hobby_util = 0.28 + (openness * 0.35) + (conscientiousness * 0.20)
+            options.append(
+                ActionOption(
+                    action_type=ActivityType.PARTICIPATE_IN_HOBBY,
+                    target_location_id=context.home_location_id or "casa_comunal",
+                    expected_utility=hobby_util,
+                    reasoning="Practicing craft hobby or personal reading.",
+                )
+            )
+
+            # Sport
+            if 14 <= context.hour_int <= 18 and exhaustion < 0.50:
+                sport_pref = context.personal_preferences.get("sports_affinity", 0.4)
+                sport_util = 0.30 + (sport_pref * 0.35) + (extraversion * 0.25)
+                options.append(
+                    ActionOption(
+                        action_type=ActivityType.PLAY_SPORT,
+                        target_location_id="parque_la_ceiba",
+                        expected_utility=sport_util,
+                        reasoning="Joining pickup soccer game with community youth.",
+                    )
+                )
+
+        # 20. Social Visits (VISIT_FRIEND / VISIT_RELATIVE)
+        if social_need > 0.30 and exhaustion < 0.65:
+            social_visit_util = 0.35 + (social_need * 0.40) + (agreeableness * 0.25)
+            options.append(
+                ActionOption(
+                    action_type=ActivityType.VISIT_FRIEND,
+                    target_location_id="casa_comunal",
+                    expected_utility=social_visit_util,
+                    reasoning="Visiting friend or relative for coffee and neighborly solidarity.",
+                )
+            )
+
+        # 21. Dynamic Labor Market: SEARCH_EMPLOYMENT
+        if context.is_unemployed and context.is_daytime and (7 <= context.hour_int <= 16):
+            job_search_util = 0.65 + ((1.0 - min(1.0, context.current_money / 25.0)) * 0.35) + (conscientiousness * 0.25)
+            options.append(
+                ActionOption(
+                    action_type=ActivityType.SEARCH_EMPLOYMENT,
+                    target_location_id="taller_artesanal",
+                    expected_utility=job_search_util,
+                    reasoning="Searching for employment opportunities and asking workshops for openings.",
+                )
+            )
+
+        # 22. Housing & Homelessness: SEEK_HOUSING / SEEK_SHELTER
+        if context.is_homeless:
+            shelter_util = 0.75 + (exhaustion * 0.40) + (hunger * 0.25)
+            options.append(
+                ActionOption(
+                    action_type=ActivityType.SEEK_SHELTER,
+                    target_location_id="casa_comunal",
+                    expected_utility=shelter_util,
+                    reasoning="Unhoused; seeking communal shelter bed and assistance.",
+                )
+            )
+            if context.current_money >= 12.0:
+                rent_search_util = 0.70 + (conscientiousness * 0.30)
+                options.append(
+                    ActionOption(
+                        action_type=ActivityType.SEEK_HOUSING,
+                        target_location_id="plaza_central",
+                        expected_utility=rent_search_util,
+                        reasoning="Has accumulated savings; searching for affordable rental room.",
+                    )
+                )
+
+        # 23. Assistance: REQUEST_ASSISTANCE / OFFER_ASSISTANCE
+        if context.current_money < 3.0 and (hunger > 0.50 or context.has_unpaid_rent):
+            req_util = 0.55 + (hunger * 0.35)
+            options.append(
+                ActionOption(
+                    action_type=ActivityType.REQUEST_ASSISTANCE,
+                    target_location_id="casa_comunal",
+                    expected_utility=req_util,
+                    reasoning="Experiencing economic hardship; requesting emergency community aid.",
+                )
+            )
+        elif context.current_money > 60.0 and agreeableness > 0.65:
+            offer_util = 0.30 + (agreeableness * 0.35)
+            options.append(
+                ActionOption(
+                    action_type=ActivityType.OFFER_ASSISTANCE,
+                    target_location_id="casa_comunal",
+                    expected_utility=offer_util,
+                    reasoning="Financially comfortable; offering mutual support to neighbors.",
+                )
+            )
+
+        # 24. Pending Social Invitation
+        if context.has_social_invitation and context.invitation_activity:
+            inv_util = 0.55 + (extraversion * 0.25) + (agreeableness * 0.20)
+            if context.invitation_offered_treat:
+                inv_util += 0.15
+            options.append(
+                ActionOption(
+                    action_type=context.invitation_activity,
+                    target_location_id=context.invitation_location_id or "comedor_dona_maria",
+                    expected_utility=inv_util,
+                    reasoning="Joining friend who extended a personal invitation.",
+                )
+            )
 
         # -------------------------------------------------------------------
         # 8. Emotional Associations Modulation (Location Aversion & Place Affinity)

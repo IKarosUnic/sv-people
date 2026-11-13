@@ -48,6 +48,7 @@ class DatabaseManager:
             str(self.db_path),
             timeout=30.0,
             detect_types=sqlite3.PARSE_DECLTYPES,
+            check_same_thread=False,
         )
         self._conn.row_factory = sqlite3.Row
         # Enable WAL for better concurrent read performance.

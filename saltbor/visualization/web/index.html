@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SALTBOR — Plataforma de Simulación & Observabilidad de Sociedad Digital</title>
+    <link rel="stylesheet" href="assets/maplibre/maplibre-gl.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app-container">
+        <!-- ================================================================= -->
+        <!-- UNIVERSAL SIMULATION CONTROL CENTER (TOPBAR)                      -->
+        <!-- ================================================================= -->
+        <header id="control-center">
+            <div class="brand-section">
+                <div class="brand-logo">
+                    <span class="logo-glyph">⬡</span>
+                    <span class="logo-title">SALTBOR</span>
+                </div>
+                <span class="version-badge">FASE 1.3-V</span>
+            </div>
+
+            <!-- Simulation Controls -->
+            <div class="playback-controls">
+                <button id="btn-play-pause" class="btn btn-primary" title="Iniciar / Pausar Simulación">
+                    <span id="icon-play-pause">▶ Iniciar</span>
+                </button>
+                <button id="btn-step" class="btn btn-secondary" title="Avanzar 1 Tick Discreto (+15 min simulados)">
+                    <span>⏭ +1 Tick</span>
+                </button>
+
+                <div class="speed-selector" title="Velocidad de Simulación">
+                    <button class="btn-speed active" data-speed="1">1×</button>
+                    <button class="btn-speed" data-speed="10">10×</button>
+                    <button class="btn-speed" data-speed="100">100×</button>
+                    <button class="btn-speed" data-speed="1000">1000×</button>
+                </div>
+            </div>
+
+            <!-- Live Telemetry Display -->
+            <div class="telemetry-bar">
+                <div class="telemetry-item" title="Paso discreto actual">
+                    <span class="telemetry-label">TICK</span>
+                    <span id="telemetry-tick" class="telemetry-value">0</span>
+                </div>
+                <div class="telemetry-item" title="Tiempo simulado en El Salvador">
+                    <span class="telemetry-label">TIEMPO</span>
+                    <span id="telemetry-time" class="telemetry-value">Día 1, 06:00</span>
+                </div>
+                <div class="telemetry-item" title="Estación climática actual">
+                    <span class="telemetry-label">ESTACIÓN</span>
+                    <span id="telemetry-season" class="telemetry-value badge-season">Época Seca</span>
+                </div>
+                <div class="telemetry-item" title="Población humana sintética activa">
+                    <span class="telemetry-label">POBLACIÓN</span>
+                    <span id="telemetry-population" class="telemetry-value">20</span>
+                </div>
+                <div class="telemetry-item" title="Latencia por tick del motor">
+                    <span class="telemetry-label">LATENCIA</span>
+                    <span id="telemetry-latency" class="telemetry-value">0.0 ms</span>
+                </div>
+                <div class="telemetry-item" title="Tasa de simulación real">
+                    <span class="telemetry-label">FPS</span>
+                    <span id="telemetry-fps" class="telemetry-value">0.0</span>
+                </div>
+            </div>
+
+            <!-- Configuration & Persistence -->
+            <div class="system-controls">
+                <!-- Controles Directos de Población Sintética -->
+                <div class="pop-control-box" title="Definir Población Activa de la Simulación">
+                    <span class="pop-control-title">👥 Población:</span>
+                    <div class="pop-preset-buttons">
+                        <button class="btn-pop-preset active" data-pop="20" title="20 habitantes">20</button>
+                        <button class="btn-pop-preset" data-pop="50" title="50 habitantes">50</button>
+                        <button class="btn-pop-preset" data-pop="100" title="100 habitantes">100</button>
+                        <button class="btn-pop-preset" data-pop="250" title="250 habitantes">250</button>
+                        <button class="btn-pop-preset" data-pop="500" title="500 habitantes">500</button>
+                        <button class="btn-pop-preset" data-pop="1000" title="1,000 habitantes">1K</button>
+                    </div>
+                    <input type="number" id="input-population-topbar" min="5" max="10000" step="10" value="20" class="input-pop-num" title="Número personalizado de población">
+                    <button id="btn-apply-pop-topbar" class="btn btn-sm btn-primary" style="padding: 2px 7px; font-size: 11px;" title="Escalar población activa">⚡ Aplicar</button>
+                </div>
+
+                <select id="scenario-profile-selector" class="dropdown-select" title="Perfil de Escala de Simulación (Fase 1.4)">
+                    <option value="micro_community" selected>Micro-Comunidad (20 hab)</option>
+                    <option value="small_community">Comunidad Pequeña (100 hab)</option>
+                    <option value="urban_neighborhood">Barrio Urbano (300 hab)</option>
+                    <option value="urban_district">Distrito Urbano (1,000 hab)</option>
+                    <option value="city_scale">Escala Ciudad (10,000 hab)</option>
+                    <option value="regional_scale">Regional Masivo (100,000 hab)</option>
+                </select>
+
+                <select id="scenario-selector" class="dropdown-select" title="Seleccionar Escenario Experimental">
+                    <option value="baseline">Línea Base (Estándar)</option>
+                    <option value="drought_crisis">Crisis de Sequía (Corredor Seco)</option>
+                    <option value="regional_trade_boom">Auge Comercial Regional</option>
+                    <option value="cultural_renaissance">Renacimiento Cultural</option>
+                    <option value="coffee_economic_boom">Bonanza Cafetalera</option>
+                </select>
+
+                <button id="btn-open-interventions" class="btn btn-sm btn-secondary" title="Panel de Intervenciones del Observador" style="display:flex; align-items:center; gap:4px; font-weight:600; color:var(--accent-sky);">
+                    <span>⚡</span> <span>Intervenciones</span>
+                </button>
+
+                <button id="btn-save-checkpoint" class="btn btn-icon" title="Guardar Checkpoint SQLite">💾</button>
+                <button id="btn-load-checkpoint" class="btn btn-icon" title="Cargar Checkpoint SQLite">📂</button>
+                <button id="btn-theme-toggle" class="btn btn-icon" title="Alternar Modo Oscuro / Claro">🌓</button>
+                <button id="btn-toggle-ui" class="btn btn-sm btn-secondary" title="Ocultar toda la interfaz (Modo Pantalla Completa) [Tecla H]" style="display:flex; align-items:center; gap:4px;">
+                    <span>👁️</span> <span>Ocultar Interfaz</span>
+                </button>
+
+                <!-- SSE Connection Indicator -->
+                <div id="connection-indicator" class="connection-pill connected" title="Conexión en tiempo real SSE">
+                    <span class="pulse-dot"></span>
+                    <span id="connection-status-text">EN VIVO</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- ================================================================= -->
+        <!-- MAIN WORKSPACE LAYOUT (SIDEBAR + VIEWPORT + CONTEXT PANEL)        -->
+        <!-- ================================================================= -->
+        <div id="workspace">
+            <!-- Left Navigation Sidebar -->
+            <nav id="sidebar">
+                <ul class="nav-list">
+                    <li class="nav-item active" data-view="world">
+                        <span class="nav-icon">🗺️</span>
+                        <span class="nav-title">Territorio & SIG Cartográfico</span>
+                    </li>
+                    <li class="nav-item" data-view="individual">
+                        <span class="nav-icon">👤</span>
+                        <span class="nav-title">Explorador Individual</span>
+                    </li>
+                    <li class="nav-item" data-view="cognitive">
+                        <span class="nav-icon">🧠</span>
+                        <span class="nav-title">Arquitectura Cognitiva</span>
+                    </li>
+                    <li class="nav-item" data-view="knowledge">
+                        <span class="nav-icon">🕸️</span>
+                        <span class="nav-title">Grafo de Conocimiento</span>
+                    </li>
+                    <li class="nav-item" data-view="social">
+                        <span class="nav-icon">👥</span>
+                        <span class="nav-title">Red Social & ADESCO</span>
+                    </li>
+                    <li class="nav-item" data-view="civilization">
+                        <span class="nav-icon">🏛️</span>
+                        <span class="nav-title">Tablero de Civilización</span>
+                    </li>
+                    <li class="nav-item" data-view="economy">
+                        <span class="nav-icon">⚖️</span>
+                        <span class="nav-title">Economía & Recursos</span>
+                    </li>
+                    <li class="nav-item" data-view="timeline">
+                        <span class="nav-icon">⏳</span>
+                        <span class="nav-title">Línea de Tiempo</span>
+                    </li>
+                    <li class="nav-item" data-view="laboratory">
+                        <span class="nav-icon">🔬</span>
+                        <span class="nav-title">Laboratorio Científico</span>
+                    </li>
+                    <li class="nav-item" data-view="reports">
+                        <span class="nav-icon">📊</span>
+                        <span class="nav-title">Informes de Validación</span>
+                    </li>
+                </ul>
+
+                <div class="sidebar-footer">
+                    <div class="env-widget">
+                        <div class="env-header">Clima en El Salvador</div>
+                        <div id="env-temp" class="env-value">24.5 °C</div>
+                        <div id="env-condition" class="env-desc">Despejado</div>
+                        <div class="env-soil">Humedad Suelo: <span id="env-moisture">50%</span></div>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Main Dynamic Viewport -->
+            <main id="viewport">
+                <!-- 1. REAL GIS TERRITORIAL & URBAN CARTOGRAPHY (PRIMARY MAP) -->
+                <section id="view-world" class="view-panel active">
+                    <div class="gis-layout">
+                        <!-- Fullscreen MapLibre WebGL Viewport -->
+                        <div id="maplibre-viewport"></div>
+
+                        <!-- Hidden canvas for backward compatibility with tests -->
+                        <canvas id="world-canvas" style="display:none;"></canvas>
+
+                        <!-- Top Navigation & Camera Controls HUD -->
+                        <div class="gis-overlay-camera">
+                            <div class="gis-control-group">
+                                <span class="gis-group-label">Escala</span>
+                                <button id="btn-cam-recenter" class="btn btn-sm btn-primary" title="Centro Histórico de San Salvador">📍 Centro</button>
+                                <button id="btn-cam-city" class="btn btn-sm btn-secondary" title="Gran San Salvador (AMSS)">🏙️ Capital</button>
+                                <button id="btn-cam-national" class="btn btn-sm btn-secondary" title="Territorio Nacional de El Salvador">🇸🇻 País</button>
+                            </div>
+                            <div class="gis-control-group">
+                                <span class="gis-group-label">Perspectiva</span>
+                                <button id="btn-cam-topdown" class="btn btn-sm btn-secondary active" title="Vista Cenital Cartográfica 2D (Pitch 0°)">🗺️ 2D</button>
+                                <button id="btn-cam-isometric" class="btn btn-sm btn-secondary" title="Perspectiva 2.5D (Pitch 50°, Rotación -15°)">🏛️ 2.5D</button>
+                                <button id="btn-cam-street" class="btn btn-sm btn-secondary" title="Nivel Calle Humano (Pitch 75°)">🚶 Calle</button>
+                                <button id="btn-cam-follow" class="btn btn-sm btn-secondary" title="Seguir al individuo en el mapa">👤 Seguir</button>
+                            </div>
+                            <div class="gis-control-group">
+                                <span class="gis-group-label">Mapa Base</span>
+                                <select id="select-basemap" class="dropdown-select-sm" title="Fuente de teselas cartográficas (100% Libres y Sin API)">
+                                    <option value="street" selected>Esri Calles (100% Libre / Sin Marca)</option>
+                                    <option value="osm">OpenStreetMap Estándar</option>
+                                    <option value="hot">Humanitarian OSM (Alto Contraste)</option>
+                                    <option value="topo">Esri Topográfico (Relieve)</option>
+                                    <option value="vector">Vector Local Puro (Offline)</option>
+                                </select>
+                            </div>
+                            <div class="gis-control-group">
+                                <button id="btn-toggle-gis-layers-panel" class="btn btn-sm btn-secondary" title="Mostrar/Ocultar Panel Lateral de Capas">📑 Capas</button>
+                                <button id="btn-clean-view" class="btn btn-sm btn-secondary" title="Alternar Modo Vista Limpia (Oculta badges y paneles flotantes)" style="color:#a78bfa; font-weight:600;">🧹 Vista Limpia</button>
+                                <button id="btn-zen-mode" class="btn btn-sm btn-secondary" title="Modo Pantalla Completa Limpio (Ocultar Interfaz) [Tecla H]" style="color:#38bdf8; font-weight:700;">👁️ Ocultar UI [H]</button>
+                            </div>
+                        </div>
+
+                        <!-- Floating restore button when UI is hidden in Zen Mode -->
+                        <button id="btn-restore-ui-floating" class="btn-floating-restore" style="display:none;" title="Mostrar interfaz de nuevo [Tecla H]">
+                            <span>👁️</span> <span>Mostrar Interfaz [H]</span>
+                        </button>
+
+                        <!-- Layer Control Panel (Strict Separation of Real Geography & Simulation) -->
+                        <div id="gis-layers-card" class="gis-overlay-layers collapsed">
+                            <div class="gis-card-header">
+                                <span class="gis-card-title">Arquitectura Cartográfica SIG</span>
+                                <div style="display: flex; align-items: center; gap: 6px;">
+                                    <span class="badge-gis">EPSG:4326</span>
+                                    <button id="btn-minimize-gis-layers" class="btn btn-sm btn-icon" title="Minimizar panel de capas" style="padding: 1px 6px; font-size: 11px;">✕</button>
+                                </div>
+                            </div>
+
+                            <!-- REAL_WORLD_LAYER Group -->
+                            <div class="gis-layer-section">
+                                <div class="gis-section-title">REAL_WORLD_LAYER (Inmutable)</div>
+                                <label class="gis-toggle-row">
+                                    <input type="checkbox" id="toggle-gis-streets" checked>
+                                    <span class="color-indicator street-line"></span> Malla Vial & Ejes Reales
+                                </label>
+                                <label class="gis-toggle-row">
+                                    <input type="checkbox" id="toggle-gis-street-labels" checked>
+                                    <span class="color-indicator" style="background:#f59e0b;"></span> Nombres de Calles & Avenidas
+                                </label>
+                                <label class="gis-toggle-row">
+                                    <input type="checkbox" id="toggle-gis-buildings" checked>
+                                    <span class="color-indicator bldg-3d"></span> Huellas de Edificios Reales
+                                </label>
+                                <label class="gis-toggle-row" style="margin-left: 16px; font-size: 11px;">
+                                    <input type="checkbox" id="toggle-gis-extrusion" checked>
+                                    <span>Extrusión 2.5D (Alturas)</span>
+                                </label>
+                                <label class="gis-toggle-row">
+                                    <input type="checkbox" id="toggle-gis-landmarks" checked>
+                                    <span class="color-indicator" style="background:#eab308;"></span> Monumentos & Plazas Clave
+                                </label>
+                                <label class="gis-toggle-row">
+                                    <input type="checkbox" id="toggle-gis-parks" checked>
+                                    <span class="color-indicator park-fill"></span> Parques & Plazas (Verdes)
+                                </label>
+                                <label class="gis-toggle-row">
+                                    <input type="checkbox" id="toggle-gis-water" checked>
+                                    <span class="color-indicator water-line"></span> Río Acelhuate & Canales
+                                </label>
+                                <label class="gis-toggle-row">
+                                    <input type="checkbox" id="toggle-gis-elevation" checked>
+                                    <span class="color-indicator contour-line"></span> Relieve (Curvas de Nivel)
+                                </label>
+                                <label class="gis-toggle-row">
+                                    <input type="checkbox" id="toggle-gis-boundaries" checked>
+                                    <span class="color-indicator boundary-line"></span> Límite Distrital D.L. 762
+                                </label>
+                            </div>
+
+                            <!-- SIMULATION_LAYER Group -->
+                            <div class="gis-layer-section">
+                                <div class="gis-section-title">SIMULATION_LAYER (Dinámico)</div>
+                                <label class="gis-toggle-row">
+                                    <input type="checkbox" id="toggle-gis-agents" checked>
+                                    <span class="color-indicator agent-sim"></span> Individuos Sintéticos (Actividad)
+                                </label>
+                                <label class="gis-toggle-row">
+                                    <input type="checkbox" id="toggle-gis-trajectories" checked>
+                                    <span class="color-indicator traj-line"></span> Trayectorias de Desplazamiento
+                                </label>
+                                <label class="gis-toggle-row">
+                                    <input type="checkbox" id="toggle-gis-density" checked>
+                                    <span class="color-indicator" style="background:#ef4444;"></span> Densidad / Conglomerados LOD
+                                </label>
+                            </div>
+
+                            <!-- MULTILEVEL POPULATION & 1M AGENT SCALING -->
+                            <div class="gis-layer-section">
+                                <div class="gis-section-title">Población & Escala Masiva (1M)</div>
+                                <div class="gis-pop-counters">
+                                    <div class="pop-stat-row">
+                                        <span class="pop-stat-label">🏛️ Persistente:</span>
+                                        <span id="gis-pop-persistent" class="pop-stat-val">10,000</span>
+                                    </div>
+                                    <div class="pop-stat-row">
+                                        <span class="pop-stat-label">⚡ Activa (LOD 0/1):</span>
+                                        <span id="gis-pop-active" class="pop-stat-val">20</span>
+                                    </div>
+                                    <div class="pop-stat-row">
+                                        <span class="pop-stat-label">📊 Agregada (LOD 2-4):</span>
+                                        <span id="gis-pop-aggregated" class="pop-stat-val">9,980</span>
+                                    </div>
+                                    <div class="pop-stat-row">
+                                        <span class="pop-stat-label">👁️ Frustum GPU:</span>
+                                        <span id="gis-pop-rendered" class="pop-stat-val">142</span>
+                                    </div>
+                                </div>
+                                <div class="gis-lod-pills">
+                                    <span class="lod-pill active" title="LOD 0: Deliberación Individual Completa">LOD 0</span>
+                                    <span class="lod-pill active" title="LOD 1: Rutina Simplificada">LOD 1</span>
+                                    <span class="lod-pill" title="LOD 2: Cohortes y Hogares">LOD 2</span>
+                                    <span class="lod-pill" title="LOD 3: Dinámica Comunitaria">LOD 3</span>
+                                    <span class="lod-pill" title="LOD 4: Macro Regional">LOD 4</span>
+                                </div>
+
+                                <!-- Dynamic Active Population Adjustment -->
+                                <div class="gis-pop-adjust-panel" style="margin-top: 8px; padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.08);">
+                                    <div style="font-size: 11px; font-weight: 600; color: var(--accent-sky); margin-bottom: 4px;">Modificar Población Activa:</div>
+                                    <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; margin-bottom: 6px;">
+                                        <button class="btn btn-sm btn-secondary btn-gis-pop-preset active" data-pop="20" style="font-size: 10px; padding: 3px 0;">20</button>
+                                        <button class="btn btn-sm btn-secondary btn-gis-pop-preset" data-pop="50" style="font-size: 10px; padding: 3px 0;">50</button>
+                                        <button class="btn btn-sm btn-secondary btn-gis-pop-preset" data-pop="100" style="font-size: 10px; padding: 3px 0;">100</button>
+                                        <button class="btn btn-sm btn-secondary btn-gis-pop-preset" data-pop="250" style="font-size: 10px; padding: 3px 0;">250</button>
+                                        <button class="btn btn-sm btn-secondary btn-gis-pop-preset" data-pop="500" style="font-size: 10px; padding: 3px 0;">500</button>
+                                    </div>
+                                    <div style="display: flex; gap: 4px; align-items: center;">
+                                        <input type="number" id="gis-input-active-pop" min="5" max="10000" step="10" value="20" style="width: 65px; background: rgba(15,23,42,0.85); border: 1px solid var(--border-strong); color: #fff; border-radius: 4px; padding: 4px 6px; font-size: 11px; font-weight: 600;" title="Población deseada">
+                                        <button id="btn-gis-scale-dynamic" class="btn btn-sm btn-primary" style="flex: 1; font-size: 10px; padding: 4px 5px;" title="Escalar población en caliente">⚡ Escalar</button>
+                                        <button id="btn-gis-scale-reset" class="btn btn-sm btn-secondary" style="font-size: 10px; padding: 4px 5px;" title="Reiniciar con esta población">🔄 Reiniciar</button>
+                                    </div>
+                                </div>
+
+                                <div style="display: flex; gap: 4px; margin-top: 8px;">
+                                    <button id="btn-gis-scale-100k" class="btn btn-sm btn-secondary" style="font-size: 10px; flex: 1;" title="Escalar a 100,000 individuos sintéticos">⚡ 100k</button>
+                                    <button id="btn-gis-scale-1m" class="btn btn-sm btn-secondary" style="font-size: 10px; flex: 1;" title="Escalar a 1,000,000 individuos sintéticos">🚀 1 Millón</button>
+                                </div>
+                            </div>
+
+                            <!-- Diurnal Lighting / Shadows -->
+                            <div class="gis-layer-section">
+                                <div class="gis-section-title">Iluminación Solar Diurna</div>
+                                <div class="gis-sun-telemetry">
+                                    <span id="gis-sun-hour">09:00</span> ·
+                                    <span id="gis-sun-azimuth">Azimut: 110°</span> ·
+                                    <span id="gis-sun-altitude">Elev: 45°</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Provenance & Validation Legend Bar -->
+                        <div class="gis-overlay-provenance" id="gis-provenance-bar">
+                            <div class="provenance-legend">
+                                <button id="btn-toggle-prov" class="prov-pill prov-toggle" title="Clic para expandir fuentes de datos cartográficos">
+                                    🇸🇻 DATOS REALES (CNR/OSM) <span id="prov-arrow">▸</span>
+                                </button>
+                                <div id="prov-details" class="prov-details-row collapsed">
+                                    <span class="prov-pill prov-verified">VERIFIED_REAL (OSM / CNR)</span>
+                                    <span class="prov-pill prov-estimated">ESTIMATED (Alturas)</span>
+                                    <span class="prov-pill prov-simulated">SIMULATED (Agentes)</span>
+                                </div>
+                            </div>
+                            <div id="gis-cursor-coords" class="coords-box">San Salvador Centro | 13.6978° N, -89.1915° W | Zoom: 16.5× | Pitch: 0°</div>
+                        </div>
+
+                        <!-- Building & Feature Inspector Modal/Card -->
+                        <div id="gis-feature-inspector" class="gis-feature-card collapsed">
+                            <div class="gis-feature-header">
+                                <h4 id="gis-feat-title">Edificio</h4>
+                                <button id="btn-close-gis-feat" class="btn btn-sm btn-icon">✕</button>
+                            </div>
+                            <div id="gis-feat-body" class="gis-feature-content">
+                                <!-- Populated dynamically on click -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. INDIVIDUAL EXPLORER -->
+                <section id="view-individual" class="view-panel">
+                    <div class="panel-two-column">
+                        <div class="list-column">
+                            <div class="column-header">
+                                <h3>Población Sintética</h3>
+                                <input type="text" id="individual-search" class="input-search" placeholder="Buscar por nombre u oficio...">
+                            </div>
+                            <div id="individuals-roster" class="roster-list">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+
+                        <div class="detail-column" id="individual-dossier-container">
+                            <div class="empty-state">Seleccione un individuo de la lista para inspeccionar su perfil completo.</div>
+                        </div>
+                    </div>
+                </section>
+
+                
+
+                <!-- 3. COGNITIVE ARCHITECTURE EXPLORER -->
+                <section id="view-cognitive" class="view-panel">
+                    <div class="cognitive-view-container">
+                        <div class="cognitive-header">
+                            <div class="cognitive-title-bar">
+                                <h2>Arquitectura Cognitiva Funcional (6 Subsistemas Integrados)</h2>
+                                <span class="badge-analogy">Analogía Computacional Funcional — Sin Señales Biológicas Ficticias</span>
+                            </div>
+                            <p class="cognitive-subtitle">
+                                Inspección profunda de los 6 subsistemas modulares y trazabilidad causal de deliberación para el agente seleccionado.
+                            </p>
+                        </div>
+
+                        <!-- 6 Functional Subsystems Grid -->
+                        <div class="subsystems-grid">
+                            <div class="subsystem-card" id="subsystem-frontal" data-subsystem="frontal">
+                                <div class="card-badge executive">EJECUTIVO / FRONTAL</div>
+                                <h3>Planificación y Metas</h3>
+                                <div class="card-role">Priorización de objetivos, descomposición HTN/GOAP y control deliberativo.</div>
+                                <div class="card-variables" id="vars-frontal">Cargando...</div>
+                            </div>
+
+                            <div class="subsystem-card" id="subsystem-hippocampal" data-subsystem="hippocampal">
+                                <div class="card-badge memory">MEMORIA / HIPOCAMPAL</div>
+                                <h3>Memoria Episódica & Decay</h3>
+                                <div class="card-role">Codificación con valencia afectiva, memoria de trabajo (7±2) y consolidación.</div>
+                                <div class="card-variables" id="vars-hippocampal">Cargando...</div>
+                            </div>
+
+                            <div class="subsystem-card" id="subsystem-limbic" data-subsystem="limbic">
+                                <div class="card-badge emotional">AFECTIVO / LÍMBICO</div>
+                                <h3>Emociones y Modulación de Riesgo</h3>
+                                <div class="card-role">Estado de ánimo (-1 a +1), descuento de riesgo por miedo y bonificación por curiosidad.</div>
+                                <div class="card-variables" id="vars-limbic">Cargando...</div>
+                            </div>
+
+                            <div class="subsystem-card" id="subsystem-temporal" data-subsystem="temporal">
+                                <div class="card-badge semantic">SEMÁNTICO / TEMPORAL</div>
+                                <h3>Grafo de Saberes y Certeza</h3>
+                                <div class="card-role">Conceptos ontológicos, verificación epistémica y resolución de contradicciones.</div>
+                                <div class="card-variables" id="vars-temporal">Cargando...</div>
+                            </div>
+
+                            <div class="subsystem-card" id="subsystem-parietal" data-subsystem="parietal">
+                                <div class="card-badge spatial">ESPACIAL / PARIETAL</div>
+                                <h3>Navegación Territorial</h3>
+                                <div class="card-role">Costos de viaje, accesibilidad de puentes y penalizaciones topográficas.</div>
+                                <div class="card-variables" id="vars-parietal">Cargando...</div>
+                            </div>
+
+                            <div class="subsystem-card" id="subsystem-cerebellar" data-subsystem="cerebellar">
+                                <div class="card-badge procedural">PROCEDIMENTAL / CEREBELOSO</div>
+                                <h3>Hábitos y Automatismo</h3>
+                                <div class="card-role">Curvas de práctica de ley de potencia y ejecución motora automatizada.</div>
+                                <div class="card-variables" id="vars-cerebellar">Cargando...</div>
+                            </div>
+                        </div>
+
+                        <!-- Causal Decision Trace Pipeline -->
+                        <div class="decision-trace-section">
+                            <div class="section-title">
+                                <h3>Pipeline Causal de Deliberación y Toma de Decisiones</h3>
+                                <span class="pipeline-flow">OBSERVACIÓN → NECESIDADES → RECUPERACIÓN → RAZONAMIENTO → PLANIFICACIÓN → DECISIÓN → ACCIÓN → RESULTADO</span>
+                            </div>
+                            <div id="decision-pipeline-steps" class="pipeline-container">
+                                <!-- Populated dynamically from API -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                
+
+                <!-- 4. KNOWLEDGE GRAPH EXPLORER -->
+                <section id="view-knowledge" class="view-panel">
+                    <div class="graph-layout">
+                        <div class="graph-toolbar">
+                            <input type="text" id="kg-search" class="input-search" placeholder="Buscar conceptos, técnicas o hipótesis...">
+                            <select id="kg-category-filter" class="dropdown-select">
+                                <option value="">Todas las Categorías</option>
+                                <option value="gastronomy">Gastronomía & Tradición</option>
+                                <option value="agriculture">Agroecología & Técnicas</option>
+                                <option value="craft">Artesanía & Oficios</option>
+                                <option value="hypothesis">Hipótesis Científicas</option>
+                                <option value="commerce">Comercio & Finanzas</option>
+                            </select>
+                            <button id="btn-kg-reset" class="btn btn-sm btn-secondary">Reiniciar Vista Grafo</button>
+                        </div>
+                        <div class="graph-viewport">
+                            <canvas id="knowledge-canvas"></canvas>
+                        </div>
+                        <div class="graph-legend">
+                            <span><span class="color-dot kg-verified"></span> Saber Verificado</span>
+                            <span><span class="color-dot kg-provisional"></span> Provisional</span>
+                            <span><span class="color-dot kg-hypothesis"></span> Hipótesis</span>
+                            <span><span class="color-dot kg-refuted"></span> Refutado</span>
+                            <span><span class="color-dot kg-forgotten"></span> Olvidado / Extinto</span>
+                        </div>
+                    </div>
+                </section>
+
+                
+
+                <!-- 5. SOCIAL NETWORK EXPLORER -->
+                <section id="view-social" class="view-panel">
+                    <div class="graph-layout">
+                        <div class="graph-toolbar">
+                            <input type="text" id="social-search" class="input-search" placeholder="Filtrar por agente o comunidad...">
+                            <select id="social-rel-filter" class="dropdown-select">
+                                <option value="">Todos los Tipos de Relación</option>
+                                <option value="friendship">Amistad</option>
+                                <option value="family">Familia</option>
+                                <option value="trust">Confianza</option>
+                                <option value="trade">Comercio</option>
+                                <option value="mentorship">Mentoría / Taller</option>
+                                <option value="conflict">Conflicto / Rivalidad</option>
+                            </select>
+                            <button id="btn-social-reset" class="btn btn-sm btn-secondary">Reiniciar Vista Social</button>
+                        </div>
+                        <div class="graph-viewport">
+                            <canvas id="social-canvas"></canvas>
+                        </div>
+                        <div class="graph-legend">
+                            <span><span class="color-line rel-family"></span> Familia</span>
+                            <span><span class="color-line rel-friend"></span> Amistad</span>
+                            <span><span class="color-line rel-trust"></span> Confianza</span>
+                            <span><span class="color-line rel-trade"></span> Comercio</span>
+                            <span><span class="color-line rel-conflict"></span> Conflicto</span>
+                        </div>
+                    </div>
+                </section>
+
+                
+
+                <!-- 6. CIVILIZATION DASHBOARD -->
+                <section id="view-civilization" class="view-panel">
+                    <div class="dashboard-scrollable">
+                        <!-- Civilization Sub-Navigation Bar -->
+                        <div class="civ-subnav-bar">
+                            <button id="btn-civ-sub-macro" class="btn-subnav active" data-subpanel="macro">📊 Indicadores Macro</button>
+                            <button id="btn-civ-sub-labor" class="btn-subnav" data-subpanel="labor">💼 Mercado Laboral & Empleo</button>
+                            <button id="btn-civ-sub-housing" class="btn-subnav" data-subpanel="housing">🏠 Vivienda & Tenencia</button>
+                            <button id="btn-civ-sub-commerce" class="btn-subnav" data-subpanel="commerce">🛒 Comercio & Consumo</button>
+                            <button id="btn-civ-sub-lifestyle" class="btn-subnav" data-subpanel="lifestyle">☕ Ocio & Vida Cotidiana</button>
+                            <button id="btn-civ-sub-extension" class="btn-subnav" data-subpanel="extension">❤️ Salud, Romance & Familia</button>
+                            <button id="btn-civ-sub-justice" class="btn-subnav" data-subpanel="justice">⚖️ Tribunal de Paz & Justicia</button>
+                            <button id="btn-civ-sub-adesco" class="btn-subnav" data-subpanel="adesco">👥 ADESCO & Faenas Comunitarias</button>
+                            <button id="btn-civ-sub-dialogues" class="btn-subnav" data-subpanel="dialogues">💬 Diálogos & Caliche en Vivo</button>
+                        </div>
+
+                        <!-- Subpanel 1: Macro Indicators & Demographic Evolution -->
+                        <div id="civ-subpanel-macro" class="civ-subpanel active">
+                            <div class="dashboard-summary-cards">
+                                <div class="stat-card">
+                                    <div class="stat-title">Población Total</div>
+                                    <div id="stat-pop" class="stat-number">20</div>
+                                    <div class="stat-sub">100% activa</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-title">Coeficiente de Gini</div>
+                                    <div id="stat-gini" class="stat-number">0.24</div>
+                                    <div class="stat-sub">Desigualdad moderada</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-title">Patrimonio Cultural</div>
+                                    <div id="stat-traditions" class="stat-number">12</div>
+                                    <div class="stat-sub">Prácticas activas</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-title">Organizaciones & ADESCO</div>
+                                    <div id="stat-orgs" class="stat-number">4</div>
+                                    <div class="stat-sub">Comunidades organizadas</div>
+                                </div>
+                            </div>
+
+                            <!-- Time-Series Charts Grid -->
+                            <div class="charts-grid">
+                                <div class="chart-box">
+                                    <div class="chart-header">
+                                        <h4>Evolución Demográfica & Vital</h4>
+                                        <span class="chart-tag">Población a lo largo de los ticks</span>
+                                    </div>
+                                    <div class="chart-container" id="chart-demographics"></div>
+                                </div>
+
+                                <div class="chart-box">
+                                    <div class="chart-header">
+                                        <h4>Desigualdad Económica (Gini) & Riqueza Media</h4>
+                                        <span class="chart-tag">Liquidez en USD</span>
+                                    </div>
+                                    <div class="chart-container" id="chart-economy"></div>
+                                </div>
+
+                                <div class="chart-box">
+                                    <div class="chart-header">
+                                        <h4>Continuidad Cultural & Retención</h4>
+                                        <span class="chart-tag">Tradiciones vivas</span>
+                                    </div>
+                                    <div class="chart-container" id="chart-culture"></div>
+                                </div>
+
+                                <div class="chart-box">
+                                    <div class="chart-header">
+                                        <h4>Ciclos Ambientales & Temperatura</h4>
+                                        <span class="chart-tag">Grados Celsius & Precipitación</span>
+                                    </div>
+                                    <div class="chart-container" id="chart-climate"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Subpanel 2: Judicial Tribunal of Peace & Conflict Docket -->
+                        <div id="civ-subpanel-justice" class="civ-subpanel" style="display:none;">
+                            <div class="panel-section-header">
+                                <h3>Tribunal de Paz — Juzgado de Conflictos Vecinales</h3>
+                                <p class="section-desc">Expedientes procesales en curso, audiencias orales, fallos de magistrados y restitución económica.</p>
+                            </div>
+                            <div id="justice-cases-container" class="data-table-container">
+                                <div class="loading-placeholder">Cargando expedientes judiciales...</div>
+                            </div>
+                        </div>
+
+                        <!-- Subpanel 3: ADESCO Community Assemblies & Public Works -->
+                        <div id="civ-subpanel-adesco" class="civ-subpanel" style="display:none;">
+                            <div class="panel-section-header">
+                                <h3>ADESCOs & Organización Comunal</h3>
+                                <p class="section-desc">Asambleas generales, faenas de trabajo voluntario y cuchubales comunitarios de ahorro rotativo.</p>
+                            </div>
+                            <div class="adesco-grid">
+                                <div class="col-box">
+                                    <h4>Faenas y Proyectos Comunales</h4>
+                                    <div id="adesco-faenas-container" class="data-table-container">
+                                        <div class="loading-placeholder">Cargando faenas activas...</div>
+                                    </div>
+                                </div>
+                                <div class="col-box">
+                                    <h4>Cuchubales (Fondos de Ahorro Colectivo)</h4>
+                                    <div id="adesco-cuchubales-container" class="data-table-container">
+                                        <div class="loading-placeholder">Cargando cuchubales...</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Subpanel 4: Real Salvadoran Contextual Dialogue Stream -->
+                        <div id="civ-subpanel-dialogues" class="civ-subpanel" style="display:none;">
+                            <div class="panel-section-header">
+                                <h3>Diálogos Contextuales en Caliche & Habla Salvadoreña</h3>
+                                <p class="section-desc">Interacciones conversacionales verídicas entre individuos con modismos, giros coloquiales y modulación emocional.</p>
+                            </div>
+                            <div id="dialogues-stream-container" class="dialogues-stream">
+                                <div class="loading-placeholder">Esperando conversaciones entre vecinos...</div>
+                            </div>
+                        </div>
+
+                        <!-- Subpanel 5: Dynamic Labor Market & Employment -->
+                        <div id="civ-subpanel-labor" class="civ-subpanel" style="display:none;">
+                            <div class="panel-section-header">
+                                <h3>Mercado Laboral Dinámico & Contratación</h3>
+                                <p class="section-desc">Publicación de vacantes, evaluaciones por mérito, contratos laborales formales e informales, jornales y nómina de pago.</p>
+                            </div>
+                            <div class="dashboard-summary-cards" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 16px;">
+                                <div class="stat-card">
+                                    <div class="stat-title">Vacantes Abiertas</div>
+                                    <div id="stat-labor-vacancies" class="stat-number">0</div>
+                                    <div class="stat-sub">Disponibles para postular</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-title">Contratos Activos</div>
+                                    <div id="stat-labor-contracts" class="stat-number">0</div>
+                                    <div class="stat-sub">Empleos formales e informales</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-title">Nómina Diaria USD</div>
+                                    <div id="stat-labor-payroll" class="stat-number">$0.00</div>
+                                    <div class="stat-sub">Pago directo de empresas</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-title">Jornales Informales</div>
+                                    <div id="stat-labor-daylabor" class="stat-number">0</div>
+                                    <div class="stat-sub">Labores de subsistencia</div>
+                                </div>
+                            </div>
+                            <div class="adesco-grid">
+                                <div class="col-box">
+                                    <h4>Vacantes de Empleo Publicadas</h4>
+                                    <div id="labor-vacancies-container" class="data-table-container">
+                                        <div class="loading-placeholder">Cargando vacantes laborales...</div>
+                                    </div>
+                                </div>
+                                <div class="col-box">
+                                    <h4>Contratos de Trabajo Vigentes & Nómina</h4>
+                                    <div id="labor-contracts-container" class="data-table-container">
+                                        <div class="loading-placeholder">Cargando contratos de trabajo...</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Subpanel 6: Housing, Tenancy & Precarity -->
+                        <div id="civ-subpanel-housing" class="civ-subpanel" style="display:none;">
+                            <div class="panel-section-header">
+                                <h3>Vivienda, Tenencia y Precariedad Habitacional</h3>
+                                <p class="section-desc">Distribución en 7 regímenes de tenencia: Propietario, Alquiler, Familia extendida, Mesón informal, Alojamiento temporal, Albergue y Sin techo.</p>
+                            </div>
+                            <div class="dashboard-summary-cards" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 16px;">
+                                <div class="stat-card">
+                                    <div class="stat-title">Viviendas Totales</div>
+                                    <div id="stat-housing-units" class="stat-number">0</div>
+                                    <div class="stat-sub">Stock habitacional censado</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-title">Tasa de Ocupación</div>
+                                    <div id="stat-housing-occupancy" class="stat-number">0%</div>
+                                    <div class="stat-sub">Capacidad utilizada</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-title">Alquiler Recaudado</div>
+                                    <div id="stat-housing-rent" class="stat-number">$0.00</div>
+                                    <div class="stat-sub">Transferido a propietarios</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-title">Desahucios / Alertas</div>
+                                    <div id="stat-housing-evictions" class="stat-number">0</div>
+                                    <div class="stat-sub">Por impago recurrente</div>
+                                </div>
+                            </div>
+                            <div class="adesco-grid">
+                                <div class="col-box">
+                                    <h4>Inventario Habitacional & Ocupación</h4>
+                                    <div id="housing-units-container" class="data-table-container">
+                                        <div class="loading-placeholder">Cargando inventario de viviendas...</div>
+                                    </div>
+                                </div>
+                                <div class="col-box">
+                                    <h4>Arrendamientos, Mora y Desahucios</h4>
+                                    <div id="housing-leases-container" class="data-table-container">
+                                        <div class="loading-placeholder">Cargando contratos de arrendamiento...</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Subpanel 7: Commercial Establishments & Consumer Behavior -->
+                        <div id="civ-subpanel-commerce" class="civ-subpanel" style="display:none;">
+                            <div class="panel-section-header">
+                                <h3>Establecimientos Comerciales & Dinámica de Consumo</h3>
+                                <p class="section-desc">Distinción entre ubicaciones reales GIS y microempresas simuladas; vitrineo y comparación ($0 gasto) frente a compras reales.</p>
+                            </div>
+                            <div class="dashboard-summary-cards" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 16px;">
+                                <div class="stat-card">
+                                    <div class="stat-title">Establecimientos</div>
+                                    <div id="stat-commerce-total" class="stat-number">0</div>
+                                    <div id="stat-commerce-verified-sub" class="stat-sub">0 GIS Verificados</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-title">Vitrineo ($0 Gasto)</div>
+                                    <div id="stat-commerce-zero-purchases" class="stat-number">0%</div>
+                                    <div class="stat-sub">Paseo / Curiosidad / Precios</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-title">Ventas del Día USD</div>
+                                    <div id="stat-commerce-daily-sales" class="stat-number">$0.00</div>
+                                    <div class="stat-sub">Ingreso directo a cajas</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-title">Caja en Establecimientos</div>
+                                    <div id="stat-commerce-cashboxes" class="stat-number">$0.00</div>
+                                    <div class="stat-sub">Liquidez total en comercios</div>
+                                </div>
+                            </div>
+                            <div class="adesco-grid">
+                                <div class="col-box">
+                                    <h4>Directorio de Establecimientos & Cajas</h4>
+                                    <div id="commerce-establishments-container" class="data-table-container">
+                                        <div class="loading-placeholder">Cargando establecimientos comerciales...</div>
+                                    </div>
+                                </div>
+                                <div class="col-box">
+                                    <h4>Flujo de Visitas y Comportamiento de Consumo</h4>
+                                    <div id="commerce-visits-container" class="data-table-container">
+                                        <div class="loading-placeholder">Cargando registro de visitas...</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Subpanel 8: Everyday Life, Leisure & Household Economy -->
+                        <div id="civ-subpanel-lifestyle" class="civ-subpanel" style="display:none;">
+                            <div class="panel-section-header">
+                                <h3>Ocio, Convivencia Social & Economía Doméstica</h3>
+                                <p class="section-desc">Invitaciones cotidianas autónomas, evaluación según energía y presupuesto, gastos reales del hogar y tesorería de servicios comunales.</p>
+                            </div>
+                            <div class="dashboard-summary-cards" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 16px;">
+                                <div class="stat-card">
+                                    <div class="stat-title">Invitaciones Sociales</div>
+                                    <div id="stat-lifestyle-invitations" class="stat-number">0</div>
+                                    <div class="stat-sub">Para salidas y actividades</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-title">Tasa de Aceptación</div>
+                                    <div id="stat-lifestyle-acceptance" class="stat-number">0%</div>
+                                    <div class="stat-sub">Decisión individual autónoma</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-title">Sesiones de Ocio</div>
+                                    <div id="stat-lifestyle-shared" class="stat-number">0</div>
+                                    <div class="stat-sub">Salidas compartidas</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-title">Tesorería de Servicios</div>
+                                    <div id="stat-lifestyle-treasury" class="stat-number">$0.00</div>
+                                    <div class="stat-sub">Fondo comunal de agua y luz</div>
+                                </div>
+                            </div>
+                            <div class="adesco-grid">
+                                <div class="col-box">
+                                    <h4>Invitaciones Sociales & Respuestas</h4>
+                                    <div id="lifestyle-invitations-container" class="data-table-container">
+                                        <div class="loading-placeholder">Cargando invitaciones sociales...</div>
+                                    </div>
+                                </div>
+                                <div class="col-box">
+                                    <h4>Economía del Hogar & Gastos de Subsistencia</h4>
+                                    <div id="lifestyle-households-container" class="data-table-container">
+                                        <div class="loading-placeholder">Cargando presupuestos del hogar...</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Subpanel 9: Integrated Health, Romance, Family, Disasters & Causality -->
+                        <div id="civ-subpanel-extension" class="civ-subpanel" style="display:none;">
+                            <div class="panel-section-header">
+                                <h3>Salud, Romance, Familia & Territorio</h3>
+                                <p class="section-desc">Cada fila corresponde a una transición real del backend: enfermedades y tratamientos, vínculos románticos, nacimientos y duelos, accidentes, desastres y su trazabilidad causal.</p>
+                            </div>
+                            <div class="dashboard-summary-cards" style="grid-template-columns: repeat(5, 1fr); margin-bottom: 16px;">
+                                <div class="stat-card">
+                                    <div class="stat-title">Condiciones Activas</div>
+                                    <div id="stat-ext-conditions" class="stat-number">0</div>
+                                    <div class="stat-sub">Población viva</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-title">Tratamientos</div>
+                                    <div id="stat-ext-treatments" class="stat-number">0</div>
+                                    <div class="stat-sub">Registros clínicos</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-title">Vínculos Románticos</div>
+                                    <div id="stat-ext-romance" class="stat-number">0</div>
+                                    <div class="stat-sub">Relaciones activas</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-title">Nacimientos / Muertes</div>
+                                    <div id="stat-ext-vital" class="stat-number">0 / 0</div>
+                                    <div class="stat-sub">Ciclo de vida simulado</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-title">Accidentes / Desastres</div>
+                                    <div id="stat-ext-disasters" class="stat-number">0 / 0</div>
+                                    <div class="stat-sub">Historial acumulado</div>
+                                </div>
+                            </div>
+                            <div class="adesco-grid">
+                                <div class="col-box">
+                                    <h4>Infraestructura de Salud & Capacidad</h4>
+                                    <div id="extension-health-container" class="data-table-container">
+                                        <div class="loading-placeholder">Cargando centros de salud...</div>
+                                    </div>
+                                </div>
+                                <div class="col-box">
+                                    <h4>Historial Clínico Reciente</h4>
+                                    <div id="extension-treatments-container" class="data-table-container">
+                                        <div class="loading-placeholder">Cargando tratamientos...</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="adesco-grid" style="margin-top:16px;">
+                                <div class="col-box">
+                                    <h4>Hogares, Nacimientos, Muertes & Cuidados</h4>
+                                    <div id="extension-family-container" class="data-table-container">
+                                        <div class="loading-placeholder">Cargando ciclo familiar...</div>
+                                    </div>
+                                </div>
+                                <div class="col-box">
+                                    <h4>Romance, Infidelidad & Rupturas</h4>
+                                    <div id="extension-romance-container" class="data-table-container">
+                                        <div class="loading-placeholder">Cargando vínculos románticos...</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="adesco-grid" style="margin-top:16px;">
+                                <div class="col-box">
+                                    <h4>Accidentes & Desastres Contextuales</h4>
+                                    <div id="extension-accidents-container" class="data-table-container">
+                                        <div class="loading-placeholder">Cargando accidentes y desastres...</div>
+                                    </div>
+                                </div>
+                                <div class="col-box">
+                                    <h4>Territorio, Agua & Clima</h4>
+                                    <div id="extension-environment-container" class="data-table-container">
+                                        <div class="loading-placeholder">Cargando estado territorial...</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="adesco-grid" style="margin-top:16px;">
+                                <div class="col-box">
+                                    <h4>Línea de Tiempo Causal Reciente</h4>
+                                    <div id="extension-causal-container" class="data-table-container">
+                                        <div class="loading-placeholder">Cargando eventos causales...</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                
+
+                <!-- 7. ECONOMY AND RESOURCES -->
+                <section id="view-economy" class="view-panel">
+                    <div class="economy-container">
+                        <div class="economy-section">
+                            <h3>Precios de Referencia y Productos Básicos</h3>
+                            <div id="commodity-price-board" class="commodity-grid">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Formal Enterprises & Informal Commerce Pulperías -->
+                        <div class="economy-two-col">
+                            <div class="col-box">
+                                <h3>Directorio de Empresas y Talleres</h3>
+                                <div id="enterprises-list" class="data-table-container"></div>
+                            </div>
+                            <div class="col-box">
+                                <h3>Comercio Informal, Tienditas & Pulperías</h3>
+                                <div id="stores-list" class="data-table-container">
+                                    <div class="loading-placeholder">Cargando pulperías y puestos...</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Credit & Debt, Traditional Fiado Ledger, Family Remittances -->
+                        <div class="economy-two-col" style="margin-top: 16px;">
+                            <div class="col-box">
+                                <h3>Libro de Fiado Tradicional (Crédito Informal por Confianza)</h3>
+                                <div id="fiado-list" class="data-table-container">
+                                    <div class="loading-placeholder">Cargando libro de fiado...</div>
+                                </div>
+                            </div>
+                            <div class="col-box">
+                                <h3>Remesas Familiares (Transferencias de la Diáspora)</h3>
+                                <div id="remittances-list" class="data-table-container">
+                                    <div class="loading-placeholder">Cargando remesas familiares...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                
+
+                <!-- 8. HISTORICAL TIMELINE -->
+                <section id="view-timeline" class="view-panel">
+                    <div class="timeline-container">
+                        <div class="timeline-filters">
+                            <input type="text" id="timeline-search" class="input-search" placeholder="Filtrar eventos por palabra clave o nombre...">
+                            <select id="timeline-type-filter" class="dropdown-select">
+                                <option value="">Todos los Tipos de Eventos</option>
+                                <option value="activity">Actividades</option>
+                                <option value="goal">Metas</option>
+                                <option value="friendship">Amistades</option>
+                                <option value="conflict">Conflictos</option>
+                                <option value="trade">Comercio</option>
+                                <option value="crisis">Crisis & Sequía</option>
+                            </select>
+                            <label class="checkbox-filter"><input type="checkbox" id="timeline-important-only"> Solo Salientes (≥ 0.65)</label>
+                        </div>
+                        <div id="timeline-events-list" class="timeline-stream">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                </section>
+
+                
+
+                <!-- 9. SIMULATION LABORATORY -->
+                <section id="view-laboratory" class="view-panel">
+                    <div class="laboratory-container">
+                        <div class="lab-header">
+                            <h2>Banco Experimental Autónomo & Razonamiento Científico</h2>
+                            <p>Ejecución interactiva de experimentos de comportamiento, deliberación epistémica de hipótesis y transmisión distribuida de oficios.</p>
+                        </div>
+
+                        <!-- Empirical Scientific Thinking & Hypothesis Testing -->
+                        <div class="economy-two-col" style="margin-bottom: 24px;">
+                            <div class="col-box">
+                                <h3>Pensamiento Científico & Hipótesis Epistémicas</h3>
+                                <div id="discoveries-list" class="data-table-container">
+                                    <div class="loading-placeholder">Cargando sesiones de indagación empírica...</div>
+                                </div>
+                            </div>
+                            <div class="col-box">
+                                <h3>Educación Distribuida, Oficios & Aprendices</h3>
+                                <div id="apprenticeships-list" class="data-table-container">
+                                    <div class="loading-placeholder">Cargando acuerdos de aprendizaje...</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="experiments-grid" id="laboratory-experiments-list">
+                            <!-- Populated dynamically -->
+                        </div>
+
+                        <div class="lab-results-box" id="lab-results-container" style="display: none;">
+                            <h3>Resultado del Experimento</h3>
+                            <div id="lab-result-content"></div>
+                        </div>
+                    </div>
+                </section>
+
+                
+
+                <!-- 10. EXPERIMENTS AND SCIENTIFIC REPORTS -->
+                <section id="view-reports" class="view-panel">
+                    <div class="reports-container">
+                        <div class="reports-sidebar">
+                            <h3>Batería de Validación</h3>
+                            <ul id="reports-list" class="reports-nav">
+                                <li class="report-nav-item active" data-report="phase13_summary">Resumen Científico Fase 1.3</li>
+                                <li class="report-nav-item" data-report="cognitive_validation">Validación de Sistemas Cognitivos</li>
+                                <li class="report-nav-item" data-report="salvadoran_geography">Integridad Territorial de El Salvador</li>
+                                <li class="report-nav-item" data-report="performance_audit">Auditoría de Rendimiento & Escala</li>
+                            </ul>
+                        </div>
+                        <div class="reports-content-box" id="report-view-area">
+                            <!-- Formatted report rendered here -->
+                        </div>
+                    </div>
+                </section>
+
+                
+            </main>
+
+            <!-- Right Contextual Inspector Panel -->
+            <button id="btn-toggle-inspector-floating" class="btn-floating-inspector" title="Alternar Inspector Contextual">👤 Inspector</button>
+            <aside id="inspector-panel" class="collapsed">
+                <div class="inspector-header">
+                    <div class="inspector-title" id="inspector-title">Inspector Contextual</div>
+                    <button id="btn-close-inspector" class="btn-close" title="Cerrar Inspector">✕</button>
+                </div>
+                <div class="inspector-body" id="inspector-content">
+                    <div class="inspector-placeholder">
+                        Haga clic en un individuo, establecimiento, nodo de conocimiento o relación para inspeccionar su estado interno.
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <!-- ================================================================= -->
+        <!-- BOTTOM REAL-TIME EVENT TICKER                                    -->
+        <!-- ================================================================= -->
+        <footer id="event-ticker">
+            <span class="ticker-label">EVENTOS EN VIVO:</span>
+            <div id="ticker-content" class="ticker-track">
+                <span class="ticker-item">Esperando eventos de simulación...</span>
+            </div>
+        </footer>
+
+        <!-- ================================================================= -->
+        <!-- OBSERVER INTERVENTIONS MODAL (PHASE 1.4)                          -->
+        <!-- ================================================================= -->
+        <div id="modal-interventions" class="modal-backdrop" style="display: none;">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span style="color:var(--accent-sky); font-size:18px;">⚡</span>
+                        <h3>Panel de Intervenciones del Observador</h3>
+                    </div>
+                    <button id="btn-close-interventions" class="btn btn-sm btn-icon" title="Cerrar ventana">✕</button>
+                </div>
+                <div class="modal-tabs">
+                    <button class="modal-tab-btn active" data-tab="activity">Solicitar Actividad</button>
+                    <button class="modal-tab-btn" data-tab="assembly">Asamblea ADESCO</button>
+                    <button class="modal-tab-btn" data-tab="economic">Evento Económico</button>
+                    <button class="modal-tab-btn" data-tab="dispute">Disputa Judicial</button>
+                </div>
+                <div class="modal-body">
+                    <!-- Tab 1: Activity Request -->
+                    <div id="modal-tab-activity" class="modal-tab-content active">
+                        <p class="tab-desc">Propone una actividad a un individuo autónomo. El individuo deliberará y aceptará o rechazará según sus necesidades y energía.</p>
+                        <div class="form-group">
+                            <label for="modal-act-individual">Individuo:</label>
+                            <select id="modal-act-individual" class="dropdown-select-full"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="modal-act-type">Actividad de Civilización:</label>
+                            <select id="modal-act-type" class="dropdown-select-full">
+                                <option value="community_meeting">Asamblea ADESCO (community_meeting)</option>
+                                <option value="community_proposal">Proponer Proyecto Comunal (community_proposal)</option>
+                                <option value="litigate">Demandar en Tribunal (litigate)</option>
+                                <option value="seek_mediation">Buscar Mediación Vecinal (seek_mediation)</option>
+                                <option value="commerce_sell">Vender en Puesto/Pulpería (commerce_sell)</option>
+                                <option value="commerce_buy">Comprar en Mercado (commerce_buy)</option>
+                                <option value="business_create">Fundar Emprendimiento (business_create)</option>
+                                <option value="seek_credit">Pedir Fiado/Crédito (seek_credit)</option>
+                                <option value="repay_debt">Pagar Deuda/Fiado (repay_debt)</option>
+                                <option value="receive_remittance">Cobrar Remesa Familiar (receive_remittance)</option>
+                                <option value="teach_apprentice">Instruir a Aprendiz (teach_apprentice)</option>
+                                <option value="learn_trade">Aprender Oficio (learn_trade)</option>
+                                <option value="conduct_experiment">Realizar Experimento Científico (conduct_experiment)</option>
+                                <option value="share_discovery">Difundir Conocimiento (share_discovery)</option>
+                                <option value="attend_celebration">Asistir a Fiesta Patronal (attend_celebration)</option>
+                                <option value="organize_event">Organizar Evento Comunitario (organize_event)</option>
+                                <option value="seek_employment">Buscar Empleo (seek_employment)</option>
+                                <option value="negotiate">Negociar Acuerdo (negotiate)</option>
+                                <option value="cooperate">Cooperación Solidaria (cooperate)</option>
+                                <option value="migrate">Migración (migrate)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="modal-act-reason">Motivo / Justificación:</label>
+                            <input type="text" id="modal-act-reason" class="input-text-full" value="Oportunidad comunitaria propuesta por el observador" />
+                        </div>
+                        <button id="btn-submit-activity-intervention" class="btn btn-primary" style="margin-top:12px; width:100%;">
+                            Proponer Oportunidad
+                        </button>
+                    </div>
+
+                    <!-- Tab 2: ADESCO Assembly -->
+                    <div id="modal-tab-assembly" class="modal-tab-content" style="display:none;">
+                        <p class="tab-desc">Convoca formalmente a una asamblea comunitaria ADESCO para votar y coordinar una faena de trabajo voluntario.</p>
+                        <div class="form-group">
+                            <label for="modal-adesco-community">Comunidad:</label>
+                            <select id="modal-adesco-community" class="dropdown-select-full">
+                                <option value="comunidad_centro_historico">Comunidad Centro Histórico</option>
+                                <option value="comunidad_san_esteban">Comunidad San Esteban</option>
+                                <option value="comunidad_candelaria">Comunidad Candelaria</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="modal-adesco-topic">Tema / Obra Propuesta:</label>
+                            <input type="text" id="modal-adesco-topic" class="input-text-full" value="Reparación de Colector de Aguas Lluvias y Pavimentación" />
+                        </div>
+                        <button id="btn-submit-adesco-intervention" class="btn btn-primary" style="margin-top:12px; width:100%;">
+                            Convocar Asamblea ADESCO
+                        </button>
+                    </div>
+
+                    <!-- Tab 3: Economic Event -->
+                    <div id="modal-tab-economic" class="modal-tab-content" style="display:none;">
+                        <p class="tab-desc">Introduce una perturbación o inyección macroeconómica en la economía salvadoreña simulada.</p>
+                        <div class="form-group">
+                            <label for="modal-econ-type">Tipo de Evento:</label>
+                            <select id="modal-econ-type" class="dropdown-select-full">
+                                <option value="remittance_surge">Auge de Remesas (+30% transferencias de la diáspora)</option>
+                                <option value="drought_shock">Sequía Severa (Impacto en cosechas de maíz y frijol)</option>
+                                <option value="credit_expansion">Ampliación de Líneas de Fiado y Microcrédito</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="modal-econ-severity">Severidad / Magnitud (0.1 - 1.0):</label>
+                            <input type="number" id="modal-econ-severity" class="input-text-full" min="0.1" max="1.0" step="0.1" value="0.3" />
+                        </div>
+                        <button id="btn-submit-econ-intervention" class="btn btn-primary" style="margin-top:12px; width:100%;">
+                            Inyectar Evento Económico
+                        </button>
+                    </div>
+
+                    <!-- Tab 4: Legal Dispute -->
+                    <div id="modal-tab-dispute" class="modal-tab-content" style="display:none;">
+                        <p class="tab-desc">Registra un conflicto vecinal o comercial en el Tribunal de Paz para su tramitación judicial o mediación.</p>
+                        <div class="form-group">
+                            <label for="modal-dispute-plaintiff">Demandante (Actor):</label>
+                            <select id="modal-dispute-plaintiff" class="dropdown-select-full"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="modal-dispute-defendant">Demandado:</label>
+                            <select id="modal-dispute-defendant" class="dropdown-select-full"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="modal-dispute-claim">Reclamo / Hechos:</label>
+                            <input type="text" id="modal-dispute-claim" class="input-text-full" value="Incumplimiento reiterado en el pago de fiado de víveres" />
+                        </div>
+                        <div class="form-group">
+                            <label for="modal-dispute-damages">Monto Reclamado ($ USD):</label>
+                            <input type="number" id="modal-dispute-damages" class="input-text-full" min="5" max="500" step="5" value="35.00" />
+                        </div>
+                        <button id="btn-submit-dispute-intervention" class="btn btn-primary" style="margin-top:12px; width:100%;">
+                            Radicar Demanda en Tribunal
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Interactive Application Script -->
+    <script src="assets/maplibre/maplibre-gl.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

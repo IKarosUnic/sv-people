@@ -1,0 +1,210 @@
+{
+  "dataset_id": "Geofabrik_OSM_El_Salvador",
+  "output_path": "C:\\GIT HUB\\sv people\\saltbor\\datasets\\gis\\ingested",
+  "feature_count": 151251,
+  "duration_seconds": 30.65,
+  "acquired_at": "2026-11-13",
+  "attribution": "© OpenStreetMap contributors, ODbL 1.0 (https://www.openstreetmap.org/copyright)",
+  "layers": {
+    "roads": {
+      "geometry_kind": "line",
+      "feature_count": 121344,
+      "class_counts": {
+        "tertiary": 5426,
+        "secondary": 2383,
+        "primary": 1639,
+        "residential": 79981,
+        "pedestrian": 2614,
+        "trunk": 1844,
+        "service": 13583,
+        "track": 4359,
+        "other": 708,
+        "path": 1560,
+        "footway": 6529,
+        "steps": 655,
+        "cycleway": 63
+      },
+      "validation_counts": {
+        "VERIFIED_REAL": 33394,
+        "IMPORTED_UNVERIFIED": 87950
+      },
+      "limitations": "Connectivity is geometric only. Saltbor infers junction sharing from identical coordinates; OSM turn restrictions are not present in the shapefile and are not modelled.",
+      "coverage_bbox": null,
+      "is_partial": false
+    },
+    "buildings": {
+      "geometry_kind": "polygon",
+      "feature_count": 989,
+      "class_counts": {
+        "other": 821,
+        "commercial": 126,
+        "institutional": 19,
+        "industrial": 4,
+        "religious": 13,
+        "residential": 6
+      },
+      "validation_counts": {
+        "VERIFIED_REAL": 262,
+        "IMPORTED_UNVERIFIED": 727
+      },
+      "limitations": "Building footprints are real OSM footprints. Storey count, occupancy and use are NOT implied by the polygon and are simulated separately. THIS INGEST IS PARTIAL: only features inside the recorded coverage bbox / limit were materialized.",
+      "coverage_bbox": [
+        -89.202,
+        13.693,
+        -89.186,
+        13.704
+      ],
+      "is_partial": true
+    },
+    "landuse": {
+      "geometry_kind": "polygon",
+      "feature_count": 10887,
+      "class_counts": {
+        "institutional_area": 331,
+        "recreation_area": 1253,
+        "industrial_area": 351,
+        "other": 234,
+        "residential_area": 2545,
+        "commercial_area": 213,
+        "forest": 1998,
+        "extraction_area": 33,
+        "agricultural_area": 1858,
+        "vegetation": 2062,
+        "waste_area": 9
+      },
+      "validation_counts": {
+        "VERIFIED_REAL": 3127,
+        "IMPORTED_UNVERIFIED": 7760
+      },
+      "limitations": "Land use polygons are coarse and not cadastral parcels.",
+      "coverage_bbox": null,
+      "is_partial": false
+    },
+    "natural": {
+      "geometry_kind": "polygon",
+      "feature_count": 122,
+      "class_counts": {
+        "coastline": 111,
+        "terrain": 11
+      },
+      "validation_counts": {
+        "VERIFIED_REAL": 62,
+        "IMPORTED_UNVERIFIED": 60
+      },
+      "limitations": "Polygon natural features only; linear coastlines live in the lines layer.",
+      "coverage_bbox": null,
+      "is_partial": false
+    },
+    "water": {
+      "geometry_kind": "polygon",
+      "feature_count": 1437,
+      "class_counts": {
+        "water_body": 988,
+        "other": 419,
+        "reservoir": 30
+      },
+      "validation_counts": {
+        "IMPORTED_UNVERIFIED": 1204,
+        "VERIFIED_REAL": 233
+      },
+      "limitations": "Water bodies only; waterways are lines in the waterways layer.",
+      "coverage_bbox": null,
+      "is_partial": false
+    },
+    "waterways": {
+      "geometry_kind": "line",
+      "feature_count": 4433,
+      "class_counts": {
+        "river": 1437,
+        "stream": 2548,
+        "drain": 402,
+        "canal": 46
+      },
+      "validation_counts": {
+        "VERIFIED_REAL": 2533,
+        "IMPORTED_UNVERIFIED": 1900
+      },
+      "limitations": "Flow direction and discharge volumes are not provided by OSM.",
+      "coverage_bbox": null,
+      "is_partial": false
+    },
+    "places": {
+      "geometry_kind": "point",
+      "feature_count": 2657,
+      "class_counts": {
+        "city": 15,
+        "town": 259,
+        "hamlet": 1368,
+        "suburb": 129,
+        "village": 485,
+        "locality": 246,
+        "farm": 153,
+        "island": 1,
+        "national_capital": 1
+      },
+      "validation_counts": {
+        "VERIFIED_REAL": 2637,
+        "IMPORTED_UNVERIFIED": 20
+      },
+      "limitations": "OSM place nodes approximate settlement centres, not administrative seats.",
+      "coverage_bbox": null,
+      "is_partial": false
+    },
+    "transport": {
+      "geometry_kind": "point",
+      "feature_count": 897,
+      "class_counts": {
+        "railway_station": 3,
+        "bus_station": 89,
+        "bus_stop": 775,
+        "other": 16,
+        "airport": 3,
+        "ferry_terminal": 2,
+        "taxi_rank": 9
+      },
+      "validation_counts": {
+        "VERIFIED_REAL": 573,
+        "IMPORTED_UNVERIFIED": 324
+      },
+      "limitations": "Stop positions are snapshots; service frequency and schedules are absent.",
+      "coverage_bbox": null,
+      "is_partial": false
+    },
+    "pois": {
+      "geometry_kind": "point",
+      "feature_count": 8011,
+      "class_counts": {
+        "other": 4363,
+        "public_safety": 144,
+        "food_service": 1942,
+        "education": 422,
+        "market": 39,
+        "health": 673,
+        "finance": 332,
+        "government": 58,
+        "public_service": 38
+      },
+      "validation_counts": {
+        "VERIFIED_REAL": 6276,
+        "IMPORTED_UNVERIFIED": 1735
+      },
+      "limitations": "Points of interest record presence, not capacity, staffing, opening hours or operating status. Saltbor models those attributes explicitly.",
+      "coverage_bbox": null,
+      "is_partial": false
+    },
+    "adminareas": {
+      "geometry_kind": "polygon",
+      "feature_count": 474,
+      "class_counts": {
+        "admin_boundary": 474
+      },
+      "validation_counts": {
+        "VERIFIED_REAL": 473,
+        "IMPORTED_UNVERIFIED": 1
+      },
+      "limitations": "Administrative polygons reflect OSM boundary relations. The 2024 Salvadoran restructuring (D.L. 762) is authoritative in saltbor.datasets.salvadoran.territory_data, not in OSM.",
+      "coverage_bbox": null,
+      "is_partial": false
+    }
+  }
+}

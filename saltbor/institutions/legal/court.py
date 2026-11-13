@@ -61,6 +61,14 @@ class JudicialTribunal:
         self.total_restitution_enforced: float = 0.0
         self.total_fines_collected: float = 0.0
 
+    def get_all_cases(self) -> list[LegalCase]:
+        """Return all legal cases on the tribunal docket."""
+        return list(self.cases.values())
+
+    def get_case(self, case_id: str) -> Optional[LegalCase]:
+        """Retrieve a specific case by ID."""
+        return self.cases.get(case_id)
+
     def file_case(
         self,
         case_id: str,

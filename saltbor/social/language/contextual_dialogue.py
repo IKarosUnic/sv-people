@@ -62,6 +62,11 @@ class AdvancedOfflineDialogueEngine:
 
     def __init__(self, rng: Optional[np.random.Generator] = None) -> None:
         self.rng = rng or np.random.default_rng()
+        self.recent_dialogues: list[ContextualDialogueSession] = []
+
+    def get_recent_dialogues(self, limit: int = 50) -> list[ContextualDialogueSession]:
+        """Return the most recent contextual dialogue sessions."""
+        return self.recent_dialogues[-limit:]
 
     def conduct_negotiation(
         self,
@@ -213,7 +218,7 @@ class AdvancedOfflineDialogueEngine:
             trust_delta=trust_delta,
         )
 
-        return ContextualDialogueSession(
+        session = ContextualDialogueSession(
             session_id=session_id,
             participant_a=human_a.uid,
             participant_b=human_b.uid,
@@ -224,3 +229,7 @@ class AdvancedOfflineDialogueEngine:
             resulting_affection_delta=aff_delta,
             summary=summary,
         )
+        self.recent_dialogues.append(session)
+        if len(self.recent_dialogues) > 200:
+            self.recent_dialogues.pop(0)
+        return session

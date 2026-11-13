@@ -65,6 +65,30 @@ class PopulationFactory:
             logger.info("Using curated Saltbor mock personas (differentiated profiles).")
             profiles = MockDataGenerator.get_personas(cfg.initial_population_size)
 
+        return cls.create_from_profiles(
+            profiles=profiles,
+            config=cfg,
+            identity_factory=id_factory,
+            rng=master_rng,
+        )
+
+    @classmethod
+    def create_from_profiles(
+        cls,
+        profiles: list[dict[str, Any]],
+        config: Optional[SimulationConfig] = None,
+        identity_factory: Optional[IdentityFactory] = None,
+        rng: Optional[np.random.Generator] = None,
+    ) -> list[SyntheticHuman]:
+        """Generate SyntheticHuman instances from a list of persona profile dictionaries."""
+        cfg = config or SimulationConfig()
+        id_factory = identity_factory or IdentityFactory()
+        master_rng = rng or (
+            np.random.default_rng(cfg.random_seed)
+            if cfg.random_seed is not None
+            else np.random.default_rng()
+        )
+
         humans: list[SyntheticHuman] = []
 
         for p_data in profiles:
@@ -158,6 +182,8 @@ class PopulationFactory:
                 rng=agent_rng,
             )
             humans.append(human)
+
+        return humans
 
         return humans
 

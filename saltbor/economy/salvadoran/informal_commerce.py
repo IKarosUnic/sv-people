@@ -44,6 +44,14 @@ class InformalCommerceEngine:
     def __init__(self) -> None:
         self._stores: dict[str, CornerStorePulperia] = {}
 
+    def get_store(self, store_id: str) -> Optional[CornerStorePulperia]:
+        """Retrieve store by ID."""
+        return self._stores.get(store_id)
+
+    def get_all_stores(self) -> list[CornerStorePulperia]:
+        """Return all registered corner stores and market stalls."""
+        return list(self._stores.values())
+
     def register_corner_store(
         self,
         store_id: str,

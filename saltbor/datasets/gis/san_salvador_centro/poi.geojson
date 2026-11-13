@@ -1,0 +1,129 @@
+{
+  "type": "FeatureCollection",
+  "name": "saltbor_poi_san_salvador_centro",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  },
+  "metadata": {
+    "zone": "san_salvador_centro",
+    "feature_count": 4,
+    "generated_at": "2026-11-10T22:00:00Z"
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "poi_mercado_central_ss",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -89.1952,
+          13.6948
+        ]
+      },
+      "properties": {
+        "feature_id": "poi_mercado_central_ss",
+        "establishment_id": "mercado_central_ss",
+        "name": "Mercado Central de San Salvador",
+        "category": "commerce",
+        "sub_category": "municipal_market",
+        "address": "Calle Rubén Darío y 12 Avenida Sur, San Salvador",
+        "opening_hours": "05:30-18:00",
+        "capacity": 8000,
+        "confidence_level": 0.99,
+        "validation_state": "VERIFIED_REAL",
+        "source": "Alcaldia_San_Salvador_Mercados",
+        "source_id": "AMSS-MERC-001",
+        "fetch_date": "2026-11-10",
+        "license": "ODbL-1.0_and_Public_Records_SV",
+        "known_accuracy": "sub-meter"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_catedral_metropolitana_ss",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -89.1908,
+          13.6981
+        ]
+      },
+      "properties": {
+        "feature_id": "poi_catedral_metropolitana_ss",
+        "establishment_id": "catedral_metropolitana_ss",
+        "name": "Catedral Metropolitana del Divino Salvador del Mundo",
+        "category": "social_cultural",
+        "sub_category": "historic_church",
+        "address": "Frente a Plaza Barrios, Centro Histórico de San Salvador",
+        "opening_hours": "06:30-18:30",
+        "capacity": 2000,
+        "confidence_level": 0.99,
+        "validation_state": "VERIFIED_REAL",
+        "source": "SECULTURA_Inventario_Bienes",
+        "source_id": "SECULT-MON-001",
+        "fetch_date": "2026-11-10",
+        "license": "ODbL-1.0_and_Public_Records_SV",
+        "known_accuracy": "sub-meter"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_binaes_san_salvador",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -89.1902,
+          13.6975
+        ]
+      },
+      "properties": {
+        "feature_id": "poi_binaes_san_salvador",
+        "establishment_id": "binaes_san_salvador",
+        "name": "Biblioteca Nacional de El Salvador (BINAES)",
+        "category": "social_cultural",
+        "sub_category": "national_library",
+        "address": "Costado Oriente de la Plaza Gerardo Barrios, Centro Histórico, San Salvador",
+        "opening_hours": "24/7",
+        "capacity": 5000,
+        "confidence_level": 0.99,
+        "validation_state": "VERIFIED_REAL",
+        "source": "CNR_VANT_CartoData",
+        "source_id": "CNR-MAP4-L16",
+        "fetch_date": "2026-11-10",
+        "license": "ODbL-1.0_and_Public_Records_SV",
+        "known_accuracy": "sub-meter"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi_alcaldia_ss_centro",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -89.1982,
+          13.6985
+        ]
+      },
+      "properties": {
+        "feature_id": "poi_alcaldia_ss_centro",
+        "establishment_id": "alcaldia_ss_centro",
+        "name": "Alcaldía Municipal de San Salvador Centro (Sede Central)",
+        "category": "public_service",
+        "sub_category": "municipal_hall",
+        "address": "Alameda Juan Pablo II y Diagonal Universitaria, San Salvador",
+        "opening_hours": "08:00-16:00",
+        "capacity": 1500,
+        "confidence_level": 0.99,
+        "validation_state": "VERIFIED_REAL",
+        "source": "CNR_Límites_Municipales",
+        "source_id": "CNR-MAP4-L93",
+        "fetch_date": "2026-11-10",
+        "license": "ODbL-1.0_and_Public_Records_SV",
+        "known_accuracy": "sub-meter"
+      }
+    }
+  ]
+}

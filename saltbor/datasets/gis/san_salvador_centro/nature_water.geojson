@@ -1,0 +1,741 @@
+{
+  "type": "FeatureCollection",
+  "name": "saltbor_nature_water_san_salvador_centro",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  },
+  "metadata": {
+    "zone": "san_salvador_centro",
+    "feature_count": 11,
+    "generated_at": "2026-11-10T22:00:00Z"
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "water_436477642",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -89.1919933,
+            13.6925991
+          ],
+          [
+            -89.1918157,
+            13.6927403
+          ],
+          [
+            -89.1917378,
+            13.6927836
+          ],
+          [
+            -89.1916686,
+            13.6928183
+          ],
+          [
+            -89.1915887,
+            13.6928544
+          ],
+          [
+            -89.1915276,
+            13.6928755
+          ],
+          [
+            -89.1914746,
+            13.6928888
+          ],
+          [
+            -89.1914138,
+            13.6928977
+          ],
+          [
+            -89.1912282,
+            13.6929117
+          ],
+          [
+            -89.1911469,
+            13.6929345
+          ],
+          [
+            -89.1909794,
+            13.692984
+          ],
+          [
+            -89.1908997,
+            13.6930048
+          ],
+          [
+            -89.1908282,
+            13.6930176
+          ],
+          [
+            -89.1907758,
+            13.6930245
+          ],
+          [
+            -89.1907152,
+            13.6930275
+          ],
+          [
+            -89.1906348,
+            13.6930373
+          ],
+          [
+            -89.1904537,
+            13.6930685
+          ],
+          [
+            -89.1903664,
+            13.6930803
+          ],
+          [
+            -89.1895063,
+            13.6932368
+          ],
+          [
+            -89.1894161,
+            13.6932533
+          ],
+          [
+            -89.1893446,
+            13.6932663
+          ],
+          [
+            -89.1890268,
+            13.6933411
+          ],
+          [
+            -89.1887375,
+            13.6934081
+          ]
+        ]
+      },
+      "properties": {
+        "feature_id": "water_436477642",
+        "osm_id": 436477642,
+        "name": "Río Acelhuate",
+        "waterway_type": "river",
+        "validation_state": "VERIFIED_REAL",
+        "source": "OpenStreetMap_Contributors",
+        "fetch_date": "2024-05-10",
+        "license": "ODbL-1.0",
+        "known_accuracy": "metric"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "water_436487760",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -89.1887375,
+            13.6934081
+          ],
+          [
+            -89.1877495,
+            13.6935747
+          ],
+          [
+            -89.1870629,
+            13.6937452
+          ]
+        ]
+      },
+      "properties": {
+        "feature_id": "water_436487760",
+        "osm_id": 436487760,
+        "name": "Río Acelhuate",
+        "waterway_type": "river",
+        "validation_state": "VERIFIED_REAL",
+        "source": "OpenStreetMap_Contributors",
+        "fetch_date": "2024-05-10",
+        "license": "ODbL-1.0",
+        "known_accuracy": "metric"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "water_436494075",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -89.1866101,
+            13.6941273
+          ],
+          [
+            -89.1864374,
+            13.6943625
+          ],
+          [
+            -89.1863736,
+            13.6944701
+          ],
+          [
+            -89.1863186,
+            13.6945628
+          ],
+          [
+            -89.1862803,
+            13.6946017
+          ],
+          [
+            -89.1862573,
+            13.6946242
+          ],
+          [
+            -89.1862281,
+            13.6946466
+          ],
+          [
+            -89.186161,
+            13.694691
+          ],
+          [
+            -89.1861316,
+            13.6946996
+          ],
+          [
+            -89.1861028,
+            13.6947027
+          ],
+          [
+            -89.1860629,
+            13.694701
+          ],
+          [
+            -89.1860184,
+            13.6946964
+          ],
+          [
+            -89.1859697,
+            13.6946916
+          ],
+          [
+            -89.1858434,
+            13.6946827
+          ]
+        ]
+      },
+      "properties": {
+        "feature_id": "water_436494075",
+        "osm_id": 436494075,
+        "name": "Río Acelhuate",
+        "waterway_type": "river",
+        "validation_state": "VERIFIED_REAL",
+        "source": "OpenStreetMap_Contributors",
+        "fetch_date": "2024-05-10",
+        "license": "ODbL-1.0",
+        "known_accuracy": "metric"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "water_436494077",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -89.1875835,
+            13.6932897
+          ],
+          [
+            -89.1873086,
+            13.6935302
+          ],
+          [
+            -89.1870629,
+            13.6937452
+          ]
+        ]
+      },
+      "properties": {
+        "feature_id": "water_436494077",
+        "osm_id": 436494077,
+        "name": "Canal Río Acelhuate",
+        "waterway_type": "river",
+        "validation_state": "VERIFIED_REAL",
+        "source": "OpenStreetMap_Contributors",
+        "fetch_date": "2024-05-10",
+        "license": "ODbL-1.0",
+        "known_accuracy": "metric"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "water_455761832",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -89.1913739,
+            13.6902142
+          ],
+          [
+            -89.1913982,
+            13.6903284
+          ],
+          [
+            -89.1913559,
+            13.6905432
+          ],
+          [
+            -89.1911628,
+            13.6906722
+          ],
+          [
+            -89.1910864,
+            13.6907543
+          ],
+          [
+            -89.1910059,
+            13.6909406
+          ],
+          [
+            -89.1909388,
+            13.6911087
+          ],
+          [
+            -89.1907672,
+            13.6912077
+          ],
+          [
+            -89.1905185,
+            13.6912463
+          ],
+          [
+            -89.1902243,
+            13.6912849
+          ],
+          [
+            -89.1898705,
+            13.691345
+          ],
+          [
+            -89.1895611,
+            13.6914142
+          ],
+          [
+            -89.1893989,
+            13.6915299
+          ],
+          [
+            -89.1895063,
+            13.6918657
+          ],
+          [
+            -89.1893662,
+            13.6921152
+          ],
+          [
+            -89.1890014,
+            13.6924586
+          ],
+          [
+            -89.188954,
+            13.6925032
+          ],
+          [
+            -89.1887806,
+            13.6925447
+          ],
+          [
+            -89.1886268,
+            13.6925524
+          ],
+          [
+            -89.1885267,
+            13.6925497
+          ],
+          [
+            -89.1884481,
+            13.6925814
+          ],
+          [
+            -89.1881548,
+            13.6927382
+          ],
+          [
+            -89.1880217,
+            13.6929417
+          ],
+          [
+            -89.1875835,
+            13.6932897
+          ]
+        ]
+      },
+      "properties": {
+        "feature_id": "water_455761832",
+        "osm_id": 455761832,
+        "name": "Río Matalapa",
+        "waterway_type": "river",
+        "validation_state": "VERIFIED_REAL",
+        "source": "OpenStreetMap_Contributors",
+        "fetch_date": "2024-05-10",
+        "license": "ODbL-1.0",
+        "known_accuracy": "metric"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "water_560216436",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -89.1870629,
+            13.6937452
+          ],
+          [
+            -89.1869179,
+            13.6938428
+          ],
+          [
+            -89.1866101,
+            13.6941273
+          ]
+        ]
+      },
+      "properties": {
+        "feature_id": "water_560216436",
+        "osm_id": 560216436,
+        "name": "Río Acelhuate",
+        "waterway_type": "river",
+        "validation_state": "VERIFIED_REAL",
+        "source": "OpenStreetMap_Contributors",
+        "fetch_date": "2024-05-10",
+        "license": "ODbL-1.0",
+        "known_accuracy": "metric"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "water_569734677",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -89.2034049,
+            13.6965918
+          ],
+          [
+            -89.2032594,
+            13.6965288
+          ],
+          [
+            -89.203128,
+            13.6964501
+          ],
+          [
+            -89.2030487,
+            13.6963919
+          ],
+          [
+            -89.2029962,
+            13.6963392
+          ],
+          [
+            -89.2029699,
+            13.6963185
+          ],
+          [
+            -89.2029465,
+            13.696306
+          ],
+          [
+            -89.2028393,
+            13.6962726
+          ],
+          [
+            -89.2027999,
+            13.6962632
+          ],
+          [
+            -89.2027659,
+            13.6962624
+          ],
+          [
+            -89.2027203,
+            13.6962711
+          ],
+          [
+            -89.2026647,
+            13.69629
+          ],
+          [
+            -89.2024201,
+            13.6964155
+          ],
+          [
+            -89.2023772,
+            13.6964325
+          ],
+          [
+            -89.2023349,
+            13.6964409
+          ],
+          [
+            -89.2022618,
+            13.6964412
+          ],
+          [
+            -89.2021687,
+            13.6964296
+          ],
+          [
+            -89.2020819,
+            13.6964117
+          ],
+          [
+            -89.2019927,
+            13.6963778
+          ],
+          [
+            -89.2018579,
+            13.696306
+          ],
+          [
+            -89.2018101,
+            13.6962685
+          ],
+          [
+            -89.2017404,
+            13.6962141
+          ],
+          [
+            -89.2016225,
+            13.6961502
+          ],
+          [
+            -89.2014846,
+            13.6961058
+          ],
+          [
+            -89.2014417,
+            13.6961058
+          ],
+          [
+            -89.2010255,
+            13.6960983
+          ],
+          [
+            -89.200994,
+            13.6960964
+          ],
+          [
+            -89.200972,
+            13.696089
+          ],
+          [
+            -89.2009486,
+            13.6960731
+          ],
+          [
+            -89.2009328,
+            13.6960518
+          ],
+          [
+            -89.2009193,
+            13.6960189
+          ],
+          [
+            -89.2009173,
+            13.6959748
+          ],
+          [
+            -89.2009173,
+            13.6959239
+          ]
+        ]
+      },
+      "properties": {
+        "feature_id": "water_569734677",
+        "osm_id": 569734677,
+        "name": "Quebrada La Mascota",
+        "waterway_type": "stream",
+        "validation_state": "VERIFIED_REAL",
+        "source": "OpenStreetMap_Contributors",
+        "fetch_date": "2024-05-10",
+        "license": "ODbL-1.0",
+        "known_accuracy": "metric"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "water_679520855",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -89.2009604,
+            13.6956396
+          ],
+          [
+            -89.2009296,
+            13.6951636
+          ],
+          [
+            -89.2008926,
+            13.6949361
+          ],
+          [
+            -89.2005837,
+            13.6946698
+          ]
+        ]
+      },
+      "properties": {
+        "feature_id": "water_679520855",
+        "osm_id": 679520855,
+        "name": "Quebrada La Mascota",
+        "waterway_type": "stream",
+        "validation_state": "VERIFIED_REAL",
+        "source": "OpenStreetMap_Contributors",
+        "fetch_date": "2024-05-10",
+        "license": "ODbL-1.0",
+        "known_accuracy": "metric"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "water_679520857",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -89.2009173,
+            13.6959239
+          ],
+          [
+            -89.2009604,
+            13.6956396
+          ]
+        ]
+      },
+      "properties": {
+        "feature_id": "water_679520857",
+        "osm_id": 679520857,
+        "name": "Quebrada La Mascota",
+        "waterway_type": "stream",
+        "validation_state": "VERIFIED_REAL",
+        "source": "OpenStreetMap_Contributors",
+        "fetch_date": "2024-05-10",
+        "license": "ODbL-1.0",
+        "known_accuracy": "metric"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "water_679520870",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -89.2003163,
+            13.6945158
+          ],
+          [
+            -89.1998297,
+            13.6942775
+          ],
+          [
+            -89.1997958,
+            13.6942476
+          ],
+          [
+            -89.1997866,
+            13.6941967
+          ],
+          [
+            -89.1998143,
+            13.6941309
+          ],
+          [
+            -89.1998297,
+            13.694068
+          ],
+          [
+            -89.1998728,
+            13.6936878
+          ],
+          [
+            -89.1998389,
+            13.693167
+          ],
+          [
+            -89.1998543,
+            13.6930951
+          ],
+          [
+            -89.1999314,
+            13.6929275
+          ],
+          [
+            -89.1999498,
+            13.6928586
+          ],
+          [
+            -89.1999375,
+            13.6927958
+          ],
+          [
+            -89.1998821,
+            13.6927299
+          ],
+          [
+            -89.1997465,
+            13.6926581
+          ],
+          [
+            -89.1995692,
+            13.6924059
+          ]
+        ]
+      },
+      "properties": {
+        "feature_id": "water_679520870",
+        "osm_id": 679520870,
+        "name": "Quebrada La Mascota",
+        "waterway_type": "stream",
+        "validation_state": "VERIFIED_REAL",
+        "source": "OpenStreetMap_Contributors",
+        "fetch_date": "2024-05-10",
+        "license": "ODbL-1.0",
+        "known_accuracy": "metric"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "water_679520873",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -89.2005837,
+            13.6946698
+          ],
+          [
+            -89.2003163,
+            13.6945158
+          ]
+        ]
+      },
+      "properties": {
+        "feature_id": "water_679520873",
+        "osm_id": 679520873,
+        "name": "Quebrada La Mascota",
+        "waterway_type": "stream",
+        "validation_state": "VERIFIED_REAL",
+        "source": "OpenStreetMap_Contributors",
+        "fetch_date": "2024-05-10",
+        "license": "ODbL-1.0",
+        "known_accuracy": "metric"
+      }
+    }
+  ]
+}

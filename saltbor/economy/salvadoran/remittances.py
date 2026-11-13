@@ -36,6 +36,14 @@ class RemittanceEngine:
     def __init__(self) -> None:
         self._profiles: dict[str, HouseholdRemittanceProfile] = {}
 
+    def get_all_profiles(self) -> list[HouseholdRemittanceProfile]:
+        """Return all registered household remittance profiles."""
+        return list(self._profiles.values())
+
+    def get_profile(self, household_id: str) -> Optional[HouseholdRemittanceProfile]:
+        """Retrieve a household profile by ID."""
+        return self._profiles.get(household_id)
+
     def register_household_remittance(
         self,
         household_id: str,

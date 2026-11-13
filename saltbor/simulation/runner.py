@@ -97,6 +97,58 @@ from saltbor.social.institutions.emergent import EmergentInstitutionEngine
 from saltbor.social.knowledge_integration import SocialKnowledgeBridge
 from saltbor.social.lod import SocialLODManager
 
+# Phase 1.3 Distributed Education & Scientific Inquiry
+from saltbor.institutions.education import DistributedEducationEngine
+from saltbor.cognition.epistemic.scientific_thinking import ScientificThinkingEngine
+
+# Phase 1.4 Runtime Orchestration & Civilization Scenarios
+import uuid
+from saltbor.simulation.orchestrator import (
+    EngineMetadata,
+    ExecutionMode,
+    OrchestratorContext,
+    SimulationRuntimeOrchestrator,
+)
+from saltbor.simulation.scenarios.profiles import (
+    ScenarioProfile,
+    ScenarioProfileType,
+    get_profile,
+)
+from saltbor.institutions.legal.code import LegalStatuteType
+
+# Phase 1.5 Human Daily Life, Labor Market & Housing Engines
+from saltbor.economy.commerce.commercial_engine import (
+    CommercialEngine,
+    CommercialEstablishment,
+    CommercialProduct,
+    EstablishmentType,
+    VisitIntent,
+)
+from saltbor.economy.labor.market import (
+    EmploymentContract,
+    JobVacancy,
+    LaborMarketEngine,
+)
+from saltbor.economy.housing.engine import (
+    HousingEngine,
+    HousingLease,
+    HousingUnit,
+)
+from saltbor.economy.household.ledger import HouseholdLedger
+from saltbor.social.everyday_life import (
+    EverydaySocialEngine,
+    SocialInvitation,
+)
+from saltbor.core.types import ContractType, EmploymentStatus, HousingTenureType
+from saltbor.events.causal_graph import CausalEventGraph
+from saltbor.health.engine import HealthEngine
+from saltbor.accidents.engine import MisfortuneEngine
+from saltbor.social.romance.engine import RomanceEngine
+from saltbor.cognition.perception.engine import PerceptionEngine
+from saltbor.world.interaction.world_human_engine import WorldHumanInteractionEngine
+from saltbor.lifecycle.family.caregiving import FamilyCaregivingEngine
+from saltbor.simulation.extension_runtime import ExtensionRuntime
+
 logger = logging.getLogger(__name__)
 
 
@@ -182,6 +234,35 @@ class SimulationRunner:
         self.social_knowledge_bridge = SocialKnowledgeBridge(collective_kg=self.collective_knowledge)
         self.social_lod = SocialLODManager()
 
+        # Phase 1.3 Distributed Education & Scientific Inquiry
+        self.distributed_education = DistributedEducationEngine(rng=self.master_rng)
+        self.scientific_thinking = ScientificThinkingEngine(rng=self.master_rng)
+
+        # Phase 1.5 Commercial, Labor, Housing & Everyday Life Engines
+        self.commerce_engine = CommercialEngine()
+        self.labor_market = LaborMarketEngine()
+        self.housing_engine = HousingEngine()
+        self.everyday_social = EverydaySocialEngine()
+        self.household_ledgers: dict[str, HouseholdLedger] = {}
+        self.community_utility_treasury: dict[str, float] = {"balance": 150.0}
+
+        # Phase 1.5 Extension: Causal, Health, Misfortune, Romance, Caregiving & World Interaction Engines
+        self.causal_graph = CausalEventGraph()
+        self.health_engine = HealthEngine(seed=seed)
+        self.misfortune_engine = MisfortuneEngine(seed=seed)
+        self.romance_engine = RomanceEngine(seed=seed)
+        self.perception = PerceptionEngine(seed=seed)
+        self.world_interaction = WorldHumanInteractionEngine(seed=seed)
+        self.world_human_engine = self.world_interaction
+        self.family_caregiving = FamilyCaregivingEngine()
+
+        # Phase 1.5 Extension runtime: ties health, romance, misfortune, family
+        # lifecycle and territorial interaction into the live tick loop.
+        self.extension = ExtensionRuntime(self)
+
+        # Connect causal event graph to listen to all simulation events
+        self.event_bus.subscribe(None, lambda evt: self.causal_graph.add_event(evt))
+
         # Persistence
         self.db = DatabaseManager(self.config.database_path)
         self.human_repo: Optional[HumanRepository] = None
@@ -205,6 +286,952 @@ class SimulationRunner:
 
         # Callbacks (for observation / visualization hooks)
         self._on_tick_callbacks: list[Callable[[Tick, SimulationRunner], None]] = []
+
+        # Phase 1.4 Runtime Orchestrator
+        self.orchestrator = SimulationRuntimeOrchestrator(self)
+        self._register_orchestrator_engines()
+
+    def _register_orchestrator_engines(self) -> None:
+        """Register all civilization engines into the master orchestrator."""
+
+        # -------------------------------------------------------------
+        # 1. PERIODIC: Weekly Cuchubales (Rotating informal savings circles)
+        # -------------------------------------------------------------
+        def _weekly_cuchubales(ctx: OrchestratorContext, tick: Tick) -> None:
+            for c in self.salvadoran_adesco.get_all_cuchubales():
+                if c.turns_completed < len(c.member_uids):
+                    res = self.salvadoran_adesco.execute_cuchubal_turn(c.circle_id)
+                    if res.get("success"):
+                        ben_uid = res.get("beneficiary")
+                        if ben_uid:
+                            h = self.population.get(uuid.UUID(ben_uid))
+                            if h:
+                                h.physical_state.money += res.get("pot_received_usd", 0.0)
+                        self.event_bus.emit(
+                            SimulationEvent(
+                                event_type=EventType.CUCHUBAL_TURN_EXECUTED,
+                                tick=tick,
+                                source_human_id=uuid.UUID(ben_uid) if ben_uid else None,
+                                data=res,
+                                importance=0.60,
+                            )
+                        )
+
+        self.orchestrator.register(
+            EngineMetadata(
+                name="WeeklyCuchubales",
+                mode=ExecutionMode.PERIODIC,
+                period_ticks=672,  # 7 days * 96 ticks/day
+                priority=70,
+                computational_cost="low",
+                step_handler=_weekly_cuchubales,
+            )
+        )
+
+        # -------------------------------------------------------------
+        # 2. PERIODIC: Monthly Remittance Delivery Schedule (every 2880 ticks)
+        # -------------------------------------------------------------
+        def _monthly_remittance_cycle(ctx: OrchestratorContext, tick: Tick) -> None:
+            for prof in self.salvadoran_remittances.get_all_profiles():
+                for h in self.population.get_all():
+                    if h.physical_state.home_location_id == prof.household_id:
+                        h.has_remittance_pending = True
+
+        self.orchestrator.register(
+            EngineMetadata(
+                name="MonthlyRemittanceSchedule",
+                mode=ExecutionMode.PERIODIC,
+                period_ticks=2880,  # 30 days * 96 ticks/day
+                priority=80,
+                computational_cost="low",
+                step_handler=_monthly_remittance_cycle,
+            )
+        )
+
+        # -------------------------------------------------------------
+        # 3. EVENT_TRIGGERED: ADESCO Engine (Faenas, Assemblies, Proposals)
+        # -------------------------------------------------------------
+        def _on_adesco_event(ctx: OrchestratorContext, evt: SimulationEvent) -> None:
+            act = evt.data.get("activity") if evt.data else None
+            h_id = evt.source_human_id
+            h = self.population.get(h_id) if h_id else None
+
+            if act in ("community_meeting", "cooperate"):
+                faenas = [f for f in self.salvadoran_adesco.get_all_faenas() if not f.is_completed]
+                if faenas and h:
+                    proj = faenas[0]
+                    res = self.salvadoran_adesco.contribute_labor_to_faena(
+                        project_id=proj.project_id,
+                        volunteer_uid=str(h.uid),
+                        hours_contributed=3.0,
+                    )
+                    if res.get("is_completed"):
+                        self.event_bus.emit(
+                            SimulationEvent(
+                                event_type=EventType.FAENA_COMPLETED,
+                                tick=evt.tick,
+                                source_human_id=h.uid,
+                                location_id=evt.location_id,
+                                data={"project_name": proj.name, "cohesion_boost": res.get("community_cohesion_generated", 0.5)},
+                                importance=0.75,
+                            )
+                        )
+            elif act == "community_proposal":
+                p_id = f"faena_{uuid.uuid4().hex[:6]}"
+                name = f"Faena Comunal — Reparación de Drenajes y Caminos ({p_id})"
+                self.salvadoran_adesco.create_faena_project(
+                    project_id=p_id,
+                    name=name,
+                    community_id="comunidad_centro_historico",
+                    target_problem="reparacion_calle_y_quebrada",
+                    required_hours=12.0,
+                )
+                self.event_bus.emit(
+                    SimulationEvent(
+                        event_type=EventType.COMMUNITY_PROJECT_PROPOSED,
+                        tick=evt.tick,
+                        source_human_id=h.uid if h else None,
+                        location_id=evt.location_id,
+                        data={"project_id": p_id, "name": name},
+                        importance=0.65,
+                    )
+                )
+
+        self.orchestrator.register(
+            EngineMetadata(
+                name="ADESCOEngine",
+                mode=ExecutionMode.EVENT_TRIGGERED,
+                trigger_events=[EventType.ACTIVITY_STARTED, EventType.COMMUNITY_PROJECT_PROPOSED],
+                priority=45,
+                computational_cost="low",
+                event_handler=_on_adesco_event,
+            )
+        )
+
+        # -------------------------------------------------------------
+        # 4. EVENT_TRIGGERED: Judicial Tribunal & Mediation
+        # -------------------------------------------------------------
+        def _on_judicial_event(ctx: OrchestratorContext, evt: SimulationEvent) -> None:
+            act = evt.data.get("activity") if evt.data else None
+            h_id = evt.source_human_id
+            plaintiff = self.population.get(h_id) if h_id else None
+            if not plaintiff:
+                return
+
+            if act == "litigate" or evt.event_type == EventType.DISPUTE_FILED:
+                defendant = None
+                if evt.target_human_id:
+                    defendant = self.population.get(evt.target_human_id)
+                if not defendant:
+                    others = [p for p in self.population.get_all() if p.uid != plaintiff.uid]
+                    if others:
+                        defendant = others[self.master_rng.integers(0, len(others))]
+
+                if defendant:
+                    case_id = f"legal_{uuid.uuid4().hex[:6]}"
+                    claim = evt.data.get("claim_description", "Disputa por daños a propiedad o deuda impaga")
+                    damages = float(evt.data.get("claimed_damages", 35.0))
+                    case = self.court.file_case(
+                        case_id=case_id,
+                        plaintiff=plaintiff,
+                        defendant=defendant,
+                        statute_type=LegalStatuteType.CONTRACT_ENFORCEMENT,
+                        claim_description=claim,
+                        claimed_damages=damages,
+                        evidence_strength=0.75,
+                        current_tick=evt.tick,
+                    )
+                    magistrate = next((p for p in self.population.get_all() if p.uid not in (plaintiff.uid, defendant.uid)), plaintiff)
+                    verdict = self.court.adjudicate_and_enforce(
+                        case_id=case_id,
+                        magistrate=magistrate,
+                        legal_code=self.legal_code,
+                        plaintiff=plaintiff,
+                        defendant=defendant,
+                        municipal_institution=None,
+                        reputation_engine=self.reputation_engine,
+                        current_tick=evt.tick,
+                    )
+                    self.event_bus.emit(
+                        SimulationEvent(
+                            event_type=EventType.VERDICT_RENDERED,
+                            tick=evt.tick,
+                            source_human_id=plaintiff.uid,
+                            target_human_id=defendant.uid,
+                            location_id=evt.location_id,
+                            data={"case_id": case_id, "verdict": verdict.value, "restitution": case.awarded_restitution},
+                            importance=0.75,
+                        )
+                    )
+                    if case.awarded_restitution > 0:
+                        self.event_bus.emit(
+                            SimulationEvent(
+                                event_type=EventType.RESTITUTION_ENFORCED,
+                                tick=evt.tick,
+                                source_human_id=plaintiff.uid,
+                                target_human_id=defendant.uid,
+                                data={"case_id": case_id, "amount_usd": case.awarded_restitution},
+                                importance=0.60,
+                            )
+                        )
+            elif act == "seek_mediation":
+                self.event_bus.emit(
+                    SimulationEvent(
+                        event_type=EventType.CONFLICT_RESOLVED,
+                        tick=evt.tick,
+                        source_human_id=plaintiff.uid,
+                        data={"resolution": "Acuerdo de mediación vecinal alcanzado con avenimiento de partes."},
+                        importance=0.60,
+                    )
+                )
+
+        self.orchestrator.register(
+            EngineMetadata(
+                name="JudicialTribunal",
+                mode=ExecutionMode.EVENT_TRIGGERED,
+                trigger_events=[EventType.ACTIVITY_STARTED, EventType.DISPUTE_FILED],
+                priority=40,
+                computational_cost="low",
+                event_handler=_on_judicial_event,
+            )
+        )
+
+        # -------------------------------------------------------------
+        # 5. EVENT_TRIGGERED: Informal Commerce Engine
+        # -------------------------------------------------------------
+        def _on_commerce_event(ctx: OrchestratorContext, evt: SimulationEvent) -> None:
+            act = evt.data.get("activity") if evt.data else None
+            h_id = evt.source_human_id
+            human = self.population.get(h_id) if h_id else None
+            if not human:
+                return
+
+            store = self.salvadoran_informal_commerce.get_store("tienda_san_pedro")
+            if not store:
+                return
+
+            if act == "commerce_buy":
+                needed = ["frijol_rojo_lb", "arroz_lb", "pan_frances"]
+                if human.physical_state.money >= 3.0:
+                    res = self.salvadoran_informal_commerce.purchase_del_diario(
+                        store_id="tienda_san_pedro",
+                        customer_uid=str(human.uid),
+                        customer_cash=human.physical_state.money,
+                        needed_items=needed,
+                    )
+                    if res.get("success"):
+                        human.physical_state.money = res.get("remaining_cash_usd", human.physical_state.money)
+                        human.physical_state.hunger = max(0.0, human.physical_state.hunger - 0.25)
+                        self.event_bus.emit(
+                            SimulationEvent(
+                                event_type=EventType.COMMERCE_TRANSACTION,
+                                tick=evt.tick,
+                                source_human_id=human.uid,
+                                location_id=evt.location_id,
+                                data=res,
+                                importance=0.35,
+                            )
+                        )
+                else:
+                    fiado_res = self.salvadoran_informal_commerce.request_purchase_on_fiado(
+                        store_id="tienda_san_pedro",
+                        customer_uid=str(human.uid),
+                        item_amount_usd=2.50,
+                        customer_reputation=0.85,
+                    )
+                    if fiado_res.get("approved"):
+                        human.has_pending_loan = True
+                        human.physical_state.hunger = max(0.0, human.physical_state.hunger - 0.20)
+                        self.event_bus.emit(
+                            SimulationEvent(
+                                event_type=EventType.FIADO_CREDIT_GRANTED,
+                                tick=evt.tick,
+                                source_human_id=human.uid,
+                                location_id=evt.location_id,
+                                data=fiado_res,
+                                importance=0.45,
+                            )
+                        )
+            elif act == "commerce_sell":
+                human.physical_state.money += 4.50
+                store.cash_box_usd += 4.50
+                store.daily_sales_volume_usd += 4.50
+                self.event_bus.emit(
+                    SimulationEvent(
+                        event_type=EventType.COMMERCE_TRANSACTION,
+                        tick=evt.tick,
+                        source_human_id=human.uid,
+                        location_id=evt.location_id,
+                        data={"type": "sale", "amount_usd": 4.50, "seller": str(human.uid)},
+                        importance=0.35,
+                    )
+                )
+            elif act == "repay_debt":
+                settle_res = self.salvadoran_informal_commerce.settle_fiado_balance(
+                    store_id="tienda_san_pedro",
+                    customer_uid=str(human.uid),
+                    payment_amount_usd=min(5.0, human.physical_state.money),
+                )
+                if settle_res.get("success"):
+                    human.physical_state.money = max(0.0, human.physical_state.money - settle_res["amount_paid_usd"])
+                    if settle_res.get("remaining_debt_usd", 0.0) <= 0.01:
+                        human.has_pending_loan = False
+                    self.event_bus.emit(
+                        SimulationEvent(
+                            event_type=EventType.FIADO_CREDIT_SETTLED,
+                            tick=evt.tick,
+                            source_human_id=human.uid,
+                            location_id=evt.location_id,
+                            data=settle_res,
+                            importance=0.45,
+                        )
+                    )
+
+        self.orchestrator.register(
+            EngineMetadata(
+                name="InformalCommerceEngine",
+                mode=ExecutionMode.EVENT_TRIGGERED,
+                trigger_events=[EventType.ACTIVITY_STARTED],
+                priority=35,
+                computational_cost="low",
+                event_handler=_on_commerce_event,
+            )
+        )
+
+        # -------------------------------------------------------------
+        # 6. EVENT_TRIGGERED: Remittance Engine
+        # -------------------------------------------------------------
+        def _on_remittance_event(ctx: OrchestratorContext, evt: SimulationEvent) -> None:
+            act = evt.data.get("activity") if evt.data else None
+            h_id = evt.source_human_id
+            human = self.population.get(h_id) if h_id else None
+            if not human:
+                return
+
+            if act == "receive_remittance":
+                hh_id = human.physical_state.home_location_id or "casa_norte_1"
+                res = self.salvadoran_remittances.process_monthly_remittance(
+                    household_id=hh_id,
+                    current_household_cash=human.physical_state.money,
+                )
+                if res.get("received"):
+                    amt = res.get("remittance_amount_usd", 250.0)
+                    human.physical_state.money += amt
+                    human.has_remittance_pending = False
+                    self.event_bus.emit(
+                        SimulationEvent(
+                            event_type=EventType.REMITTANCE_RECEIVED,
+                            tick=evt.tick,
+                            source_human_id=human.uid,
+                            location_id=evt.location_id,
+                            data=res,
+                            importance=0.70,
+                        )
+                    )
+
+        self.orchestrator.register(
+            EngineMetadata(
+                name="RemittanceEngine",
+                mode=ExecutionMode.EVENT_TRIGGERED,
+                trigger_events=[EventType.ACTIVITY_STARTED],
+                priority=30,
+                computational_cost="low",
+                event_handler=_on_remittance_event,
+            )
+        )
+
+        # -------------------------------------------------------------
+        # 7. EVENT_TRIGGERED: Distributed Education & Mentorship
+        # -------------------------------------------------------------
+        def _on_education_event(ctx: OrchestratorContext, evt: SimulationEvent) -> None:
+            act = evt.data.get("activity") if evt.data else None
+            h_id = evt.source_human_id
+            human = self.population.get(h_id) if h_id else None
+            if not human:
+                return
+
+            if act in ("teach_apprentice", "learn_trade"):
+                apprs = self.distributed_education.get_all_apprenticeships()
+                active_apprs = [a for a in apprs if a.is_active and not a.is_graduated]
+                if active_apprs:
+                    agr = active_apprs[0]
+                    agr.ticks_completed += 4
+                    agr.current_proficiency = min(1.0, agr.current_proficiency + 0.05)
+                    if agr.current_proficiency >= agr.target_proficiency and not agr.is_graduated:
+                        agr.is_graduated = True
+                        agr.is_active = False
+                        self.event_bus.emit(
+                            SimulationEvent(
+                                event_type=EventType.APPRENTICESHIP_GRADUATED,
+                                tick=evt.tick,
+                                source_human_id=human.uid,
+                                location_id=evt.location_id,
+                                data={"contract_id": agr.contract_id, "skill_domain": agr.skill_domain, "final_proficiency": agr.current_proficiency},
+                                importance=0.75,
+                            )
+                        )
+
+        self.orchestrator.register(
+            EngineMetadata(
+                name="DistributedEducationEngine",
+                mode=ExecutionMode.EVENT_TRIGGERED,
+                trigger_events=[EventType.ACTIVITY_STARTED],
+                priority=50,
+                computational_cost="low",
+                event_handler=_on_education_event,
+            )
+        )
+
+        # -------------------------------------------------------------
+        # 8. EVENT_TRIGGERED: Scientific Thinking Engine
+        # -------------------------------------------------------------
+        def _on_scientific_event(ctx: OrchestratorContext, evt: SimulationEvent) -> None:
+            act = evt.data.get("activity") if evt.data else None
+            h_id = evt.source_human_id
+            human = self.population.get(h_id) if h_id else None
+            if not human:
+                return
+
+            if act == "conduct_experiment":
+                session = self.scientific_thinking.start_investigation(
+                    creator_uid=str(human.uid),
+                    observation="Variación en rendimiento de maíz criollo usando abono bocashi orgánico",
+                    anomaly_detected=True,
+                    tick=evt.tick,
+                )
+                self.scientific_thinking.formulate_question(
+                    session,
+                    subject="abono_bocashi",
+                    variable_of_interest="rendimiento_maiz",
+                    tick=evt.tick,
+                )
+                self.scientific_thinking.generate_hypothesis(
+                    session,
+                    subject="abono_bocashi",
+                    predicate="increases",
+                    proposed_effect=1.8,
+                    prior_confidence=0.45,
+                    tick=evt.tick,
+                )
+                exp = self.scientific_thinking.design_experiment(
+                    session=session,
+                    manipulated_var="dosis_bocashi_kg",
+                    treatment_val=2.0,
+                    control_val=0.0,
+                    trials=3,
+                    tick=evt.tick,
+                )
+                self.scientific_thinking.run_experimental_trials(session, true_causal_effect=1.8, noise_std=0.2, tick=evt.tick)
+                status, revised_belief = self.scientific_thinking.evaluate_and_revise(session, true_causal_effect=1.8, tick=evt.tick)
+
+                is_supported = (status in ("supported", "confirmed"))
+                ev_type = EventType.HYPOTHESIS_CONFIRMED if is_supported else EventType.HYPOTHESIS_REFUTED
+                self.event_bus.emit(
+                    SimulationEvent(
+                        event_type=ev_type,
+                        tick=evt.tick,
+                        source_human_id=human.uid,
+                        location_id=evt.location_id,
+                        data={
+                            "hypothesis": "abono_bocashi increases rendimiento_maiz",
+                            "confidence": revised_belief.confidence,
+                            "trials": 3,
+                        },
+                        importance=0.65,
+                    )
+                )
+
+        self.orchestrator.register(
+            EngineMetadata(
+                name="ScientificThinkingEngine",
+                mode=ExecutionMode.EVENT_TRIGGERED,
+                trigger_events=[EventType.ACTIVITY_STARTED],
+                priority=55,
+                computational_cost="medium",
+                event_handler=_on_scientific_event,
+            )
+        )
+
+        # -------------------------------------------------------------
+        # 9. EVENT_TRIGGERED: Advanced Contextual Dialogue Engine
+        # -------------------------------------------------------------
+        def _on_dialogue_event(ctx: OrchestratorContext, evt: SimulationEvent) -> None:
+            act = evt.data.get("activity") if evt.data else None
+            h_id = evt.source_human_id
+            human = self.population.get(h_id) if h_id else None
+            if not human or act not in ("socialize", "negotiate", "community_meeting"):
+                return
+
+            loc_id = human.physical_state.current_location_id
+            co_located = [h for h in self.population.get_at_location(loc_id) if h.uid != human.uid]
+            if co_located:
+                partner = co_located[0]
+                pair_key = f"{human.uid}_{partner.uid}"
+                mrel = self.multidimensional_relationships.get(pair_key)
+                if not mrel:
+                    mrel = MultiDimensionalRelationship(
+                        relationship_id=pair_key,
+                        human_a_id=human.uid,
+                        human_b_id=partner.uid,
+                    )
+                    self.multidimensional_relationships[pair_key] = mrel
+
+                session = self.dialogue_engine.conduct_negotiation(
+                    human_a=human,
+                    human_b=partner,
+                    topic="asuntos_comunitarios_y_cosecha",
+                    relationship=mrel,
+                    proposal_favor="colaboracion_mutua",
+                    current_tick=evt.tick,
+                )
+                self.event_bus.emit(
+                    SimulationEvent(
+                        event_type=EventType.DIALOGUE_OCCURRED,
+                        tick=evt.tick,
+                        source_human_id=human.uid,
+                        target_human_id=partner.uid,
+                        location_id=loc_id,
+                        data={
+                            "speaker_a": human.name,
+                            "speaker_b": partner.name,
+                            "summary": session.summary,
+                            "outcome": session.outcome.value,
+                            "turns_count": len(session.turns),
+                            "sample_turn": session.turns[0].text if session.turns else "",
+                        },
+                        importance=0.40,
+                    )
+                )
+
+        self.orchestrator.register(
+            EngineMetadata(
+                name="AdvancedOfflineDialogueEngine",
+                mode=ExecutionMode.EVENT_TRIGGERED,
+                trigger_events=[EventType.ACTIVITY_STARTED],
+                priority=60,
+                computational_cost="low",
+                cooldown_ticks=4,
+                event_handler=_on_dialogue_event,
+            )
+        )
+
+        # -------------------------------------------------------------
+        # 9. EVENT_TRIGGERED: Phase 1.5 Everyday Life, Commercial, Labor & Housing
+        # -------------------------------------------------------------
+        def _on_phase15_everyday_event(ctx: OrchestratorContext, evt: SimulationEvent) -> None:
+            act = evt.data.get("activity") if evt.data else None
+            h_id = evt.source_human_id
+            human = self.population.get(h_id) if h_id else None
+            if not human:
+                return
+
+            loc_id = evt.location_id or human.physical_state.current_location_id or "plaza_central"
+
+            # 1. Commercial Activities
+            if act in ("window_shopping", "browse_store", "compare_prices", "purchase_goods", "dine_out"):
+                intent_map = {
+                    "window_shopping": VisitIntent.WINDOW_SHOP,
+                    "browse_store": VisitIntent.BROWSE,
+                    "compare_prices": VisitIntent.COMPARE_PRICES,
+                    "purchase_goods": VisitIntent.PURCHASE,
+                    "dine_out": VisitIntent.DINE,
+                }
+                intent = intent_map[act]
+                est_id = "comedor_dona_maria" if act == "dine_out" else ("tienda_san_pedro" if loc_id == "tienda_san_pedro" else "mercado_central")
+                co_located = [str(h.uid) for h in self.population.get_at_location(loc_id)]
+                outcome = self.commerce_engine.execute_visit(
+                    agent=human,
+                    establishment_id=est_id,
+                    intent=intent,
+                    current_hour=self.clock.current_hour_int,
+                    co_located_agents=co_located,
+                )
+                ev_type = (
+                    EventType.WINDOW_SHOPPING_DONE if act == "window_shopping"
+                    else EventType.STORE_BROWSED if act == "browse_store"
+                    else EventType.PRICES_COMPARED if act == "compare_prices"
+                    else EventType.DINED_OUT if act == "dine_out"
+                    else EventType.GOODS_PURCHASED
+                )
+                self.event_bus.emit(
+                    SimulationEvent(
+                        event_type=ev_type,
+                        tick=evt.tick,
+                        source_human_id=human.uid,
+                        location_id=loc_id,
+                        data={
+                            "establishment": est_id,
+                            "intent": intent.value,
+                            "purchased": outcome.purchased,
+                            "spent_usd": outcome.total_spent_usd,
+                            "reasoning": outcome.reasoning,
+                        },
+                        importance=0.35,
+                    )
+                )
+
+            # 2. Dynamic Labor Market Activities
+            elif act == "search_employment":
+                vacs = self.labor_market.search_vacancies(human)
+                if vacs:
+                    best_vac = vacs[0]
+                    self.labor_market.apply_for_job(human, best_vac.vacancy_id)
+                    data = {"status": "applied", "vacancy_id": best_vac.vacancy_id, "title": best_vac.title}
+                else:
+                    day_res = self.labor_market.perform_informal_day_labor(human, current_tick=evt.tick)
+                    data = {"status": "day_labor", "earned_usd": day_res["earned_usd"]}
+                self.event_bus.emit(
+                    SimulationEvent(
+                        event_type=EventType.JOB_SEARCHED,
+                        tick=evt.tick,
+                        source_human_id=human.uid,
+                        location_id=loc_id,
+                        data=data,
+                        importance=0.40,
+                    )
+                )
+
+            # 3. Housing and Shelter Activities
+            elif act == "seek_housing":
+                rentals = self.housing_engine.get_available_rentals(max_daily_rent=3.50)
+                if rentals:
+                    target_unit = rentals[0]
+                    lease_res = self.housing_engine.lease_unit(human, target_unit.unit_id, current_tick=evt.tick)
+                    data = {"status": "leased" if lease_res.get("leased") else "failed", "unit_id": target_unit.unit_id}
+                else:
+                    data = {"status": "no_vacancy"}
+                self.event_bus.emit(
+                    SimulationEvent(
+                        event_type=EventType.HOUSING_SEARCHED,
+                        tick=evt.tick,
+                        source_human_id=human.uid,
+                        location_id=loc_id,
+                        data=data,
+                        importance=0.45,
+                    )
+                )
+
+            elif act == "seek_shelter":
+                human.housing_tenure = HousingTenureType.SHELTER
+                human.physical_state.home_location_id = "casa_comunal"
+                self.event_bus.emit(
+                    SimulationEvent(
+                        event_type=EventType.SHELTER_ENTERED,
+                        tick=evt.tick,
+                        source_human_id=human.uid,
+                        location_id="casa_comunal",
+                        data={"reason": "Seeking temporary shelter from precarity"},
+                        importance=0.50,
+                    )
+                )
+
+            # 4. Leisure Activities
+            elif act == "visit_park":
+                human.physical_state.energy = min(1.0, human.physical_state.energy + 0.05)
+                if hasattr(human.emotions, "adjust_mood"):
+                    human.emotions.adjust_mood(+0.10)
+                self.event_bus.emit(
+                    SimulationEvent(
+                        event_type=EventType.PARK_VISITED,
+                        tick=evt.tick,
+                        source_human_id=human.uid,
+                        location_id="parque_la_ceiba",
+                        data={"activity": "strolling_and_resting"},
+                        importance=0.25,
+                    )
+                )
+
+            elif act in ("visit_friend", "visit_relative"):
+                if hasattr(human.emotions, "adjust_mood"):
+                    human.emotions.adjust_mood(+0.15)
+                ev_t = EventType.FRIEND_VISITED if act == "visit_friend" else EventType.RELATIVE_VISITED
+                self.event_bus.emit(
+                    SimulationEvent(
+                        event_type=ev_t,
+                        tick=evt.tick,
+                        source_human_id=human.uid,
+                        location_id=loc_id,
+                        data={"activity": act},
+                        importance=0.30,
+                    )
+                )
+
+            elif act == "play_sport":
+                human.physical_state.energy = max(0.05, human.physical_state.energy - 0.15)
+                if hasattr(human.emotions, "adjust_mood"):
+                    human.emotions.adjust_mood(+0.20)
+                self.event_bus.emit(
+                    SimulationEvent(
+                        event_type=EventType.SPORT_PLAYED,
+                        tick=evt.tick,
+                        source_human_id=human.uid,
+                        location_id="parque_la_ceiba",
+                        data={"sport": "futbol_comunitario"},
+                        importance=0.30,
+                    )
+                )
+
+            elif act == "participate_in_hobby":
+                if hasattr(human.emotions, "adjust_mood"):
+                    human.emotions.adjust_mood(+0.12)
+                self.event_bus.emit(
+                    SimulationEvent(
+                        event_type=EventType.HOBBY_PRACTICED,
+                        tick=evt.tick,
+                        source_human_id=human.uid,
+                        location_id=loc_id,
+                        data={"hobby": "lectura_o_artesania"},
+                        importance=0.25,
+                    )
+                )
+
+            elif act == "seek_entertainment":
+                if hasattr(human.emotions, "adjust_mood"):
+                    human.emotions.adjust_mood(+0.18)
+                self.event_bus.emit(
+                    SimulationEvent(
+                        event_type=EventType.ENTERTAINMENT_ATTENDED,
+                        tick=evt.tick,
+                        source_human_id=human.uid,
+                        location_id=loc_id,
+                        data={"type": "musica_y_juegos"},
+                        importance=0.30,
+                    )
+                )
+
+            elif act == "request_assistance":
+                self.event_bus.emit(
+                    SimulationEvent(
+                        event_type=EventType.ASSISTANCE_REQUESTED,
+                        tick=evt.tick,
+                        source_human_id=human.uid,
+                        location_id=loc_id,
+                        data={"reason": "hardship_and_subsistence"},
+                        importance=0.45,
+                    )
+                )
+
+        self.orchestrator.register(
+            EngineMetadata(
+                name="Phase15EverydayLifeEngine",
+                mode=ExecutionMode.EVENT_TRIGGERED,
+                trigger_events=[EventType.ACTIVITY_STARTED],
+                priority=42,
+                computational_cost="low",
+                event_handler=_on_phase15_everyday_event,
+            )
+        )
+
+    def _initialize_civilization_entities(self, load_existing: bool = False) -> None:
+        """Seed or restore initial micro-enterprises, stores, remittances, and apprenticeships."""
+        if load_existing and self.state_repo:
+            commerce_data = self.state_repo.load_state("civilization_commerce")
+            if commerce_data:
+                logger.info("Restored civilization commerce state from database.")
+
+        # 1. Corner Store (Tienda San Pedro)
+        if not self.salvadoran_informal_commerce.get_store("tienda_san_pedro"):
+            owner = self.population.get_all()[1] if self.population.count > 1 else self.population.get_all()[0]
+            self.salvadoran_informal_commerce.register_corner_store(
+                store_id="tienda_san_pedro",
+                name="Tienda y Pulpería San Pedro",
+                owner_uid=str(owner.uid),
+                location_id="mercado_central",
+                starting_cash=65.0,
+            )
+
+        # 2. ADESCO Faena & Cuchubal
+        if not self.salvadoran_adesco.get_all_faenas():
+            self.salvadoran_adesco.create_faena_project(
+                project_id="faena_fundacional",
+                name="Reparación Comunitaria de Cuesta El Calvario tras Lluvias",
+                community_id="comunidad_centro_historico",
+                target_problem="reparar_camino_vecinal",
+                required_hours=20.0,
+            )
+
+        if not self.salvadoran_adesco.get_all_cuchubales():
+            members = [str(h.uid) for h in self.population.get_all()[:6]]
+            if members:
+                self.salvadoran_adesco.create_cuchubal(
+                    circle_id="cuchubal_vecinal_1",
+                    name="Cuchubal de Confianza San Esteban",
+                    organizer_uid=members[0],
+                    member_uids=members,
+                    contribution_usd=10.0,
+                )
+
+        # 3. Family Remittances (35% of households)
+        if not self.salvadoran_remittances.get_all_profiles():
+            for house_id in ("casa_norte_1", "casa_sur_1"):
+                self.salvadoran_remittances.register_household_remittance(
+                    household_id=house_id,
+                    monthly_amount_usd=250.0,
+                    sender_relation="hijo_en_eeuu",
+                    reliability=0.90,
+                )
+
+        # 4. Mentorship Agreement
+        if not self.distributed_education.get_all_apprenticeships() and self.population.count >= 3:
+            humans = self.population.get_all()
+            mentor = humans[0]
+            apprentice = humans[2]
+            mentor.is_mentor = True
+            apprentice.is_apprentice = True
+            self.distributed_education.establish_apprenticeship(
+                mentor_uid=str(mentor.uid),
+                apprentice_uid=str(apprentice.uid),
+                domain="carpinteria",
+                target_proficiency=0.70,
+            )
+
+        # 5. Phase 1.5 Commercial Establishments
+        if not self.commerce_engine.get_all_establishments():
+            # Verified Real Establishments
+            self.commerce_engine.register_establishment(
+                CommercialEstablishment(
+                    establishment_id="mercado_central",
+                    name="Mercado Central de San Salvador",
+                    establishment_type=EstablishmentType.MERCADO_STALL,
+                    location_id="mercado_central",
+                    is_verified_real=True,
+                    opening_hours=(6, 18),
+                    operating_cost_per_day=5.0,
+                    catalog={
+                        "frijol_rojo": CommercialProduct("frijol_rojo", "Frijol Rojo Seda", "staple_food", 1.10, 80.0, "lb"),
+                        "maiz_blanco": CommercialProduct("maiz_blanco", "Maíz Blanco", "staple_food", 0.35, 120.0, "lb"),
+                        "queso_duro": CommercialProduct("queso_duro", "Queso Duro Viejo", "staple_food", 4.25, 25.0, "lb"),
+                        "platanos": CommercialProduct("platanos", "Plátano Maduro", "staple_food", 0.30, 60.0, "unidad"),
+                    },
+                )
+            )
+            self.commerce_engine.register_establishment(
+                CommercialEstablishment(
+                    establishment_id="comedor_dona_maria",
+                    name="Pupusería y Comedor Doña María",
+                    establishment_type=EstablishmentType.COMEDOR_PUPUSERIA,
+                    location_id="comedor_dona_maria",
+                    is_verified_real=True,
+                    opening_hours=(6, 21),
+                    operating_cost_per_day=6.0,
+                    catalog={
+                        "pupusa_revuelta": CommercialProduct("pupusa_revuelta", "Pupusa Revuelta", "prepared_meal", 0.90, 100.0, "unidad"),
+                        "pupusa_queso": CommercialProduct("pupusa_queso", "Pupusa de Queso con Loroco", "prepared_meal", 1.00, 80.0, "unidad"),
+                        "plato_desayuno": CommercialProduct("plato_desayuno", "Desayuno Típico", "prepared_meal", 2.50, 40.0, "plato"),
+                        "cafe_de_olla": CommercialProduct("cafe_de_olla", "Café de Olla", "prepared_meal", 0.50, 50.0, "taza"),
+                    },
+                )
+            )
+            # Explicitly Simulated Establishments
+            self.commerce_engine.register_establishment(
+                CommercialEstablishment(
+                    establishment_id="tienda_san_pedro",
+                    name="Tienda y Pulpería San Pedro",
+                    establishment_type=EstablishmentType.PULPERIA,
+                    location_id="mercado_central",
+                    is_verified_real=False,
+                    opening_hours=(6, 21),
+                    operating_cost_per_day=3.5,
+                    catalog={
+                        "pan_frances": CommercialProduct("pan_frances", "Pan Francés (Bolsa)", "staple_food", 0.50, 60.0, "bolsa"),
+                        "huevos": CommercialProduct("huevos", "Cartón de Huevos", "staple_food", 2.20, 25.0, "carton"),
+                        "azucar": CommercialProduct("azucar", "Azúcar Morena", "staple_food", 0.55, 40.0, "lb"),
+                        "aceite": CommercialProduct("aceite", "Aceite Vegetal", "staple_food", 1.75, 20.0, "botella"),
+                    },
+                )
+            )
+
+        # 6. Phase 1.5 Housing Units
+        if not self.housing_engine.get_all_units():
+            self.housing_engine.register_unit(
+                HousingUnit(
+                    unit_id="casa_norte_1",
+                    name="Vivienda Don Carlos (San Esteban)",
+                    location_id="casa_norte_1",
+                    tenure_type=HousingTenureType.OWNER_OCCUPIED,
+                    rent_per_day=0.0,
+                    capacity=4,
+                )
+            )
+            self.housing_engine.register_unit(
+                HousingUnit(
+                    unit_id="casa_sur_1",
+                    name="Casa de Alquiler Familia Martínez",
+                    location_id="casa_sur_1",
+                    tenure_type=HousingTenureType.RENTAL,
+                    rent_per_day=3.00,
+                    capacity=4,
+                )
+            )
+            self.housing_engine.register_unit(
+                HousingUnit(
+                    unit_id="meson_centro_1",
+                    name="Pieza en Mesón El Centro 1",
+                    location_id="casa_norte_1",
+                    tenure_type=HousingTenureType.INFORMAL_HOUSING,
+                    rent_per_day=1.50,
+                    capacity=2,
+                )
+            )
+            self.housing_engine.register_unit(
+                HousingUnit(
+                    unit_id="albergue_comunitario",
+                    name="Albergue y Refugio Comunal",
+                    location_id="casa_comunal",
+                    tenure_type=HousingTenureType.SHELTER,
+                    rent_per_day=0.0,
+                    capacity=8,
+                )
+            )
+
+        # 7. Phase 1.5 Household Ledgers
+        if not self.household_ledgers and self.population.count > 0:
+            humans = self.population.get_all()
+            h1 = HouseholdLedger(
+                household_id="hogar_carlos",
+                dwelling_unit_id="casa_norte_1",
+                dwelling_type="owner_occupied",
+                shared_savings=120.0,
+            )
+            for m in humans[:3]:
+                h1.add_member(m.uid)
+            self.household_ledgers["hogar_carlos"] = h1
+
+            if len(humans) > 3:
+                h2 = HouseholdLedger(
+                    household_id="hogar_rosa",
+                    dwelling_unit_id="casa_sur_1",
+                    dwelling_type="rental",
+                    shared_savings=80.0,
+                )
+                for m in humans[3:6]:
+                    h2.add_member(m.uid)
+                self.household_ledgers["hogar_rosa"] = h2
+
+        # 8. Phase 1.5 Labor Market Vacancies
+        if not self.labor_market.get_open_vacancies() and self.population.count > 0:
+            humans = self.population.get_all()
+            employer_uid = str(humans[0].uid) if humans else "emp_01"
+            self.labor_market.post_vacancy(
+                business_id="taller_artesanal",
+                employer_uid=employer_uid,
+                title="Ayudante de Carpintería",
+                required_skill="carpinteria",
+                min_skill_level=0.30,
+                offered_daily_wage=12.00,
+                contract_type=ContractType.INFORMAL_WAGE,
+                location_id="taller_artesanal",
+            )
+            self.labor_market.post_vacancy(
+                business_id="comedor_dona_maria",
+                employer_uid=employer_uid,
+                title="Pupusera Auxiliar",
+                required_skill="cocina",
+                min_skill_level=0.25,
+                offered_daily_wage=14.00,
+                contract_type=ContractType.INFORMAL_WAGE,
+                location_id="comedor_dona_maria",
+            )
 
     def initialize(self, load_existing: bool = False) -> None:
         """Set up database schema, initialize or load population, and wire events."""
@@ -243,7 +1270,10 @@ class SimulationRunner:
 
         self.event_bus.subscribe(None, _dispatch_to_individuals)
 
-        if load_existing and self.human_repo.count() >= self.config.initial_population_size:
+        # Connect master runtime orchestrator to event bus
+        self.event_bus.subscribe(None, self.orchestrator.handle_event)
+
+        if load_existing and self.human_repo.count() > 0:
             logger.info("Restoring population from persistent SQLite database...")
             humans = self.human_repo.load_all()
             for h in humans:
@@ -257,7 +1287,14 @@ class SimulationRunner:
             if saved_tick is not None:
                 self.clock.set_tick(saved_tick)
         else:
-            logger.info("Creating fresh initial population of 20 synthetic humans...")
+            logger.info("Creating fresh initial population of %d synthetic humans...", self.config.initial_population_size)
+            try:
+                self.db.execute("DELETE FROM humans")
+                self.db.execute("DELETE FROM relationships")
+                self.db.execute("DELETE FROM simulation_state")
+            except Exception as ex:
+                logger.debug("Database cleanup ignored: %s", ex)
+
             humans = PopulationFactory.create_population(
                 config=self.config,
                 identity_factory=self.identity_factory,
@@ -273,6 +1310,12 @@ class SimulationRunner:
             self.human_repo.save_all(humans)
             self.rel_repo.save_all(self.social.get_all_relationships())
             self.state_repo.save_tick(0)
+
+        # Seed or restore civilization institutions, stores, remittances, and educational contracts
+        self._initialize_civilization_entities(load_existing=load_existing)
+
+        # Restore extension domain state, or reconstruct initial unions/households.
+        self.extension.initialize(load_existing=load_existing)
 
         # Emit simulation started event
         self.event_bus.emit(
@@ -296,11 +1339,48 @@ class SimulationRunner:
         self.environment.step(current_tick)
         self.regional_trade.step(current_tick)
 
+        # Master orchestrator steps scheduled and periodic civilization engines
+        self.orchestrator.step(current_tick)
+
         # Day transition event and cultural maintenance
         if self.clock.tick_of_day == 0:
+            # Phase 1.5 Dynamic Household living costs & utility overhead
+            for h_ledger in self.household_ledgers.values():
+                h_ledger.execute_daily_living_expenses(
+                    current_tick=current_tick,
+                    population_registry=self.population,
+                    utility_treasury=self.community_utility_treasury,
+                )
+
+            # Phase 1.5 Housing daily rent collection, arrears & eviction dynamics
+            self.housing_engine.collect_daily_rent(
+                current_tick=current_tick,
+                population_registry=self.population,
+            )
+
+            # Phase 1.5 Labor market daily payroll cycle (wages paid from enterprise liquidity)
+            self.labor_market.execute_daily_payroll(
+                business_registry=self.businesses,
+                population_registry=self.population,
+                current_tick=current_tick,
+            )
+
+            # Phase 1.5 Commercial establishments daily overhead and counter reset
+            self.commerce_engine.execute_daily_accounting(current_tick)
+
+            # Phase 1.5 Extension: Environmental impact of settlement
+            self.world_interaction.record_human_environmental_impact(
+                population_count=len(self.population.get_all()),
+                current_tick=current_tick,
+                event_bus=self.event_bus,
+                causal_graph=self.causal_graph,
+            )
+
             self.culture.decay_unpracticed_culture(current_tick)
             self.social_network.apply_decay_all(current_tick)
             self.cultural_evolution.decay_unpracticed_traditions(current_tick)
+            alive_uids = {str(h.uid) for h in self.population.get_all()}
+            self.cultural_evolution.check_cultural_extinction(alive_uids, current_tick)
             try:
                 candidates = []
                 for h in self.population.get_all():
@@ -353,6 +1433,13 @@ class SimulationRunner:
                 nearby_humans=co_located,
             )
 
+            # Phase 1.5 Extension: biological and emotional trajectories
+            self.extension.step_individual(human, current_tick)
+
+        # Phase 1.5 Extension: global daily orchestration (exposure, treatment,
+        # accidents, disasters, romance, family lifecycle).
+        self.extension.step(current_tick)
+
         # Periodic checkpointing
         if current_tick % self.config.checkpoint_interval_ticks == 0:
             self.checkpoint()
@@ -381,12 +1468,45 @@ class SimulationRunner:
         for _ in range(num_ticks):
             self.step()
 
+    def _prune_deceased_rows(self, living_ids: list[str]) -> None:
+        """Remove database rows for humans no longer in the live registry."""
+        living_set = {str(uid) for uid in living_ids}
+        try:
+            cursor = self.db.execute("SELECT uid FROM humans")
+            stored_ids = [str(row["uid"]) for row in cursor.fetchall()]
+        except Exception as ex:
+            logger.debug("Unable to inspect persisted humans for pruning: %s", ex)
+            return
+        for stored_uid in stored_ids:
+            if stored_uid not in living_set:
+                self.human_repo.delete(stored_uid)
+
     def checkpoint(self) -> None:
         """Persist current state snapshot to SQLite."""
         if self.human_repo and self.state_repo and self.rel_repo:
-            self.human_repo.save_all(self.population.get_all())
-            self.rel_repo.save_all(self.social.get_all_relationships())
+            living = self.population.get_all()
+            living_ids = [str(h.uid) for h in living]
+            self.human_repo.save_all(living)
+
+            # Deceased humans are removed from the live registry, so they must
+            # not survive in the database either.  Deleting stale rows here is
+            # what prevents a dead character from being resurrected on reload.
+            self._prune_deceased_rows(living_ids)
+
+            living_set = set(living_ids)
+            living_relationships = [
+                rel for rel in self.social.get_all_relationships()
+                if str(rel.human_a_id) in living_set and str(rel.human_b_id) in living_set
+            ]
+            self.rel_repo.save_all(living_relationships)
             self.state_repo.save_tick(self.clock.current_tick)
+
+            # Phase 1.5 Extension: health, romance, accidents, family lifecycle,
+            # territorial interaction and the causal DAG.
+            try:
+                self.state_repo.save_state("phase15_extension", self.extension.to_dict())
+            except Exception as ex:
+                logger.warning("Error persisting Phase 1.5 extension state: %s", ex)
 
             # Persist Phase 0.5 Societal Entities
             if self.cultural_repo:
@@ -418,6 +1538,53 @@ class SimulationRunner:
             if self.collective_enterprise_repo:
                 for ent in self.collective_economy.get_all_enterprises(active_only=False):
                     self.collective_enterprise_repo.save(ent)
+
+            # Persist Phase 1.4 Civilization Integration Entities
+            try:
+                stores_data = []
+                for st in self.salvadoran_informal_commerce.get_all_stores():
+                    accounts_data = {
+                        c_uid: {
+                            "balance": acc.current_balance_usd,
+                            "limit": acc.credit_limit_usd,
+                            "trust": acc.trust_score,
+                        }
+                        for c_uid, acc in st.active_credit_accounts.items()
+                    }
+                    stores_data.append({
+                        "id": st.store_id,
+                        "name": st.name,
+                        "cash": st.cash_box_usd,
+                        "daily_sales": st.daily_sales_volume_usd,
+                        "accounts": accounts_data,
+                    })
+                self.state_repo.save_state("civilization_commerce", stores_data)
+
+                faenas_data = [
+                    {
+                        "id": f.project_id,
+                        "name": f.name,
+                        "hours": f.accumulated_labor_hours,
+                        "completed": f.is_completed,
+                    }
+                    for f in self.salvadoran_adesco.get_all_faenas()
+                ]
+                self.state_repo.save_state("civilization_faenas", faenas_data)
+
+                cases_data = [
+                    {
+                        "id": c.case_id,
+                        "plaintiff": str(c.plaintiff_uid),
+                        "defendant": str(c.defendant_uid),
+                        "claim": c.claim_description,
+                        "verdict": c.verdict.value if c.verdict else None,
+                        "restitution": c.awarded_restitution,
+                    }
+                    for c in self.court.get_all_cases()
+                ]
+                self.state_repo.save_state("civilization_judicial", cases_data)
+            except Exception as ex:
+                logger.warning("Error persisting Phase 1.4 civilization entities: %s", ex)
 
             self.event_bus.emit(
                 SimulationEvent(

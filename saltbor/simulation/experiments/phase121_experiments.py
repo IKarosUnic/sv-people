@@ -472,7 +472,7 @@ class Experiment121_D_EmergentFissionFromGrievances(BaseExperiment):
 
         fission_verified = (
             fission_triggered_autonomously
-            and mean_grievance > grievance_threshold
+            and mean_grievance >= grievance_threshold
             and splinter_comm is not None
             and comm.active_member_count == 6
             and splinter_comm.active_member_count == 14

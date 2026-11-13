@@ -1,6 +1,10 @@
 """Simulation Experiments Package."""
 
 from saltbor.simulation.experiments.base import BaseExperiment, ExperimentConfig, ExperimentResult
+from saltbor.simulation.experiments.phase16_experiments import (
+    PHASE16_EXPERIMENTS,
+    run_all_phase16_experiments,
+)
 from saltbor.simulation.experiments.experiments_a_d import (
     ExperimentA_Autonomy,
     ExperimentB_PersonalityEvolution,
@@ -140,6 +144,10 @@ from saltbor.simulation.experiments.phase122_experiments import (
     Experiment122_L_IntegratedAdversarialStressTest,
     PHASE122_EXPERIMENTS,
 )
+from saltbor.simulation.experiments.phase15_experiments import PHASE15_EXPERIMENTS
+from saltbor.simulation.experiments.phase15_extension_experiments import (
+    PHASE15_EXTENSION_EXPERIMENTS,
+)
 
 __all__ = [
     "BaseExperiment",
@@ -268,4 +276,8 @@ __all__ = [
     "Experiment122_K_PhysicalPersistenceAndPerformance",
     "Experiment122_L_IntegratedAdversarialStressTest",
     "PHASE122_EXPERIMENTS",
+    # Phase 1.5 Everyday Life & Socioeconomic Experiments
+    "PHASE15_EXPERIMENTS",
+    # Phase 1.5 Extension World-Human, Romance, Health & Disaster Experiments
+    "PHASE15_EXTENSION_EXPERIMENTS",
 ]

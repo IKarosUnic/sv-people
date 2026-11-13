@@ -1,0 +1,122 @@
+[
+ {
+  "id": "EXP_16_A",
+  "success": true,
+  "hypotheses": "H1:SUPPORTED, H2:SUPPORTED",
+  "summary": "Ningún observador percibió todo; el conjunto de entidades conocidas difiere entre observadores del mismo lugar"
+ },
+ {
+  "id": "EXP_16_B",
+  "success": true,
+  "hypotheses": "H1:SUPPORTED, H2:SUPPORTED, H3:SUPPORTED",
+  "summary": "La interpretación de una figura no identificada divergió en afirmación, sesgos y valencia entre un observador "
+ },
+ {
+  "id": "EXP_16_C",
+  "success": true,
+  "hypotheses": "H1:SUPPORTED, H2:SUPPORTED, H3:SUPPORTED, H4:SUPPORTED",
+  "summary": "La agudeza perceptual y el presupuesto atencional varían con la edad de forma sistemática; no todos los indivi"
+ },
+ {
+  "id": "EXP_16_D",
+  "success": true,
+  "hypotheses": "H1:SUPPORTED, H2:SUPPORTED, H3:SUPPORTED",
+  "summary": "El observador con baja claridad sustituyó información ausente por inferencia basada en priors y produjo malent"
+ },
+ {
+  "id": "EXP_16_E",
+  "success": true,
+  "hypotheses": "H1:SUPPORTED, H2:SUPPORTED, H3:SUPPORTED, H4:SUPPORTED",
+  "summary": "El desplazamiento impone costo temporal y energético monótono en la distancia, la lluvia lo incrementa, y la p"
+ },
+ {
+  "id": "EXP_16_F",
+  "success": true,
+  "hypotheses": "H1:SUPPORTED, H2:SUPPORTED, H3:SUPPORTED",
+  "summary": "La atracción varió entre pares; algunas relaciones se formaron y progresaron, otras no."
+ },
+ {
+  "id": "EXP_16_G",
+  "success": true,
+  "hypotheses": "H1:SUPPORTED, H2:SUPPORTED, H3:INCONCLUSIVE",
+  "summary": "4 infidelidades registradas de 4 parejas; el descubrimiento redujo la confianza en promedio 0.51 y produjo 4 s"
+ },
+ {
+  "id": "EXP_16_H",
+  "success": true,
+  "hypotheses": "H1:SUPPORTED, H2:REJECTED, H3:SUPPORTED",
+  "summary": "El tratamiento mejoró el desenlace en promedio, sin garantizar recuperación en todos los casos; hubo recuperac"
+ },
+ {
+  "id": "EXP_16_I",
+  "success": true,
+  "hypotheses": "H1:SUPPORTED, H2:SUPPORTED, H3:INCONCLUSIVE",
+  "summary": "La contaminación del agua incrementó la incidencia de enfermedad, sin convertir la exposición en infección seg"
+ },
+ {
+  "id": "EXP_16_J",
+  "success": true,
+  "hypotheses": "H1:SUPPORTED, H2:SUPPORTED",
+  "summary": "Tasa de accidentes con lluvia 0.052 vs seco 0.005 sobre 1200 viajes por brazo."
+ },
+ {
+  "id": "EXP_16_K",
+  "success": true,
+  "hypotheses": "H1:SUPPORTED, H2:SUPPORTED, H3:SUPPORTED, H4:SUPPORTED",
+  "summary": "El cuidado produjo mejoras medibles en los dependientes y un costo energético en la cuidadora, sin transferenc"
+ },
+ {
+  "id": "EXP_16_L",
+  "success": true,
+  "hypotheses": "H1:SUPPORTED, H2:SUPPORTED",
+  "summary": "La atención exitosa estuvo condicionada por el ingreso; la capacidad finita produjo rechazos adicionales."
+ },
+ {
+  "id": "EXP_16_M",
+  "success": true,
+  "hypotheses": "H1:SUPPORTED, H2:SUPPORTED, H3:SUPPORTED",
+  "summary": "La acumulación de residuos fue proporcional a la población y degradó la fuente de agua; una población nula no "
+ },
+ {
+  "id": "EXP_16_N",
+  "success": true,
+  "hypotheses": "H1:SUPPORTED, H2:SUPPORTED, H3:SUPPORTED",
+  "summary": "La organización comunitaria removió desechos y mejoró la fuente, mientras el brazo de control sin faena no mos"
+ },
+ {
+  "id": "EXP_16_O",
+  "success": true,
+  "hypotheses": "H1:SUPPORTED, H2:SUPPORTED, H3:SUPPORTED",
+  "summary": "Cadena causal de profundidad 3 (incluyendo el evento) desde la lluvia extrema hasta el tratamiento, con afecta"
+ },
+ {
+  "id": "EXP_16_P",
+  "success": true,
+  "hypotheses": "H1:SUPPORTED, H2:SUPPORTED, H3:SUPPORTED, H4:SUPPORTED",
+  "summary": "La simulación fue reproducible con la misma semilla y produjo divergencia interna y entre semillas en dinero, "
+ },
+ {
+  "id": "EXP_16_Q",
+  "success": true,
+  "hypotheses": "H1:SUPPORTED, H2:SUPPORTED, H3:SUPPORTED",
+  "summary": "Se preservaron 3 generaciones; el fallecimiento del abuelo no alteró su descendencia registrada."
+ },
+ {
+  "id": "EXP_16_R",
+  "success": true,
+  "hypotheses": "H1:SUPPORTED, H2:SUPPORTED, H3:SUPPORTED",
+  "summary": "La navegación respetó la topología de la red, distinguió modos por velocidad y reportó explícitamente la falta"
+ },
+ {
+  "id": "EXP_16_S",
+  "success": true,
+  "hypotheses": "H1:SUPPORTED, H2:SUPPORTED, H3:SUPPORTED",
+  "summary": "Los perceptos por agente quedaron acotados y la cadencia cada dos ticks redujo el costo total de percepción."
+ },
+ {
+  "id": "EXP_16_T",
+  "success": true,
+  "hypotheses": "H1:SUPPORTED, H2:SUPPORTED, H3:SUPPORTED",
+  "summary": "96 ticks integrados: 1125 observaciones, 1255 eventos, 1255 nodos causales y recarga con 20 individuos."
+ }
+]

@@ -93,6 +93,15 @@ class HumanRepository:
             for h in humans:
                 self.save(h)
 
+    def delete(self, uid: HumanID | str) -> None:
+        """Remove a deceased individual from the live-population table.
+
+        Death history is preserved in the extension checkpoint and causal DAG;
+        deleting the live row prevents a reloaded checkpoint from resurrecting
+        someone who already died.
+        """
+        self.db.execute("DELETE FROM humans WHERE uid = ?", (str(uid),))
+
     def load_row(self, uid: HumanID | str) -> Optional[dict[str, Any]]:
         """Fetch raw DB dict for human."""
         sql = "SELECT * FROM humans WHERE uid = ?"
@@ -261,7 +270,7 @@ class HumanRepository:
             problem_solver=problem_solver,
         )
 
-        return SyntheticHuman(
+        human = SyntheticHuman(
             identity=ident,
             demographics=demo,
             physical_state=phys,
@@ -281,6 +290,23 @@ class HumanRepository:
             curiosity=curiosity,
             brain=brain,
         )
+
+        # Phase 1.5 extension fields restored from physical_state_json.
+        from saltbor.health.models import HealthCondition
+        from saltbor.social.romance.models import HeartbreakRecord
+
+        ext = phys_d.get("extension", {}) if isinstance(phys_d, dict) else {}
+        human.active_health_conditions = [
+            HealthCondition.from_dict(c) for c in ext.get("active_health_conditions", [])
+        ]
+        human.health_history = list(ext.get("health_history", []))
+        human.romantic_partner_id = ext.get("romantic_partner_id")
+        hb_data = ext.get("heartbreak_state")
+        human.heartbreak_state = HeartbreakRecord.from_dict(hb_data) if hb_data else None
+        human.dependent_children_ids = list(ext.get("dependent_children_ids", []))
+        human.caregiver_ids = list(ext.get("caregiver_ids", []))
+        human.elderly_dependents_ids = list(ext.get("elderly_dependents_ids", []))
+        return human
 
     def load(self, uid: HumanID | str) -> Optional[SyntheticHuman]:
         """Load and reconstruct human by UID."""

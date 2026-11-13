@@ -330,6 +330,83 @@ class SchemaManager:
     )
     """
 
+    # --- Phase 1.5 Tables ---
+    _TABLE_LABOR_VACANCIES = """
+    CREATE TABLE IF NOT EXISTS labor_vacancies (
+        vacancy_id          TEXT PRIMARY KEY,
+        business_id         TEXT NOT NULL,
+        employer_uid        TEXT NOT NULL,
+        title               TEXT NOT NULL,
+        required_skill      TEXT NOT NULL,
+        min_skill_level     REAL NOT NULL DEFAULT 0.0,
+        offered_daily_wage  REAL NOT NULL DEFAULT 10.0,
+        contract_type       TEXT NOT NULL DEFAULT 'informal_wage',
+        location_id         TEXT NOT NULL,
+        is_filled           INTEGER NOT NULL DEFAULT 0,
+        is_cancelled        INTEGER NOT NULL DEFAULT 0,
+        created_tick        INTEGER NOT NULL DEFAULT 0
+    )
+    """
+
+    _TABLE_LABOR_CONTRACTS = """
+    CREATE TABLE IF NOT EXISTS labor_contracts (
+        contract_id         TEXT PRIMARY KEY,
+        employee_uid        TEXT NOT NULL,
+        employer_uid        TEXT NOT NULL,
+        business_id         TEXT NOT NULL,
+        title               TEXT NOT NULL,
+        daily_wage          REAL NOT NULL DEFAULT 10.0,
+        contract_type       TEXT NOT NULL DEFAULT 'informal_wage',
+        location_id         TEXT NOT NULL,
+        start_tick          INTEGER NOT NULL DEFAULT 0,
+        end_tick            INTEGER,
+        is_active           INTEGER NOT NULL DEFAULT 1,
+        total_wages_paid    REAL NOT NULL DEFAULT 0.0,
+        missed_paydays      INTEGER NOT NULL DEFAULT 0
+    )
+    """
+
+    _TABLE_HOUSING_UNITS = """
+    CREATE TABLE IF NOT EXISTS housing_units (
+        unit_id             TEXT PRIMARY KEY,
+        name                TEXT NOT NULL,
+        location_id         TEXT NOT NULL,
+        tenure_type         TEXT NOT NULL DEFAULT 'rental',
+        capacity            INTEGER NOT NULL DEFAULT 4,
+        rent_per_day        REAL NOT NULL DEFAULT 0.0,
+        owner_uid           TEXT,
+        quality_score       REAL NOT NULL DEFAULT 0.70
+    )
+    """
+
+    _TABLE_HOUSING_LEASES = """
+    CREATE TABLE IF NOT EXISTS housing_leases (
+        lease_id            TEXT PRIMARY KEY,
+        unit_id             TEXT NOT NULL,
+        tenant_uid          TEXT NOT NULL,
+        landlord_uid        TEXT,
+        rent_per_day        REAL NOT NULL DEFAULT 0.0,
+        start_tick          INTEGER NOT NULL DEFAULT 0,
+        end_tick            INTEGER,
+        is_active           INTEGER NOT NULL DEFAULT 1,
+        total_rent_paid     REAL NOT NULL DEFAULT 0.0,
+        accumulated_arrears REAL NOT NULL DEFAULT 0.0
+    )
+    """
+
+    _TABLE_COMMERCIAL_ESTABLISHMENTS = """
+    CREATE TABLE IF NOT EXISTS commercial_establishments (
+        establishment_id    TEXT PRIMARY KEY,
+        name                TEXT NOT NULL,
+        establishment_type  TEXT NOT NULL,
+        location_id         TEXT NOT NULL,
+        is_verified_real    INTEGER NOT NULL DEFAULT 0,
+        cash_box_usd        REAL NOT NULL DEFAULT 50.0,
+        operating_cost_per_day REAL NOT NULL DEFAULT 4.0,
+        reputation          REAL NOT NULL DEFAULT 0.75
+    )
+    """
+
     # ------------------------------------------------------------------
     # Indexes
     # ------------------------------------------------------------------
@@ -392,6 +469,11 @@ class SchemaManager:
             cls._TABLE_COMMUNITIES,
             cls._TABLE_COLLECTIVE_ENTERPRISES,
             cls._TABLE_REPUTATION_PROFILES,
+            cls._TABLE_LABOR_VACANCIES,
+            cls._TABLE_LABOR_CONTRACTS,
+            cls._TABLE_HOUSING_UNITS,
+            cls._TABLE_HOUSING_LEASES,
+            cls._TABLE_COMMERCIAL_ESTABLISHMENTS,
         ):
             conn.execute(ddl)
 

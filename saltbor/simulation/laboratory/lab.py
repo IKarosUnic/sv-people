@@ -244,6 +244,24 @@ from saltbor.simulation.experiments.phase122_experiments import (
     Experiment122_K_PhysicalPersistenceAndPerformance,
     Experiment122_L_IntegratedAdversarialStressTest,
 )
+from saltbor.simulation.experiments.phase13_experiments import (
+    Experiment13_A_IndividualCognitiveDevelopment,
+    Experiment13_B_LearningToLearn,
+    Experiment13_C_CognitivePlasticity,
+    Experiment13_D_IndividualCognitiveDivergence,
+    Experiment13_E_KnowledgeDiscovery,
+    Experiment13_F_ScientificReasoningAndFailedHypotheses,
+    Experiment13_G_CulturalTransmission,
+    Experiment13_H_CulturalFragmentation,
+    Experiment13_I_IntergenerationalKnowledgeTransfer,
+    Experiment13_J_DistributedEducation,
+    Experiment13_K_CollectiveProblemSolving,
+    Experiment13_L_CognitiveDevelopmentUnderScarcity,
+    Experiment13_M_CognitiveAgingAndKnowledgeRetention,
+    Experiment13_N_PersonalityAndBehavioralAdaptation,
+    Experiment13_O_LongitudinalCognitiveAndCulturalEvolution,
+    PHASE13_EXPERIMENTS,
+)
 from saltbor.simulation.runner import SimulationRunner
 
 logger = logging.getLogger(__name__)
@@ -476,6 +494,22 @@ class SimulationLaboratory:
             "EXP_122_J": Experiment122_J_LongitudinalCivilizationDivergence,
             "EXP_122_K": Experiment122_K_PhysicalPersistenceAndPerformance,
             "EXP_122_L": Experiment122_L_IntegratedAdversarialStressTest,
+            # Phase 1.3 Open-Ended Cognitive Evolution, Individual Development & Emergent Culture
+            "EXP_13_A": Experiment13_A_IndividualCognitiveDevelopment,
+            "EXP_13_B": Experiment13_B_LearningToLearn,
+            "EXP_13_C": Experiment13_C_CognitivePlasticity,
+            "EXP_13_D": Experiment13_D_IndividualCognitiveDivergence,
+            "EXP_13_E": Experiment13_E_KnowledgeDiscovery,
+            "EXP_13_F": Experiment13_F_ScientificReasoningAndFailedHypotheses,
+            "EXP_13_G": Experiment13_G_CulturalTransmission,
+            "EXP_13_H": Experiment13_H_CulturalFragmentation,
+            "EXP_13_I": Experiment13_I_IntergenerationalKnowledgeTransfer,
+            "EXP_13_J": Experiment13_J_DistributedEducation,
+            "EXP_13_K": Experiment13_K_CollectiveProblemSolving,
+            "EXP_13_L": Experiment13_L_CognitiveDevelopmentUnderScarcity,
+            "EXP_13_M": Experiment13_M_CognitiveAgingAndKnowledgeRetention,
+            "EXP_13_N": Experiment13_N_PersonalityAndBehavioralAdaptation,
+            "EXP_13_O": Experiment13_O_LongitudinalCognitiveAndCulturalEvolution,
         }
 
     def start_simulation(self, seed: Optional[int] = None) -> SimulationRunner:

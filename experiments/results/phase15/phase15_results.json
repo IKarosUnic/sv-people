@@ -1,0 +1,272 @@
+{
+  "EXP_15_A": {
+    "name": "Autonomous Shopping Without Purchasing",
+    "success": true,
+    "summary": "100% of browsing/window-shopping visitors (5/5) spent $0.00.",
+    "metrics": {
+      "zero_spend_visitors": 5,
+      "total_spent_usd": 0.0
+    },
+    "duration_seconds": 0.01592,
+    "hypotheses": [
+      {
+        "hypothesis": "Agents can visit commercial locations without spending any money",
+        "predicted": true,
+        "observed": true,
+        "status": "HYPOTHESIS_SUPPORTED"
+      }
+    ]
+  },
+  "EXP_15_B": {
+    "name": "Consumer Preferences and Budget Constraints",
+    "success": true,
+    "summary": "Wealthy spent $8.00; Poor spent $0.00.",
+    "metrics": {
+      "wealthy_spent_usd": 8.0,
+      "poor_spent_usd": 0.0
+    },
+    "duration_seconds": 0.00113,
+    "hypotheses": [
+      {
+        "hypothesis": "Budget constraints restrict lower-income agents to basic staples",
+        "predicted": true,
+        "observed": true,
+        "status": "HYPOTHESIS_SUPPORTED"
+      }
+    ]
+  },
+  "EXP_15_C": {
+    "name": "Commercial Browsing and Social Encounters",
+    "success": true,
+    "summary": "Browsers engaged in 12 social encounters while visiting the market.",
+    "metrics": {
+      "total_social_encounters": 12
+    },
+    "duration_seconds": 0.00311,
+    "hypotheses": [
+      {
+        "hypothesis": "Commercial visits generate interpersonal encounters with co-located visitors",
+        "predicted": true,
+        "observed": true,
+        "status": "HYPOTHESIS_SUPPORTED"
+      }
+    ]
+  },
+  "EXP_15_D": {
+    "name": "Dynamic Employment Search",
+    "success": true,
+    "summary": "Seeker evaluated vacancies; 1 met reservation wage standards.",
+    "metrics": {
+      "acceptable_vacancies_found": 1
+    },
+    "duration_seconds": 0.00068,
+    "hypotheses": [
+      {
+        "hypothesis": "Agents filter out vacancies paying below reservation wage ($3.00 < $4.00 reservation)",
+        "predicted": true,
+        "observed": true,
+        "status": "HYPOTHESIS_SUPPORTED"
+      }
+    ]
+  },
+  "EXP_15_E": {
+    "name": "Job Competition and Wage Negotiation",
+    "success": true,
+    "summary": "Employer evaluated 2 applicants; hired Candidato Experto at $16.0/day.",
+    "metrics": {
+      "hired": true,
+      "chosen_candidate": "Candidato Experto"
+    },
+    "duration_seconds": 0.00145,
+    "hypotheses": [
+      {
+        "hypothesis": "Employer hires higher-skilled candidate under competition",
+        "predicted": true,
+        "observed": true,
+        "status": "HYPOTHESIS_SUPPORTED"
+      }
+    ]
+  },
+  "EXP_15_F": {
+    "name": "Informal Labor and Temporary Work",
+    "success": true,
+    "summary": "Jornalero earned $8.00; money increased from $2.50 to $10.50.",
+    "metrics": {
+      "earned_usd": 8.0,
+      "final_cash": 10.5
+    },
+    "duration_seconds": 0.00061,
+    "hypotheses": [
+      {
+        "hypothesis": "Day labor increases money but depletes physical energy",
+        "predicted": true,
+        "observed": true,
+        "status": "HYPOTHESIS_SUPPORTED"
+      }
+    ]
+  },
+  "EXP_15_G": {
+    "name": "Household Cost Distribution",
+    "success": true,
+    "summary": "Household of 3 paid $1.35 utility overhead; dependents protected from blind cash drainage.",
+    "metrics": {
+      "utility_cost_paid": 1.35,
+      "treasury_new_balance": 101.35
+    },
+    "duration_seconds": 0.00179,
+    "hypotheses": [
+      {
+        "hypothesis": "Household overhead is pooled and does not penalize zero-cash dependents",
+        "predicted": true,
+        "observed": true,
+        "status": "HYPOTHESIS_SUPPORTED"
+      }
+    ]
+  },
+  "EXP_15_H": {
+    "name": "Housing Affordability and Tenancy",
+    "success": true,
+    "summary": "Tenant paid $3.00 rent; landlord received $3.00; total currency strictly conserved.",
+    "metrics": {
+      "rent_collected": 3.0,
+      "tenant_cash": 27.0
+    },
+    "duration_seconds": 0.00141,
+    "hypotheses": [
+      {
+        "hypothesis": "Rent transfers directly from tenant to landlord with conservation of money",
+        "predicted": true,
+        "observed": true,
+        "status": "HYPOTHESIS_SUPPORTED"
+      }
+    ]
+  },
+  "EXP_15_I": {
+    "name": "Homelessness Risk and Protective Factors",
+    "success": true,
+    "summary": "Tenant evicted after 4 unpaid days; absorbed by Albergue Parroquial protective buffer.",
+    "metrics": {
+      "evictions_count": 1,
+      "new_tenure": "shelter"
+    },
+    "duration_seconds": 0.00082,
+    "hypotheses": [
+      {
+        "hypothesis": "Persistent unpaid rent triggers eviction and placement in community shelter",
+        "predicted": true,
+        "observed": true,
+        "status": "HYPOTHESIS_SUPPORTED"
+      }
+    ]
+  },
+  "EXP_15_J": {
+    "name": "Economic Recovery and Persistent Poverty",
+    "success": true,
+    "summary": "Agent saved $22.00 via day labor and leased Cuarto Mesón.",
+    "metrics": {
+      "recovered": true,
+      "final_cash": 22.0
+    },
+    "duration_seconds": 0.0006,
+    "hypotheses": [
+      {
+        "hypothesis": "Unhoused agent earning day-labor cash recovers into informal rental housing",
+        "predicted": true,
+        "observed": true,
+        "status": "HYPOTHESIS_SUPPORTED"
+      }
+    ]
+  },
+  "EXP_15_K": {
+    "name": "Leisure Under Different Income Conditions",
+    "success": true,
+    "summary": "Low-income agent prefers free park stroll; affluent agent evaluates paid pupusería dining.",
+    "metrics": {
+      "poor_has_park": true,
+      "wealthy_has_dine": true
+    },
+    "duration_seconds": 0.00128,
+    "hypotheses": [
+      {
+        "hypothesis": "Affluent agents have higher utility for paid dining than resource-constrained agents",
+        "predicted": true,
+        "observed": true,
+        "status": "HYPOTHESIS_SUPPORTED"
+      }
+    ]
+  },
+  "EXP_15_L": {
+    "name": "Family Support Networks",
+    "success": true,
+    "summary": "Invitation 1 accepted (Aceptó con entusiasmo la invitación a dine_out.); Invitation 2 declined due to exhaustion (Demasiado exhausto/a; necesita descansar en casa.).",
+    "metrics": {
+      "invitation_1_accepted": true,
+      "invitation_2_accepted": false
+    },
+    "duration_seconds": 0.00167,
+    "hypotheses": [
+      {
+        "hypothesis": "Invitations are autonomously accepted when feasible, but declined when exhausted",
+        "predicted": true,
+        "observed": true,
+        "status": "HYPOTHESIS_SUPPORTED"
+      }
+    ]
+  },
+  "EXP_15_M": {
+    "name": "Business Creation and Failure",
+    "success": true,
+    "summary": "Business status transformed to distressed (closing cash: $2.00).",
+    "metrics": {
+      "status": "distressed",
+      "closing_cash": 2.0
+    },
+    "duration_seconds": 0.00156,
+    "hypotheses": [
+      {
+        "hypothesis": "Inability to meet payroll and overhead drives enterprise into distressed/insolvent status",
+        "predicted": true,
+        "observed": true,
+        "status": "HYPOTHESIS_SUPPORTED"
+      }
+    ]
+  },
+  "EXP_15_N": {
+    "name": "Individual Preference Divergence",
+    "success": true,
+    "summary": "Extravert sport utility (0.65) > Introvert sport utility (0.48).",
+    "metrics": {
+      "introvert_sport_utility": 0.4774999999999999,
+      "extravert_sport_utility": 0.6525
+    },
+    "duration_seconds": 0.00189,
+    "hypotheses": [
+      {
+        "hypothesis": "Extraversion substantially elevates utility for communal sports and social activities",
+        "predicted": true,
+        "observed": true,
+        "status": "HYPOTHESIS_SUPPORTED"
+      }
+    ]
+  },
+  "EXP_15_O": {
+    "name": "Integrated Daily Life Over Multiple Generations",
+    "success": true,
+    "summary": "Ran 24 ticks; generated 120 events across population of 10; money range: $47.60 - $192.60.",
+    "metrics": {
+      "events_generated": 120,
+      "min_money_usd": 47.59999999999998,
+      "max_money_usd": 192.60000000000008,
+      "ticks_advanced": 24
+    },
+    "duration_seconds": 0.19204,
+    "hypotheses": [
+      {
+        "hypothesis": "Integrated simulation advances ticks cleanly with dynamic events and positive population liquidity",
+        "predicted": true,
+        "observed": true,
+        "status": "HYPOTHESIS_SUPPORTED"
+      }
+    ]
+  }
+}

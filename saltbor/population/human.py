@@ -25,10 +25,24 @@ from saltbor.cognition.metacognition.engine import MetacognitionEngine
 from saltbor.cognition.creativity.engine import CreativeCombinationEngine
 from saltbor.cognition.curiosity.engine import CuriosityEngine
 from saltbor.cognition.architecture.brain import CognitiveBrainArchitecture
+from saltbor.cognition.development.profile import CognitiveCapability, CognitiveProfile
+from saltbor.cognition.development.meta_learning import LearningStrategy, MetaLearningEngine
+from saltbor.cognition.development.plasticity import CognitivePlasticityEngine
+from saltbor.cognition.epistemic.scientific_thinking import ScientificThinkingEngine
 from saltbor.knowledge.layers.individual_graph import IndividualKnowledgeGraph
 from saltbor.core.clock import SimulationClock
 from saltbor.core.identity import HumanIdentity
-from saltbor.core.types import ActivityType, Gender, HumanID, LocationID, NeedType, Tick
+from saltbor.core.types import (
+    ActivityType,
+    ContractType,
+    EmploymentStatus,
+    Gender,
+    HousingTenureType,
+    HumanID,
+    LocationID,
+    NeedType,
+    Tick,
+)
 from saltbor.events.bus import EventBus
 from saltbor.events.types import EventType, SimulationEvent
 from saltbor.population.demographics import Demographics
@@ -64,6 +78,10 @@ class SyntheticHuman:
         creativity: Optional[CreativeCombinationEngine] = None,
         curiosity: Optional[CuriosityEngine] = None,
         brain: Optional[CognitiveBrainArchitecture] = None,
+        cognitive_profile: Optional[CognitiveProfile] = None,
+        meta_learning: Optional[MetaLearningEngine] = None,
+        plasticity: Optional[CognitivePlasticityEngine] = None,
+        scientific_thinking: Optional[ScientificThinkingEngine] = None,
     ) -> None:
         self.identity = identity
         self.demographics = demographics
@@ -101,6 +119,43 @@ class SyntheticHuman:
             reasoning=self.reasoning,
             problem_solver=self.problem_solver,
         )
+
+        # Phase 1.3 Cognitive Development, Meta-Learning & Scientific Thinking
+        self.cognitive_profile = cognitive_profile or CognitiveProfile.create_default(
+            human_uid=str(self.identity.uid),
+            age=float(self.demographics.age),
+            rng=self._rng,
+        )
+        self.meta_learning = meta_learning or MetaLearningEngine(human_uid=str(self.identity.uid))
+        self.plasticity = plasticity or CognitivePlasticityEngine()
+        self.scientific_thinking = scientific_thinking or ScientificThinkingEngine(rng=self._rng)
+
+        # Phase 1.5 Human Daily Life, Labor Market & Housing Attributes
+        self.housing_tenure: HousingTenureType = HousingTenureType.RENTAL
+        self.employment_status: EmploymentStatus = (
+            EmploymentStatus.UNEMPLOYED
+            if getattr(self.demographics, "occupation", None) in ("Desempleado", "", None)
+            else EmploymentStatus.EMPLOYED_INFORMAL
+        )
+        self.reservation_wage: float = 8.00
+        self.preferences: dict[str, Any] = {
+            "dining_out_affinity": 0.50,
+            "frugality": 0.50,
+            "solitude_preference": 0.30,
+            "park_walking_preference": 0.60,
+            "sports_affinity": 0.40,
+            "shopping_curiosity": 0.50,
+        }
+        self.habits: list[dict[str, Any]] = []
+
+        # Phase 1.5 Extension: Health, Romance & Family Caregiving
+        self.active_health_conditions: list[Any] = []
+        self.health_history: list[dict[str, Any]] = []
+        self.romantic_partner_id: Optional[str] = None
+        self.heartbreak_state: Optional[Any] = None
+        self.dependent_children_ids: list[str] = []
+        self.caregiver_ids: list[str] = []
+        self.elderly_dependents_ids: list[str] = []
 
     @property
     def uid(self) -> HumanID:
@@ -175,6 +230,10 @@ class SyntheticHuman:
 
         # 5. Cognitive reflection on salient events (Cognitive LOD: importance >= 0.65)
         if event.importance >= 0.65:
+            self.cognitive_profile.apply_environmental_stress(
+                stress_impact=0.10,
+                is_chronic=(event.importance >= 0.85),
+            )
             self.metacognition.reflect_on_outcome(
                 target_event=event.event_type.value,
                 action_attempted=event.event_type.value,
@@ -221,6 +280,22 @@ class SyntheticHuman:
             if eff.skill_category:
                 skill_id = f"skill_{eff.skill_category.value}"
                 self.learning.practice_skill(skill_id, self.memory, duration_ticks=1, current_tick=tick)
+                self.cognitive_profile.train_capability(
+                    CognitiveCapability.PROCEDURAL_LEARNING,
+                    effort_intensity=0.8,
+                    duration_ticks=1,
+                    current_tick=tick,
+                )
+
+            if act_type in (ActivityType.REST, ActivityType.SLEEP):
+                self.cognitive_profile.rest_and_recover(rest_intensity=1.0)
+            elif act_type in (ActivityType.STUDY, ActivityType.WORK):
+                self.cognitive_profile.train_capability(
+                    CognitiveCapability.PROBLEM_SOLVING_ABILITY,
+                    effort_intensity=0.6,
+                    duration_ticks=1,
+                    current_tick=tick,
+                )
 
             # Social interactions if socializing with nearby humans
             if act_type == ActivityType.SOCIALIZE and nearby_humans:
@@ -246,12 +321,18 @@ class SyntheticHuman:
                             goal.advance(0.50)
                         elif completed_act in (ActivityType.SLEEP, ActivityType.REST) and goal.need_type == NeedType.REST:
                             goal.advance(0.50)
-                    elif goal.category == "financial" and completed_act == ActivityType.WORK:
+                    elif goal.category == "financial" and completed_act in (ActivityType.WORK, ActivityType.COMMERCE_SELL, ActivityType.RECEIVE_REMITTANCE):
                         goal.advance(0.35)
-                    elif goal.category == "skill" and completed_act == ActivityType.STUDY:
+                    elif goal.category == "skill" and completed_act in (ActivityType.STUDY, ActivityType.LEARN_TRADE, ActivityType.TEACH_APPRENTICE):
                         goal.advance(0.35)
-                    elif goal.category == "social" and completed_act == ActivityType.SOCIALIZE:
+                    elif goal.category == "social" and completed_act in (ActivityType.SOCIALIZE, ActivityType.COMMUNITY_MEETING, ActivityType.ATTEND_CELEBRATION):
                         goal.advance(0.40)
+                    elif goal.category == "community" and completed_act in (ActivityType.COMMUNITY_MEETING, ActivityType.COMMUNITY_PROPOSAL, ActivityType.COOPERATE):
+                        goal.advance(0.45)
+                    elif goal.category == "justice" and completed_act in (ActivityType.LITIGATE, ActivityType.SEEK_MEDIATION):
+                        goal.advance(0.50)
+                    elif goal.category == "science" and completed_act in (ActivityType.CONDUCT_EXPERIMENT, ActivityType.SHARE_DISCOVERY):
+                        goal.advance(0.45)
 
                     if goal.status == "completed":
                         event_bus.emit(
@@ -320,6 +401,20 @@ class SyntheticHuman:
             nearby_humans=nearby_humans,
             home_location_id=self.physical_state.home_location_id,
             work_location_id=self.physical_state.work_location_id,
+            has_active_dispute=getattr(self, "has_active_dispute", False),
+            has_remittance_pending=getattr(self, "has_remittance_pending", False),
+            has_pending_loan=getattr(self, "has_pending_loan", False),
+            is_mentor=getattr(self, "is_mentor", False),
+            is_apprentice=getattr(self, "is_apprentice", False),
+            active_curiosity_anomaly=getattr(self, "active_curiosity_anomaly", None),
+            is_unemployed=(getattr(self, "employment_status", None) == EmploymentStatus.UNEMPLOYED),
+            is_homeless=(getattr(self, "housing_tenure", None) in (HousingTenureType.HOMELESS, HousingTenureType.SHELTER)),
+            has_unpaid_rent=getattr(self, "has_unpaid_rent", False),
+            has_social_invitation=getattr(self, "has_social_invitation", False),
+            invitation_activity=getattr(self, "invitation_activity", None),
+            invitation_location_id=getattr(self, "invitation_location_id", None),
+            invitation_offered_treat=getattr(self, "invitation_offered_treat", False),
+            personal_preferences=getattr(self, "preferences", {}),
         )
 
         chosen = self.decision.decide(
@@ -401,5 +496,10 @@ class SyntheticHuman:
                 else "quiescent"
             ),
             "primary_goal": primary_goal.description if primary_goal else "None",
+            "housing_tenure": getattr(self, "housing_tenure", HousingTenureType.RENTAL).value,
+            "employment_status": getattr(self, "employment_status", EmploymentStatus.EMPLOYED_INFORMAL).value,
+            "active_illnesses": len(getattr(self, "active_health_conditions", [])),
+            "is_partnered": self.romantic_partner_id is not None,
+            "is_heartbroken": self.heartbreak_state is not None,
             "memory_items": self.memory.episodic.count,
         }

@@ -1,4 +1,4 @@
-"""Collective Problem Solving Engine for Saltbor Phase 0.7 (Section 8).
+"""Collective Problem Solving Engine for SALTBOR Phase 0.7 & Phase 1.3 (Section 9).
 
 Coordinates multi-agent problem solving when individuals lack capabilities
 they must pool from others:
@@ -8,16 +8,20 @@ they must pool from others:
 - Knowledge and perspective exchange.
 - Proposal debate and disagreement resolution.
 - Shared learning and mutual contribution recording.
-- Realistic friction: conflicts of interest, distrust, misinformation, coordination failures.
+- Realistic friction: conflicts of interest, distrust, misinformation, coordination failures,
+  groupthink, and overreliance on flawed specialists.
+- Cooperation can improve results, worsen them (coordination drag, shared errors), or have no effect.
 """
 
 from __future__ import annotations
 
 import dataclasses
 from enum import Enum
-from typing import Any, Optional
+from typing import Any, Dict, List, Optional
 from uuid import uuid4
+import numpy as np
 
+from saltbor.cognition.development.profile import CognitiveCapability, CognitiveProfile
 from saltbor.cognition.epistemic.interface import EpistemicInterface
 from saltbor.cognition.problem_solving.problem import Problem, ProblemOutcome
 from saltbor.knowledge.layers.individual_graph import IndividualKnowledgeGraph
@@ -45,6 +49,7 @@ class CollectiveProposal:
     strategy_summary: str
     resource_cost: float
     expected_success_probability: float
+    is_objectively_sound: bool = True   # False if based on a flawed hypothesis or groupthink
     votes_in_favor: list[str] = dataclasses.field(default_factory=list)
     votes_against: list[str] = dataclasses.field(default_factory=list)
 
@@ -63,6 +68,7 @@ class CollectiveSolvingReport:
     final_outcome: ProblemOutcome
     shared_learnings: list[str]
     contribution_ledger: dict[str, float] # agent_uid -> contribution weight
+    coordination_cost: float = 0.0
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -75,6 +81,7 @@ class CollectiveSolvingReport:
             "outcome": self.final_outcome.value,
             "contributions": self.contribution_ledger,
             "shared_learnings": self.shared_learnings,
+            "coordination_cost": round(self.coordination_cost, 3),
         }
 
 
@@ -124,6 +131,8 @@ class CollectiveProblemSolvingEngine:
         problem: Problem,
         team: list[TeamMemberRole],
         tick: int = 0,
+        member_profiles: Optional[dict[str, CognitiveProfile]] = None,
+        inject_flawed_hypothesis_uid: Optional[str] = None,
     ) -> CollectiveSolvingReport:
         """Conduct debate, evaluate proposals, resolve disagreements, and execute collective action."""
         session_id = f"collab_{uuid4().hex[:8]}"
@@ -134,12 +143,14 @@ class CollectiveProblemSolvingEngine:
         # 1. Proposal generation by specialists
         for member in team:
             if member.specialization != "coordination":
+                is_flawed = (member.agent_uid == inject_flawed_hypothesis_uid)
                 prop = CollectiveProposal(
                     proposal_id=f"prop_{uuid4().hex[:6]}",
                     author_uid=member.agent_uid,
                     strategy_summary=f"Apply {member.specialization} techniques to alleviate {problem.domain} shortage",
                     resource_cost=20.0 if not member.has_conflicting_interest else 60.0,
                     expected_success_probability=0.85 if not member.has_conflicting_interest else 0.40,
+                    is_objectively_sound=not is_flawed,
                 )
                 proposals.append(prop)
 
@@ -171,11 +182,23 @@ class CollectiveProblemSolvingEngine:
         # 3. Proposal Selection (majority vote)
         best_proposal = max(proposals, key=lambda p: len(p.votes_in_favor) - len(p.votes_against))
 
-        # 4. Check for coordination friction
+        # 4. Check for coordination friction & communication overhead
         net_votes = len(best_proposal.votes_in_favor) - len(best_proposal.votes_against)
         conflict_count = sum(1 for m in team if m.has_conflicting_interest)
 
-        # Failure condition: high conflict and net negative or zero support
+        # Communication overhead calculation
+        team_size = len(team)
+        coordination_cost = 0.0
+        if member_profiles and team_size > 2:
+            comm_levels = [
+                member_profiles[m.agent_uid].get_level(CognitiveCapability.COMMUNICATION_EFFICACY)
+                for m in team if m.agent_uid in member_profiles
+            ]
+            avg_comm = float(np.mean(comm_levels)) if comm_levels else 0.50
+            # Low communication in a larger group incurs friction
+            coordination_cost = max(0.0, (team_size - 2) * 0.10 * (1.0 - avg_comm))
+
+        # Failure condition 1: high conflict and net negative support
         if conflict_count > len(team) / 2 and net_votes <= 0:
             return CollectiveSolvingReport(
                 session_id=session_id,
@@ -188,6 +211,26 @@ class CollectiveProblemSolvingEngine:
                 final_outcome=ProblemOutcome.FAILED,
                 shared_learnings=["Coordination collapsed due to conflicting self-interests and deep distrust."],
                 contribution_ledger=contributions,
+                coordination_cost=coordination_cost,
+            )
+
+        # Failure condition 2: Collective error / Groupthink (selected proposal is objectively flawed)
+        if not best_proposal.is_objectively_sound:
+            return CollectiveSolvingReport(
+                session_id=session_id,
+                problem_description=problem.description,
+                team_members=team,
+                proposals_debated=proposals,
+                selected_proposal=best_proposal,
+                disagreements_encountered=disagreements,
+                coordination_success=True,
+                final_outcome=ProblemOutcome.FAILED,
+                shared_learnings=[
+                    f"Team unreservedly adopted flawed strategy from {best_proposal.author_uid}",
+                    "Collective failure resulted from groupthink and uncritical deference to specialist.",
+                ],
+                contribution_ledger=contributions,
+                coordination_cost=coordination_cost,
             )
 
         # 5. Execution: Each member contributes their specialty
@@ -202,6 +245,9 @@ class CollectiveProblemSolvingEngine:
             f"Consensus achieved on strategy: '{best_proposal.strategy_summary}'",
         ]
 
+        # Coordination cost can degrade outcome from SOLVED to PARTIAL if too high
+        final_outcome = ProblemOutcome.SOLVED if coordination_cost < 0.35 else ProblemOutcome.PARTIAL
+
         return CollectiveSolvingReport(
             session_id=session_id,
             problem_description=problem.description,
@@ -210,7 +256,8 @@ class CollectiveProblemSolvingEngine:
             selected_proposal=best_proposal,
             disagreements_encountered=disagreements,
             coordination_success=True,
-            final_outcome=ProblemOutcome.SOLVED,
+            final_outcome=final_outcome,
             shared_learnings=shared_learnings,
             contribution_ledger=contributions,
+            coordination_cost=coordination_cost,
         )

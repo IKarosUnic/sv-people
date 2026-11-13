@@ -55,6 +55,27 @@ class ADESCOEngine:
         self._faenas: dict[str, FaenaComunalProject] = {}
         self._cuchubales: dict[str, CuchubalSavingsCircle] = {}
 
+    def get_all_faenas(self) -> list[FaenaComunalProject]:
+        """Return all communal work projects."""
+        return list(self._faenas.values())
+
+    def get_all_cuchubales(self) -> list[CuchubalSavingsCircle]:
+        """Return all rotating savings and credit circles."""
+        return list(self._cuchubales.values())
+
+    def get_all_adescos(self) -> list[dict[str, Any]]:
+        """Return high-level summary of active ADESCO organizations."""
+        return [
+            {
+                "community_id": "comunidad_centro_historico",
+                "name": "ADESCO Centro Histórico y El Calvario",
+                "president": "Don Carlos Rivera",
+                "active_projects": len([f for f in self._faenas.values() if not f.is_completed]),
+                "completed_projects": len([f for f in self._faenas.values() if f.is_completed]),
+                "active_cuchubales": len(self._cuchubales),
+            }
+        ]
+
     # -------------------------------------------------------------------------
     # ADESCO Faenas Comunales (Collective Community Projects)
     # -------------------------------------------------------------------------

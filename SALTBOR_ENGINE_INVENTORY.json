@@ -1,0 +1,2538 @@
+[
+  {
+    "module": "saltbor/civilization/economy.py",
+    "class_name": "EconomicCivilizationEngine",
+    "public_methods": [
+      "establish_enterprise",
+      "inherit_enterprise",
+      "record_intergenerational_wealth",
+      "simulate_economic_cycle"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/civilization/engine.py",
+    "class_name": "CivilizationEvolutionEngine",
+    "public_methods": [
+      "found_civilization",
+      "evolve_step",
+      "fragment_civilization"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/civilization/graph.py",
+    "class_name": "HistoricalKnowledgeGraph",
+    "public_methods": [
+      "add_historical_entity",
+      "link_historical_relation",
+      "query_settlement_emergence",
+      "query_intergenerational_transmission"
+    ],
+    "constructor_dependencies": [
+      "base_graph"
+    ],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/civilization/history.py",
+    "class_name": "HistoricalMemoryEngine",
+    "public_methods": [
+      "record_ground_truth",
+      "archive_institutionally",
+      "form_cultural_narrative",
+      "transmit_narrative",
+      "query_collective_recollection"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/civilization/interaction.py",
+    "class_name": "MultiSocietyInteractionEngine",
+    "public_methods": [
+      "register_society",
+      "establish_relation",
+      "conduct_trade",
+      "trigger_conflict"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/civilization/migration.py",
+    "class_name": "MigrationDynamicsEngine",
+    "public_methods": [
+      "evaluate_migration_desire",
+      "initiate_migration",
+      "complete_migration",
+      "send_remittance",
+      "return_to_origin"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/civilization/multigenerational.py",
+    "class_name": "MultiGenerationalEngine",
+    "public_methods": [
+      "register_founder",
+      "birth_descendant",
+      "record_death",
+      "get_generation_cohort"
+    ],
+    "constructor_dependencies": [
+      "genealogy"
+    ],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/civilization/resilience.py",
+    "class_name": "CivilizationResilienceEngine",
+    "public_methods": [
+      "trigger_crisis",
+      "evaluate_settlement_resilience",
+      "resolve_crisis_step"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/civilization/settlement.py",
+    "class_name": "SettlementEvolutionEngine",
+    "public_methods": [
+      "found_settlement",
+      "add_inhabitant",
+      "remove_inhabitant",
+      "develop_infrastructure",
+      "integrate_settlements"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/civilization/stratification.py",
+    "class_name": "SocialStratificationEngine",
+    "public_methods": [
+      "register_profile",
+      "adjust_mobility",
+      "calculate_wealth_gini"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/civilization/technology.py",
+    "class_name": "TechnologicalEvolutionEngine",
+    "public_methods": [
+      "register_innovation_concept",
+      "attempt_discovery",
+      "diffuse_to_settlement",
+      "simulate_knowledge_decay",
+      "recover_forgotten_knowledge",
+      "record_failed_attempt"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/cognition/autonomy/engine.py",
+    "class_name": "AutonomyEngine",
+    "public_methods": [
+      "goals",
+      "get_active_goals",
+      "current_primary_goal",
+      "add_goal",
+      "get_goal",
+      "complete_goal",
+      "abandon_goal",
+      "generate_goals_from_needs",
+      "spawn_subgoals",
+      "generate_open_ended_goals",
+      "resolve_competing_goals",
+      "evaluate_and_adapt_goals",
+      "cleanup_completed_or_stale"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/cognition/cognitive/engine.py",
+    "class_name": "CognitiveEngine",
+    "public_methods": [
+      "perceive",
+      "attend",
+      "reason"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": true,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/cognition/creativity/engine.py",
+    "class_name": "CreativeCombinationEngine",
+    "public_methods": [
+      "synthesize_cross_domain_innovation",
+      "advance_stage",
+      "adapt_tool",
+      "modify_procedure_with_substitute"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/cognition/curiosity/engine.py",
+    "class_name": "CuriosityEngine",
+    "public_methods": [
+      "calculate_curiosity_drive",
+      "find_exploration_targets",
+      "select_exploration_target"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": true,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/cognition/decision/engine.py",
+    "class_name": "DecisionEngine",
+    "public_methods": [
+      "get_last_trace",
+      "evaluate_options",
+      "decide",
+      "decide_formal"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": true,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/cognition/development/meta_learning.py",
+    "class_name": "MetaLearningEngine",
+    "public_methods": [
+      "select_best_strategy",
+      "register_learning_outcome",
+      "should_seek_help",
+      "is_strategy_obsolete",
+      "to_dict"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/cognition/development/plasticity.py",
+    "class_name": "CognitivePlasticityEngine",
+    "public_methods": [
+      "calculate_practice_gain",
+      "calculate_disuse_atrophy",
+      "compute_cross_domain_transfer",
+      "compute_interference_loss",
+      "compute_divergence_metric"
+    ],
+    "constructor_dependencies": [
+      "transfer_matrix"
+    ],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/cognition/emotions/engine.py",
+    "class_name": "EmotionalEngine",
+    "public_methods": [
+      "process_event",
+      "induce_emotion",
+      "add_emotional_charge",
+      "should_express",
+      "update",
+      "get_emotion",
+      "get_mood",
+      "regulation_capacity",
+      "get_decision_weights"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": true,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": true,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "RUNTIME_CONNECTED"
+  },
+  {
+    "module": "saltbor/cognition/epistemic/scientific_thinking.py",
+    "class_name": "ScientificThinkingEngine",
+    "public_methods": [
+      "start_investigation",
+      "formulate_question",
+      "generate_hypothesis",
+      "design_experiment",
+      "run_experimental_trials",
+      "evaluate_and_revise",
+      "prepare_for_transmission"
+    ],
+    "constructor_dependencies": [
+      "rng"
+    ],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/cognition/learning/engine.py",
+    "class_name": "LearningEngine",
+    "public_methods": [
+      "practice_skill",
+      "learn_through_instruction",
+      "learn_by_observing",
+      "extract_knowledge_from_event",
+      "learn_from_failure"
+    ],
+    "constructor_dependencies": [
+      "learning_rate"
+    ],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": true,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": true,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "RUNTIME_CONNECTED"
+  },
+  {
+    "module": "saltbor/cognition/memory/engine.py",
+    "class_name": "MemoryEngine",
+    "public_methods": [
+      "associate_location",
+      "associate_human",
+      "get_location_association",
+      "get_human_association",
+      "record_event",
+      "consolidate",
+      "query_by_association",
+      "get_memory_stats"
+    ],
+    "constructor_dependencies": [
+      "config"
+    ],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": true,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": true,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "RUNTIME_CONNECTED"
+  },
+  {
+    "module": "saltbor/cognition/metacognition/engine.py",
+    "class_name": "MetacognitionEngine",
+    "public_methods": [
+      "perform_self_audit",
+      "estimate_confidence",
+      "scan_for_errors",
+      "reflect_on_outcome"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/cognition/personality/engine.py",
+    "class_name": "PersonalityEngine",
+    "public_methods": [
+      "update",
+      "get_trait",
+      "effective_value",
+      "get_base_trait",
+      "get_temperament",
+      "temperament_value",
+      "temperament_value",
+      "personal_values",
+      "personal_values",
+      "behavioral_patterns",
+      "behavioral_patterns",
+      "get_evolution_log",
+      "get_behavioral_modifier",
+      "apply_experience",
+      "apply_social_influence"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": true,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": true,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "RUNTIME_CONNECTED"
+  },
+  {
+    "module": "saltbor/cognition/problem_solving/collective.py",
+    "class_name": "CollectiveProblemSolvingEngine",
+    "public_methods": [
+      "assemble_team",
+      "solve_collectively"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/cognition/problem_solving/engine.py",
+    "class_name": "ProblemSolvingEngine",
+    "public_methods": [
+      "solve"
+    ],
+    "constructor_dependencies": [
+      "reasoning"
+    ],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/cognition/reasoning/abductive.py",
+    "class_name": "AbductiveReasoningEngine",
+    "public_methods": [
+      "generate_explanations",
+      "compare_and_rank",
+      "differentiate_with_evidence"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/cognition/reasoning/analogical.py",
+    "class_name": "AdvancedAnalogicalReasoningEngine",
+    "public_methods": [
+      "transfer_knowledge"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/cognition/reasoning/causal.py",
+    "class_name": "AdvancedCausalReasoningEngine",
+    "public_methods": [
+      "register_link",
+      "identify_confounder",
+      "evaluate_causality_vs_correlation",
+      "trace_impacts"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/cognition/reasoning/counterfactual.py",
+    "class_name": "CounterfactualReasoningEngine",
+    "public_methods": [
+      "evaluate_counterfactual"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/cognition/reasoning/deductive.py",
+    "class_name": "DeductiveReasoningEngine",
+    "public_methods": [
+      "register_rule",
+      "deduce"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/cognition/reasoning/engine.py",
+    "class_name": "AdvancedReasoningEngine",
+    "public_methods": [
+      "run_deduction",
+      "record_induction",
+      "explain_abductively",
+      "trace_causal_chain",
+      "transfer_analogically",
+      "simulate_counterfactual",
+      "formulate_hypothesis"
+    ],
+    "constructor_dependencies": [
+      "budget"
+    ],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/cognition/reasoning/hypothetical.py",
+    "class_name": "HypotheticalReasoningEngine",
+    "public_methods": [
+      "formulate_scenario",
+      "resolve_scenario",
+      "get_pending_scenarios",
+      "get_all_scenarios"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/cognition/reasoning/inductive.py",
+    "class_name": "InductiveReasoningEngine",
+    "public_methods": [
+      "record_observation",
+      "evaluate_expectation",
+      "get_all_patterns"
+    ],
+    "constructor_dependencies": [
+      "regularizer_k",
+      "min_observations"
+    ],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/cognition/social_learning/learning.py",
+    "class_name": "SocialLearningEngine",
+    "public_methods": [
+      "establish_mentorship",
+      "observe_and_learn",
+      "conduct_mentorship_session",
+      "copy_suboptimal_strategy"
+    ],
+    "constructor_dependencies": [
+      "rng"
+    ],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/culture/festival.py",
+    "class_name": "FestivalManager",
+    "public_methods": [
+      "propose_festival",
+      "prepare_step",
+      "execute_celebration"
+    ],
+    "constructor_dependencies": [
+      "rng"
+    ],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/culture/transmission.py",
+    "class_name": "CulturalTransmissionEngine",
+    "public_methods": [
+      "register_element",
+      "get_element",
+      "get_all_elements",
+      "get_individual_repertoire",
+      "has_adopted",
+      "grant_element_directly",
+      "calculate_adoption_probability",
+      "attempt_transmission",
+      "decay_unpracticed_culture"
+    ],
+    "constructor_dependencies": [
+      "rng"
+    ],
+    "is_instantiated": true,
+    "is_executed": true,
+    "receives_simulation_events": true,
+    "state_persisted": true,
+    "api_exposed": true,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "API_EXPOSED"
+  },
+  {
+    "module": "saltbor/culture/salvadoran/festivities.py",
+    "class_name": "SalvadoranFestivityEngine",
+    "public_methods": [
+      "get_festivity_info",
+      "organize_festivity",
+      "contribute_to_festivity",
+      "execute_celebration"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/culture/salvadoran/foodways.py",
+    "class_name": "SalvadoranFoodwaysEngine",
+    "public_methods": [
+      "get_food_item",
+      "get_all_food_items",
+      "open_pupuseria",
+      "simulate_day_trading",
+      "transmit_recipe_knowledge"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/culture/salvadoran/heritage.py",
+    "class_name": "SalvadoranCulturalEngine",
+    "public_methods": [
+      "get_craft_info",
+      "get_all_crafts",
+      "produce_craft_item",
+      "evaluate_individual_cultural_stance"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/economy/territorial_economy.py",
+    "class_name": "TerritorialEconomyEngine",
+    "public_methods": [
+      "calculate_commodity_price",
+      "evaluate_pupuseria_day",
+      "evaluate_fiado_eligibility"
+    ],
+    "constructor_dependencies": [
+      "geo_engine"
+    ],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/economy/business/enterprise.py",
+    "class_name": "BusinessRegistry",
+    "public_methods": [
+      "register",
+      "get",
+      "get_by_owner",
+      "get_all",
+      "get_active"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": true,
+    "state_persisted": true,
+    "api_exposed": true,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "API_EXPOSED"
+  },
+  {
+    "module": "saltbor/economy/commodity/payment_in_kind.py",
+    "class_name": "InKindPaymentEngine",
+    "public_methods": [
+      "settle_loan_installment_in_kind"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/economy/credit/engine.py",
+    "class_name": "CreditEngine",
+    "public_methods": [
+      "get_borrower_loans",
+      "get_active_debt",
+      "evaluate_creditworthiness",
+      "issue_interpersonal_loan",
+      "issue_institutional_loan",
+      "process_installment_payment",
+      "renegotiate_debt"
+    ],
+    "constructor_dependencies": [
+      "rng"
+    ],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": true,
+    "state_persisted": true,
+    "api_exposed": true,
+    "visually_observable": true,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "VISUALLY_OBSERVABLE"
+  },
+  {
+    "module": "saltbor/economy/mobility/inequality.py",
+    "class_name": "EconomicMobilityEngine",
+    "public_methods": [
+      "calculate_gini",
+      "evaluate_settlement_wealth",
+      "calculate_intergenerational_elasticity"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/economy/salvadoran/informal_commerce.py",
+    "class_name": "InformalCommerceEngine",
+    "public_methods": [
+      "register_corner_store",
+      "purchase_del_diario",
+      "request_fiado_credit",
+      "settle_fiado_balance"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/economy/salvadoran/livelihoods.py",
+    "class_name": "SalvadoranLivelihoodsEngine",
+    "public_methods": [
+      "register_milpa",
+      "harvest_milpa",
+      "simulate_coffee_picking_day",
+      "simulate_artisanal_fishing_trip"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/economy/salvadoran/remittances.py",
+    "class_name": "RemittanceEngine",
+    "public_methods": [
+      "register_household_remittance",
+      "process_monthly_remittance"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/institutions/education.py",
+    "class_name": "DistributedEducationEngine",
+    "public_methods": [
+      "get_role",
+      "set_role",
+      "establish_apprenticeship",
+      "check_spontaneous_institution_emergence",
+      "get_all_institutions"
+    ],
+    "constructor_dependencies": [
+      "rng"
+    ],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/institutions/governance.py",
+    "class_name": "GovernanceEngine",
+    "public_methods": [
+      "submit_proposal",
+      "cast_vote",
+      "resolve_proposal"
+    ],
+    "constructor_dependencies": [
+      "rng"
+    ],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/institutions/legal/court.py",
+    "class_name": "JudicialTribunal",
+    "public_methods": [
+      "file_case",
+      "adjudicate_and_enforce"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/knowledge/capabilities/composition.py",
+    "class_name": "CapabilityCompositionSystem",
+    "public_methods": [
+      "propose_new_object",
+      "construct_object",
+      "form_emergent_profession"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/knowledge/experimentation/engine.py",
+    "class_name": "ExperimentationEngine",
+    "public_methods": [
+      "design_experiment",
+      "execute_experiment"
+    ],
+    "constructor_dependencies": [
+      "hypothesis_graph"
+    ],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/knowledge/graph/engine.py",
+    "class_name": "KnowledgeGraphEngine",
+    "public_methods": [
+      "add_node",
+      "get_node",
+      "has_node",
+      "remove_node",
+      "get_nodes_by_type",
+      "all_nodes",
+      "node_count",
+      "add_relationship",
+      "get_relationship",
+      "remove_relationship",
+      "all_relationships",
+      "relationship_count",
+      "get_out_relationships",
+      "get_in_relationships",
+      "get_neighbors",
+      "traverse_multi_hop",
+      "find_shortest_path",
+      "extract_subgraph",
+      "to_networkx"
+    ],
+    "constructor_dependencies": [
+      "name"
+    ],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": true,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/knowledge/layers/collective_graph.py",
+    "class_name": "CollectiveKnowledgeGraph",
+    "public_methods": [
+      "institutionalize_knowledge",
+      "institutionalize_relationship",
+      "get_collective_knowledge",
+      "get_preserved_node",
+      "check_endangered_knowledge"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": true,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "API_EXPOSED"
+  },
+  {
+    "module": "saltbor/knowledge/layers/global_graph.py",
+    "class_name": "GlobalKnowledgeGraph",
+    "public_methods": [
+      "register_concept",
+      "register_relationship",
+      "get_node",
+      "get_relationship",
+      "has_node"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": true,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "API_EXPOSED"
+  },
+  {
+    "module": "saltbor/knowledge/layers/hypothesis_graph.py",
+    "class_name": "HypothesisDiscoveryGraph",
+    "public_methods": [
+      "propose_hypothesis",
+      "get_hypothesis",
+      "get_competing_hypotheses"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": true,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "API_EXPOSED"
+  },
+  {
+    "module": "saltbor/knowledge/layers/individual_graph.py",
+    "class_name": "IndividualKnowledgeGraph",
+    "public_methods": [
+      "learn_concept",
+      "register_local_node",
+      "add_node",
+      "get_node",
+      "learn_relationship",
+      "knows_concept",
+      "get_concept",
+      "get_claim",
+      "all_known_node_ids",
+      "all_known_nodes",
+      "get_neighbors",
+      "apply_decay"
+    ],
+    "constructor_dependencies": [
+      "human_uid",
+      "global_graph"
+    ],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/knowledge/layers/procedural_graph.py",
+    "class_name": "ProceduralKnowledgeGraph",
+    "public_methods": [
+      "register_procedure",
+      "get_procedure",
+      "all_procedures"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/knowledge/learning/learner.py",
+    "class_name": "AutonomousLearningEngine",
+    "public_methods": [
+      "acquire_concept",
+      "identify_knowledge_gaps",
+      "revise_belief"
+    ],
+    "constructor_dependencies": [
+      "profile"
+    ],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/knowledge/reasoning/analogical.py",
+    "class_name": "AnalogicalReasoningEngine",
+    "public_methods": [
+      "perform_analogical_transfer"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/knowledge/reasoning/causal.py",
+    "class_name": "CausalReasoningEngine",
+    "public_methods": [
+      "trace_downstream_impacts",
+      "formulate_causal_belief"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/knowledge/reasoning/compositional.py",
+    "class_name": "CompositionalReasoningEngine",
+    "public_methods": [
+      "compose_procedure"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/knowledge/reasoning/engine.py",
+    "class_name": "InferenceEngine",
+    "public_methods": [
+      "run_bounded_inference",
+      "detect_contradictions"
+    ],
+    "constructor_dependencies": [
+      "budget"
+    ],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/knowledge/reasoning/hypothesis_gen.py",
+    "class_name": "HypothesisGenerationEngine",
+    "public_methods": [
+      "generate_hypotheses_for_phenomenon"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/knowledge/reasoning/rules.py",
+    "class_name": "RuleBasedInferenceEngine",
+    "public_methods": [
+      "register_rule",
+      "infer"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/knowledge/salvadoran/history.py",
+    "class_name": "SalvadoranHistoricalMemoryEngine",
+    "public_methods": [
+      "evaluate_historical_knowledge"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/knowledge/transmission/engine.py",
+    "class_name": "KnowledgeTransmissionEngine",
+    "public_methods": [
+      "teach_concept",
+      "teach_relationship",
+      "get_transmission_lineage"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/lifecycle/aging/clock.py",
+    "class_name": "AgingEngine",
+    "public_methods": [
+      "create_profile",
+      "step_individual"
+    ],
+    "constructor_dependencies": [
+      "ticks_per_year",
+      "accelerated_ratio"
+    ],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/lifecycle/development/model.py",
+    "class_name": "ChildDevelopmentEngine",
+    "public_methods": [
+      "get_capabilities",
+      "filter_memory_encoding",
+      "evaluate_caregiver_need"
+    ],
+    "constructor_dependencies": [
+      "rng"
+    ],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/lifecycle/family/household.py",
+    "class_name": "HouseholdRegistry",
+    "public_methods": [
+      "register_household",
+      "create_household",
+      "get",
+      "get_for_human",
+      "add_human_to_household",
+      "remove_human",
+      "all_households"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/lifecycle/genealogy/tree.py",
+    "class_name": "GenealogicalGraph",
+    "public_methods": [
+      "register_individual",
+      "record_birth",
+      "record_partnership",
+      "record_death",
+      "get_record",
+      "get_parents",
+      "get_children",
+      "get_siblings",
+      "get_grandparents",
+      "get_ancestors_with_depth",
+      "get_ancestors",
+      "get_descendants",
+      "get_kinship_degree",
+      "is_related",
+      "all_records"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/lifecycle/genetics/inheritance.py",
+    "class_name": "GeneticsEngine",
+    "public_methods": [
+      "generate_random_genome",
+      "recombine"
+    ],
+    "constructor_dependencies": [
+      "mutation_rate",
+      "rng"
+    ],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/lifecycle/mortality/death.py",
+    "class_name": "MortalityEngine",
+    "public_methods": [
+      "is_deceased",
+      "calculate_mortality_hazard",
+      "check_mortality",
+      "process_death"
+    ],
+    "constructor_dependencies": [
+      "base_makeham_hazard",
+      "gompertz_alpha",
+      "gompertz_gamma",
+      "rng"
+    ],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": true,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/lifecycle/mortality/grief.py",
+    "class_name": "GriefEngine",
+    "public_methods": [
+      "apply_bereavement"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/lifecycle/reproduction/mating.py",
+    "class_name": "ReproductionEngine",
+    "public_methods": [
+      "is_pregnant",
+      "get_pregnancy",
+      "evaluate_mating_compatibility",
+      "attempt_conception",
+      "update_pregnancies",
+      "complete_delivery"
+    ],
+    "constructor_dependencies": [
+      "gestation_ticks",
+      "conception_probability_base",
+      "rng"
+    ],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/llm/interfaces/ai_layer.py",
+    "class_name": "ResourceManager",
+    "public_methods": [
+      "can_request"
+    ],
+    "constructor_dependencies": [
+      "max_calls_per_minute",
+      "max_tokens_per_hour"
+    ],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": true,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/persistence/database.py",
+    "class_name": "DatabaseManager",
+    "public_methods": [
+      "connect",
+      "close",
+      "get_connection",
+      "execute",
+      "executemany",
+      "transaction"
+    ],
+    "constructor_dependencies": [
+      "db_path"
+    ],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": true,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "RUNTIME_CONNECTED"
+  },
+  {
+    "module": "saltbor/persistence/multilevel_persistence.py",
+    "class_name": "MultilevelPersistenceEngine",
+    "public_methods": [
+      "save_batch",
+      "load_record",
+      "load_by_district",
+      "count_total"
+    ],
+    "constructor_dependencies": [
+      "db"
+    ],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/persistence/schema.py",
+    "class_name": "SchemaManager",
+    "public_methods": [
+      "create_tables",
+      "get_schema_version",
+      "set_schema_version"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/population/lod.py",
+    "class_name": "CognitiveLODManager",
+    "public_methods": [
+      "get_assignment",
+      "set_focal_agent",
+      "evaluate_lod",
+      "should_execute_tick"
+    ],
+    "constructor_dependencies": [
+      "focal_uids"
+    ],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/population/registry.py",
+    "class_name": "PopulationRegistry",
+    "public_methods": [
+      "build_location_index",
+      "invalidate_location_index",
+      "register",
+      "get",
+      "get_optional",
+      "get_by_serial",
+      "get_all",
+      "get_at_location",
+      "count"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": true,
+    "receives_simulation_events": true,
+    "state_persisted": true,
+    "api_exposed": true,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "API_EXPOSED"
+  },
+  {
+    "module": "saltbor/population/multilevel/population_manager.py",
+    "class_name": "MultilevelPopulationManager",
+    "public_methods": [
+      "persistent_count",
+      "active_simulated_count",
+      "aggregated_count",
+      "rendered_count",
+      "get_tier_summary",
+      "register_individual",
+      "register_batch",
+      "register_community",
+      "register_cohort",
+      "promote_to_active",
+      "demote_to_aggregated",
+      "step",
+      "query_viewport_population"
+    ],
+    "constructor_dependencies": [
+      "spatial_manager"
+    ],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/simulation/runner.py",
+    "class_name": "SimulationRunner",
+    "public_methods": [
+      "initialize",
+      "step",
+      "run",
+      "checkpoint",
+      "register_on_tick_callback",
+      "close"
+    ],
+    "constructor_dependencies": [
+      "config"
+    ],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": true,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "RUNTIME_CONNECTED"
+  },
+  {
+    "module": "saltbor/simulation/analysis/cognitive_validator.py",
+    "class_name": "CognitiveSystemValidator",
+    "public_methods": [
+      "validate_causal_feedback_loop"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": true,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/simulation/experiments/phase111_experiments.py",
+    "class_name": "Experiment111_I_CrossEnginePerformanceAudit",
+    "public_methods": [
+      "default_config",
+      "run"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/simulation/experiments/phase11_experiments.py",
+    "class_name": "Experiment11_L_KnowledgeGraphAblation",
+    "public_methods": [
+      "default_config",
+      "run"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": true,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/social/engine.py",
+    "class_name": "SocialEngine",
+    "public_methods": [
+      "get_relationship",
+      "get_relationships_for",
+      "get_friends",
+      "record_interaction",
+      "record_directional_interaction",
+      "record_conflict",
+      "record_cooperation",
+      "record_reconciliation",
+      "get_directional_attitude",
+      "add_relationship",
+      "get_all_relationships",
+      "count"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": true,
+    "receives_simulation_events": true,
+    "state_persisted": true,
+    "api_exposed": true,
+    "visually_observable": true,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "END_TO_END_VALIDATED"
+  },
+  {
+    "module": "saltbor/social/groups.py",
+    "class_name": "GroupRegistry",
+    "public_methods": [
+      "create_group",
+      "get",
+      "add_member",
+      "remove_member",
+      "groups_for",
+      "delete_group",
+      "get_all",
+      "count"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/social/lod.py",
+    "class_name": "SocialLODManager",
+    "public_methods": [
+      "set_focal_agents",
+      "assign_tier",
+      "get_tier",
+      "should_process_social_tick"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/social/collective_intelligence/engine.py",
+    "class_name": "CollectiveIntelligenceEngine",
+    "public_methods": [
+      "share_information",
+      "compare_experiences",
+      "distribute_tasks",
+      "identify_specialists",
+      "debate_alternatives",
+      "evaluate_proposals",
+      "detect_errors",
+      "build_common_knowledge",
+      "coordinate_and_execute"
+    ],
+    "constructor_dependencies": [
+      "collective_kg"
+    ],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/social/communication/engine.py",
+    "class_name": "SocialCommunicationEngine",
+    "public_methods": [
+      "create_message",
+      "transmit_message",
+      "distort_content",
+      "propagate_cascade"
+    ],
+    "constructor_dependencies": [
+      "social_network"
+    ],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/social/community/engine.py",
+    "class_name": "CommunityFormationEngine",
+    "public_methods": [
+      "get_community",
+      "get_all_communities",
+      "get_communities_for_human",
+      "form_community",
+      "check_spontaneous_formation"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": true,
+    "receives_simulation_events": true,
+    "state_persisted": true,
+    "api_exposed": true,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "API_EXPOSED"
+  },
+  {
+    "module": "saltbor/social/conflict/dispute.py",
+    "class_name": "CollectiveConflictManager",
+    "public_methods": [
+      "initiate_dispute",
+      "get_active_disputes"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/social/conflict/engine.py",
+    "class_name": "ConflictCooperationEngine",
+    "public_methods": [
+      "get_dispute",
+      "get_disputes_for_human",
+      "initiate_dispute",
+      "propose_offer",
+      "respond_to_offer",
+      "assign_mediator",
+      "mediate_compromise"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/social/culture/evolution.py",
+    "class_name": "CulturalEvolutionEngine",
+    "public_methods": [
+      "register_tradition",
+      "get_tradition",
+      "get_all_traditions",
+      "transmit_intergenerational",
+      "transmit_imperfect",
+      "diffuse_via_imitation",
+      "fragment_tradition",
+      "decay_unpracticed_traditions",
+      "check_cultural_extinction"
+    ],
+    "constructor_dependencies": [
+      "rng"
+    ],
+    "is_instantiated": true,
+    "is_executed": true,
+    "receives_simulation_events": true,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "EXECUTED"
+  },
+  {
+    "module": "saltbor/social/economy/collective_economy.py",
+    "class_name": "CollectiveEconomyEngine",
+    "public_methods": [
+      "get_enterprise",
+      "get_all_enterprises",
+      "create_enterprise",
+      "bulk_purchase_supplies",
+      "dissolve_enterprise"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": true,
+    "state_persisted": true,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "STATE_PERSISTED"
+  },
+  {
+    "module": "saltbor/social/information/rumor.py",
+    "class_name": "RumorEngine",
+    "public_methods": [
+      "register_origin_knowledge",
+      "get_known_items",
+      "has_knowledge",
+      "transmit",
+      "verify_information"
+    ],
+    "constructor_dependencies": [
+      "distortion_rate",
+      "rng"
+    ],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/social/institutions/emergent.py",
+    "class_name": "EmergentInstitutionEngine",
+    "public_methods": [
+      "get_institution",
+      "get_all",
+      "formalize_from_community"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/social/language/contextual_dialogue.py",
+    "class_name": "AdvancedOfflineDialogueEngine",
+    "public_methods": [
+      "conduct_negotiation"
+    ],
+    "constructor_dependencies": [
+      "rng"
+    ],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/social/language/conversation.py",
+    "class_name": "ConversationManager",
+    "public_methods": [
+      "conduct_conversation"
+    ],
+    "constructor_dependencies": [
+      "nlg"
+    ],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/social/language/salvadoran_spanish.py",
+    "class_name": "SalvadoranSpanishEngine",
+    "public_methods": [
+      "determine_appropriate_register",
+      "render_greeting",
+      "render_market_inquiry",
+      "render_community_cooperation_call"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/social/network/graph_engine.py",
+    "class_name": "SocialNetworkEngine",
+    "public_methods": [
+      "get_or_create_edge",
+      "get_edge",
+      "get_neighbors",
+      "record_interaction",
+      "apply_decay_all",
+      "get_indirect_influence",
+      "find_triadic_closure_candidates",
+      "calculate_density",
+      "calculate_reciprocity_ratio",
+      "calculate_degree_centrality",
+      "detect_connected_components",
+      "count_total_edges",
+      "get_all_edges"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": true,
+    "receives_simulation_events": true,
+    "state_persisted": true,
+    "api_exposed": false,
+    "visually_observable": true,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "STATE_PERSISTED"
+  },
+  {
+    "module": "saltbor/social/organization/engine.py",
+    "class_name": "OrganizationalIntelligenceEngine",
+    "public_methods": [
+      "register_leader",
+      "get_leadership_profile",
+      "evaluate_leadership_fitness",
+      "submit_proposal",
+      "cast_vote",
+      "resolve_proposal"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/social/reputation/engine.py",
+    "class_name": "ContextualReputationEngine",
+    "public_methods": [
+      "get_or_create",
+      "record_production_success",
+      "record_loan_repayment",
+      "record_civic_service",
+      "record_interpersonal_conduct",
+      "set_group_rating"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/social/reputation/reputation_system.py",
+    "class_name": "ReputationEngine",
+    "public_methods": [
+      "get_or_create",
+      "record_pact_outcome",
+      "record_cooperation_effort",
+      "transmit_testimonial",
+      "get_social_influence"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/social/salvadoran/community.py",
+    "class_name": "ADESCOEngine",
+    "public_methods": [
+      "create_faena_project",
+      "contribute_labor_to_faena",
+      "create_cuchubal",
+      "execute_cuchubal_turn"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": true,
+    "visually_observable": true,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "VISUALLY_OBSERVABLE"
+  },
+  {
+    "module": "saltbor/visualization/controller.py",
+    "class_name": "SimulationController",
+    "public_methods": [
+      "subscribe_events",
+      "unsubscribe_events",
+      "start_worker",
+      "stop_worker",
+      "play",
+      "pause",
+      "is_running",
+      "set_speed",
+      "get_speed",
+      "step_sync",
+      "apply_scenario",
+      "reset_simulation",
+      "save_checkpoint",
+      "load_checkpoint",
+      "get_status_summary"
+    ],
+    "constructor_dependencies": [
+      "config",
+      "seed",
+      "db_path"
+    ],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": true,
+    "state_persisted": false,
+    "api_exposed": true,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "API_EXPOSED"
+  },
+  {
+    "module": "saltbor/world/activities/catalog.py",
+    "class_name": "ActivityCatalog",
+    "public_methods": [
+      "register",
+      "get",
+      "can_perform"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": true,
+    "receives_simulation_events": true,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "EXECUTED"
+  },
+  {
+    "module": "saltbor/world/environment/weather.py",
+    "class_name": "EnvironmentEngine",
+    "public_methods": [
+      "trigger_hazard",
+      "force_weather_condition",
+      "get_crop_yield_multiplier",
+      "clear_hazard",
+      "step"
+    ],
+    "constructor_dependencies": [
+      "ticks_per_year",
+      "rng",
+      "seed"
+    ],
+    "is_instantiated": true,
+    "is_executed": true,
+    "receives_simulation_events": true,
+    "state_persisted": false,
+    "api_exposed": true,
+    "visually_observable": true,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "VISUALLY_OBSERVABLE"
+  },
+  {
+    "module": "saltbor/world/geographic/engine.py",
+    "class_name": "RealGeographicEngine",
+    "public_methods": [
+      "get_department",
+      "get_all_departments",
+      "get_municipality",
+      "get_all_municipalities",
+      "get_municipalities_in_department",
+      "get_district",
+      "get_all_districts",
+      "get_districts_in_municipality",
+      "get_districts_in_department",
+      "find_nearest_district",
+      "get_territorial_context",
+      "get_physical_features_near",
+      "get_volcanoes",
+      "get_lakes",
+      "get_rivers",
+      "calculate_route",
+      "evaluate_district_climate",
+      "is_real_world_entity",
+      "register_experimental_entity"
+    ],
+    "constructor_dependencies": [
+      "seed"
+    ],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": true,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "API_EXPOSED"
+  },
+  {
+    "module": "saltbor/world/geographic/navigation.py",
+    "class_name": "TerritorialNavigationEngine",
+    "public_methods": [
+      "add_road_segment",
+      "block_segment",
+      "unblock_segment",
+      "clear_all_blocks",
+      "is_obstacle_in_path",
+      "calculate_segment_friction",
+      "find_route"
+    ],
+    "constructor_dependencies": [
+      "load_defaults"
+    ],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/world/gis/engine.py",
+    "class_name": "GISEngine",
+    "public_methods": [
+      "list_zones",
+      "get_manifest",
+      "get_layer",
+      "find_containing_building",
+      "find_nearest_street",
+      "get_building_by_id"
+    ],
+    "constructor_dependencies": [
+      "data_root"
+    ],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": true,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/world/gis/models.py",
+    "class_name": "LayerSystem",
+    "public_methods": [],
+    "constructor_dependencies": [],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/world/locations/registry.py",
+    "class_name": "LocationRegistry",
+    "public_methods": [
+      "register",
+      "get",
+      "get_optional",
+      "get_by_type",
+      "get_all",
+      "find_nearest",
+      "create_saltbor_map"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": true,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "EXECUTED"
+  },
+  {
+    "module": "saltbor/world/navigation/pathfinding.py",
+    "class_name": "NavigationGraph",
+    "public_methods": [
+      "add_node",
+      "add_edge",
+      "find_nearest_node",
+      "shortest_path",
+      "find_route",
+      "travel_distance",
+      "travel_time_ticks",
+      "build_saltbor_graph"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/world/regional/caravan.py",
+    "class_name": "RegionalTradeEngine",
+    "public_methods": [
+      "dispatch_caravan",
+      "step"
+    ],
+    "constructor_dependencies": [
+      "rng"
+    ],
+    "is_instantiated": true,
+    "is_executed": true,
+    "receives_simulation_events": true,
+    "state_persisted": false,
+    "api_exposed": true,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "API_EXPOSED"
+  },
+  {
+    "module": "saltbor/world/salvadoran/climate.py",
+    "class_name": "SalvadoranClimateEngine",
+    "public_methods": [
+      "evaluate_environment",
+      "calculate_crop_impact"
+    ],
+    "constructor_dependencies": [
+      "seed"
+    ],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/world/salvadoran/geography.py",
+    "class_name": "SalvadoranGeographyEngine",
+    "public_methods": [
+      "get_department",
+      "get_all_departments",
+      "get_departments_by_zone",
+      "get_settlement",
+      "get_settlements_in_department",
+      "get_rural_settlements",
+      "get_urban_settlements",
+      "get_features_near_department",
+      "get_volcanoes",
+      "get_rivers",
+      "calculate_transit_profile",
+      "register_experimental_settlement",
+      "is_real_world_settlement"
+    ],
+    "constructor_dependencies": [],
+    "is_instantiated": true,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "INSTANTIATED"
+  },
+  {
+    "module": "saltbor/world/spatial/movement.py",
+    "class_name": "ContinuousMovementEngine",
+    "public_methods": [
+      "step_agent"
+    ],
+    "constructor_dependencies": [
+      "avoidance_radius"
+    ],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/world/spatial/multi_partition.py",
+    "class_name": "SpatialPartitionManager",
+    "public_methods": [
+      "insert_or_update",
+      "rebuild_quadtree",
+      "query_viewport",
+      "query_neighbors",
+      "propagate_spatial_event",
+      "total_count"
+    ],
+    "constructor_dependencies": [
+      "cell_size"
+    ],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": true,
+    "classification": "IMPLEMENTED_ONLY"
+  },
+  {
+    "module": "saltbor/world/spatial/territorial_movement.py",
+    "class_name": "TerritorialMovementEngine",
+    "public_methods": [
+      "start_journey",
+      "step_tick",
+      "get_journey"
+    ],
+    "constructor_dependencies": [
+      "geo_engine"
+    ],
+    "is_instantiated": false,
+    "is_executed": false,
+    "receives_simulation_events": false,
+    "state_persisted": false,
+    "api_exposed": false,
+    "visually_observable": false,
+    "only_used_in_tests_or_experiments": false,
+    "classification": "IMPLEMENTED_ONLY"
+  }
+]
