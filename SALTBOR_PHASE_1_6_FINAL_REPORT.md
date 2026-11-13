@@ -247,21 +247,25 @@ measured ticks of a continuously running simulation with
 
 | Population | mean ms/tick | p50 | p95 | max | ticks/s | ms/agent/tick | RSS |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 50 | 32.3 | 19.9 | 47.1 | 944.7 | 30.9 | 0.65 | 106 MB |
-| 200 | 155.5 | 112.7 | 254.9 | 3,322.3 | 6.4 | 0.78 | 229 MB |
+| 50 | 26.7 | 20.7 | 44.6 | 523.4 | 37.5 | 0.53 | 108 MB |
+| 200 | 151.8 | 111.7 | 244.1 | 3,825.0 | 6.6 | 0.76 | 230 MB |
 
 Geographic queries: `nearest_road` **0.23 ms/call** (500/500 hits),
 `features_in_bbox` 500 features ≈ 127 ms (full-scan predicate; see §10).
 
 Interpretation, stated plainly:
 
-- Steady-state cost is roughly **0.65–0.80 ms per agent per tick** and scales
-  near-linearly from 50 to 400 agents (0.65 → 0.78 → 1.00 in the three-population
-  run).
+- Steady-state cost is roughly **0.53–0.76 ms per agent per tick** and scales
+  near-linearly (0.53 → 0.76 between 50 and 200 agents; 0.99 in the earlier
+  three-population run).
 - The `max` column is a **checkpoint stall**, not simulation work: one checkpoint
-  per 96 ticks serializes the whole extension state. At 200 agents this is 3.3 s;
-  at 400 agents, 10.7 s. This is the single largest obstacle to "thousands of
-  agents" and is listed as a limitation below.
+  per 96 ticks serializes the whole extension state. Checkpoint work was reduced
+  after this phase's first report (measured on the same 200-agent state, 5 runs):
+  median **3.08 s → 2.49 s** and payload **20.75 MB → 11.71 MB** after batching
+  memory upserts, compacting retained percepts and making the outer checkpoint
+  transaction authoritative. It remains the largest obstacle to "thousands of
+  agents": the residual cost is writing ~26,600 episodic rows per checkpoint.
+  Incremental (dirty-only) persistence is still **NOT IMPLEMENTED**.
 - Run-to-run variance on this laptop is significant (the same 50-agent
   configuration measured 28.0, 32.3 and 54.1 ms/tick across three runs). Treat
   these as order-of-magnitude figures with a stable per-agent slope, not as
@@ -274,8 +278,10 @@ Interpretation, stated plainly:
 
 ## 10. Known limitations (explicit)
 
-1. **Checkpoint stalls.** 0.9–10.7 s per simulated day, growing with population.
-   Incremental/dirty-page persistence is **NOT IMPLEMENTED**.
+1. **Checkpoint stalls.** Reduced from a 3.08 s to a 2.49 s median at 200 agents,
+   but still ~2.5 s per simulated day and growing with population (10.7 s at 400
+   agents in the earlier run). Incremental/dirty-only persistence is **NOT
+   IMPLEMENTED**; the remaining cost is the row volume of episodic memory.
 2. **No thousands-of-agents validation.** Largest sustained measurement here is
    400 agents; the LOD machinery exists (`population/lod.py`,
    `CognitiveLODManager`) but Phase 1.6 did not validate it at 10k+.
@@ -284,9 +290,12 @@ Interpretation, stated plainly:
 4. **`features_in_bbox` is a full scan** (~127 ms for 500 features) because it
    tests bbox intersection with `NOT (…)`; the API is fine at pilot scale and
    will not be at national scale.
-5. **The app UI map does not render OSM geometry yet.** The API serves features
-   and the panel shows layer counts and attribution, but there is no WebGL/Canvas
-   road-and-building rendering. `NOT IMPLEMENTED`.
+5. **Map rendering is implemented but visually unverified.** The MapLibre map now
+   loads real OSM roads (zoom ≥ 12) and buildings (zoom ≥ 15.5) from
+   `/api/geography/geojson`, refreshing on `moveend` with a debounce, and shows
+   the count in `#gis-osm-rendered`. No browser was opened: syntax, API contract
+   and asset tests pass, but the rendered result has **not** been inspected.
+   The curated legacy GIS layers still sit above the OSM layers.
 6. **Objects and physical interaction** (spec §11) exist as
    `saltbor/world/interaction/` but are **not imported by `SimulationRunner`**;
    Phase 1.6 did not integrate an object model. EXP_16_E measures movement cost
@@ -340,7 +349,7 @@ Interpretation, stated plainly:
 | 5 | CNR reference assessment | **DELIVERED** (assessment); ingestion **NOT IMPLEMENTED** |
 | 6 | World–human interaction systems | Perception **IMPLEMENTED/INTEGRATED/TESTED**; environment feedback **pre-existing, now measured**; object interaction **NOT INTEGRATED** |
 | 7 | Updated backend and API | **IMPLEMENTED, TESTED** (6 new endpoints + dossier block) |
-| 8 | Updated interactive frontend | **IMPLEMENTED** (panels, attribution, layer summary); map rendering **NOT IMPLEMENTED**; visual verification **not performed** |
+| 8 | Updated interactive frontend | **IMPLEMENTED** — panels, attribution, layer summary, and real OSM roads/buildings on the map; visual verification **not performed** |
 | 9 | Persistence migrations | **IMPLEMENTED, TESTED** (additive schema + in-place index migration) |
 | 10 | Experiment suite | **IMPLEMENTED, EXECUTED** (20 experiments, 61 hypotheses, results recorded) |
 | 11 | Unit and integration test reports | **DELIVERED** — 526 passed, new-coverage table in §8 |
@@ -394,6 +403,7 @@ New files:
 - `tests/test_gis/test_osm_pipeline.py`
 - `tests/test_experiments/test_phase16_experiments.py`
 - `tests/test_visualization/test_phase16_api.py`
+- `tests/test_gis/test_geojson_viewport.py` (viewport GeoJSON + API contract)
 - `SALTBOR_PHASE_1_6_AUDIT.md`, `SALTBOR_PHASE_1_6_OSM_GEOGRAPHY.md`, this report
 - `docs/reports/phase16_benchmark.json`, `docs/reports/phase16_experiments.json`
 
@@ -401,6 +411,10 @@ Modified:
 
 - `saltbor/datasets/gis/geofabrik_extractor.py` (rewritten on the new reader — it previously failed to import)
 - `saltbor/cognition/memory/engine.py` (string → UUID normalisation for associations)
+- `saltbor/persistence/repositories.py` (batched memory upserts, shared SQL constants)
+- `saltbor/persistence/database.py` (real nested-transaction depth tracking)
+- `saltbor/datasets/gis/pipeline.py` (`geojson()`, streamed viewport query, spatial index)
+- `saltbor/cognition/perception/models.py` (bounded buffer, compact checkpoint form)
 - `saltbor/events/types.py` (5 perception event types + categories)
 - `saltbor/simulation/runner.py` (perception engine)
 - `saltbor/simulation/extension_runtime.py` (perception round, stats, checkpoint)

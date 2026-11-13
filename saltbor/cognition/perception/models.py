@@ -253,6 +253,10 @@ class PerceptionSnapshot:
     # observations.  What must persist durably is memory, not the raw buffer.
     MAX_RETAINED_OBSERVATIONS: int = 40
     MAX_RETAINED_INTERPRETATIONS: int = 40
+    # Checkpoints keep only a short tail: the durable record of what a person
+    # knows is ``known_entities`` plus encoded memory, not the raw perceptual
+    # buffer.  Persisting the full 40-entry window cost 13.5 MB for 200 agents.
+    CHECKPOINT_OBSERVATIONS: int = 6
 
     def record(self, observation: Observation, interpretation: Interpretation) -> None:
         """Append one percept, trimming the rolling window."""
@@ -286,12 +290,14 @@ class PerceptionSnapshot:
         }
 
     def to_dict(self) -> dict[str, Any]:
+        tail = self.CHECKPOINT_OBSERVATIONS
         return {
             "human_uid": self.human_uid,
             "tick": self.tick,
             "acuity": self.acuity.to_dict(),
-            "observations": [o.to_dict() for o in self.observations],
-            "interpretations": [i.to_dict() for i in self.interpretations],
+            "observations": [o.to_dict() for o in self.observations[-tail:]],
+            "interpretations": [i.to_dict() for i in self.interpretations[-tail:]],
+            "retained_observations": len(self.observations),
             "known_entities": dict(self.known_entities),
             "total_observations": self.total_observations,
             "total_detections": self.total_detections,

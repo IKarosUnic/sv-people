@@ -2189,6 +2189,7 @@
             state.gisMap.on("load", () => {
                 state.gisLoaded = true;
                 loadGISLayers();
+                refreshOsmLayers();
                 updateDiurnalLighting(9.75);
                 fetchGISPopulationLODSummary();
             });
@@ -2196,6 +2197,7 @@
             // Viewport movement triggers progressive streaming
             state.gisMap.on("moveend", () => {
                 updateGISSimulationLayer();
+                scheduleOsmRefresh();
             });
 
             // Coordinate tracker
@@ -2367,6 +2369,61 @@
                 "line-color": "#a855f7",
                 "line-width": 1.0,
                 "line-opacity": 0.40,
+            },
+        });
+
+        // 5B. Real OpenStreetMap geometry from the Phase 1.6 ingested database.
+        // The curated layers below remain the simulation map; these carry the
+        // country-wide OSM reality underneath it, with provenance per feature.
+        map.addSource("src-osm-roads", {
+            type: "geojson",
+            data: { type: "FeatureCollection", features: [] },
+        });
+        map.addLayer({
+            id: "osm-layer-roads",
+            type: "line",
+            source: "src-osm-roads",
+            minzoom: 12,
+            paint: {
+                "line-color": [
+                    "match", ["get", "class"],
+                    "primary", "#b45309",
+                    "secondary", "#c2830c",
+                    "tertiary", "#9ca3af",
+                    "residential", "#6b7280",
+                    "service", "#7b8494",
+                    "pedestrian", "#0e7490",
+                    "footway", "#94765a",
+                    "#8b93a3"
+                ],
+                "line-width": [
+                    "interpolate", ["linear"], ["zoom"],
+                    12, ["match", ["get", "class"], "primary", 1.4, "secondary", 1.1, 0.5],
+                    17, ["match", ["get", "class"], "primary", 5.0, "secondary", 4.0, 1.6]
+                ],
+                "line-opacity": 0.75,
+            },
+        });
+        map.addSource("src-osm-buildings", {
+            type: "geojson",
+            data: { type: "FeatureCollection", features: [] },
+        });
+        map.addLayer({
+            id: "osm-layer-buildings",
+            type: "fill",
+            source: "src-osm-buildings",
+            minzoom: 15.5,
+            paint: {
+                "fill-color": [
+                    "match", ["get", "class"],
+                    "residential", "#475569",
+                    "commercial", "#b45309",
+                    "institutional", "#1d4ed8",
+                    "industrial", "#7c3aed",
+                    "#334155"
+                ],
+                "fill-opacity": 0.55,
+                "fill-outline-color": "#0f172a",
             },
         });
 
@@ -2638,6 +2695,46 @@
                 .addTo(state.gisMap);
             landmarkMarkers.push(marker);
         });
+    }
+
+    let osmRefreshTimer = null;
+
+    function scheduleOsmRefresh() {
+        clearTimeout(osmRefreshTimer);
+        osmRefreshTimer = setTimeout(refreshOsmLayers, 280);
+    }
+
+    function refreshOsmLayers() {
+        if (!state.gisMap || !state.gisLoaded) return;
+        const bounds = state.gisMap.getBounds();
+        const zoom = state.gisMap.getZoom();
+        const params = new URLSearchParams({
+            min_lon: bounds.getWest().toFixed(6),
+            min_lat: bounds.getSouth().toFixed(6),
+            max_lon: bounds.getEast().toFixed(6),
+            max_lat: bounds.getNorth().toFixed(6),
+            layers: "roads,buildings",
+            limit: "3000",
+        });
+        fetch(`/api/geography/geojson?${params.toString()}`)
+            .then((r) => (r.ok ? r.json() : null))
+            .then((data) => {
+                if (!data || !data.features) return;
+                const roads = { type: "FeatureCollection", features: [] };
+                const buildings = { type: "FeatureCollection", features: [] };
+                data.features.forEach((feature) => {
+                    const layer = feature.properties && feature.properties.layer;
+                    if (layer === "roads") roads.features.push(feature);
+                    else if (layer === "buildings") buildings.features.push(feature);
+                });
+                const roadsSrc = state.gisMap.getSource("src-osm-roads");
+                const buildingsSrc = state.gisMap.getSource("src-osm-buildings");
+                if (roadsSrc) roadsSrc.setData(roads);
+                if (buildingsSrc && zoom >= 15.5) buildingsSrc.setData(buildings);
+                const counter = document.getElementById("gis-osm-rendered");
+                if (counter) counter.textContent = Number(roads.features.length + buildings.features.length).toLocaleString();
+            })
+            .catch(() => {});
     }
 
     function updateGISSimulationLayer() {

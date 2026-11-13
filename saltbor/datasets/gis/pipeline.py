@@ -900,6 +900,102 @@ class IngestedGeography:
             out.append(item)
         return out
 
+    def geojson(
+        self,
+        bbox: tuple[float, float, float, float],
+        layers: tuple[str, ...] = ("roads", "buildings"),
+        limit: int = 3000,
+        margin_deg: float = 0.003,
+    ) -> dict[str, Any]:
+        """Return viewport geometry as a GeoJSON FeatureCollection.
+
+        Uses the composite ``(layer, lat, lon)`` index on the stored centroid
+        with a small margin, then filters exactly against each feature's
+        bounding box.  Scanning every road of the country to answer a map pan
+        would cost ~130 ms per request and would not scale beyond the pilot.
+        """
+        collection: dict[str, Any] = {
+            "type": "FeatureCollection",
+            "features": [],
+            "properties": {
+                "source": "OpenStreetMap contributors",
+                "license": "ODbL-1.0",
+                "attribution": "© OpenStreetMap contributors — ODbL 1.0",
+                "layers": list(layers),
+                "truncated": False,
+            },
+        }
+        if not self.available:
+            collection["properties"]["available"] = False
+            return collection
+
+        min_lon, min_lat, max_lon, max_lat = bbox
+        placeholders = ",".join("?" for _ in layers)
+        cursor = self.conn.execute(
+            "SELECT layer, feature_id, name, feature_class, min_lon, min_lat, "
+            "max_lon, max_lat, geometry_json, validation_state, source, license "
+            "FROM geographic_features WHERE layer IN ("
+            + placeholders
+            + ") AND lat BETWEEN ? AND ? AND lon BETWEEN ? AND ?",
+            (
+                *layers,
+                min_lat - margin_deg,
+                max_lat + margin_deg,
+                min_lon - margin_deg,
+                max_lon + margin_deg,
+            ),
+        )
+
+        features = []
+        # The indexed pre-filter is approximate: features whose centroid falls
+        # inside the widened window may still lie outside the viewport.  SQL
+        # LIMIT must therefore not be applied before the exact test, or a dense
+        # edge of the viewport can consume the whole window and return nothing.
+        # Iterate lazily and stop at the requested number of real hits.
+        max_candidates = max(limit * 4, 4000)
+        for candidates, row in enumerate(cursor):
+            if candidates >= max_candidates:
+                collection["properties"]["truncated"] = True
+                break
+            # Exact intersection test against the feature bounding box.
+            if (
+                row["max_lon"] < min_lon
+                or row["min_lon"] > max_lon
+                or row["max_lat"] < min_lat
+                or row["min_lat"] > max_lat
+            ):
+                continue
+            geometry = None
+            if row["geometry_json"]:
+                try:
+                    geometry = json.loads(row["geometry_json"])
+                except (TypeError, ValueError):
+                    geometry = None
+            if not geometry:
+                continue
+            features.append(
+                {
+                    "type": "Feature",
+                    "geometry": geometry,
+                    "properties": {
+                        "layer": row["layer"],
+                        "feature_id": row["feature_id"],
+                        "name": row["name"],
+                        "class": row["feature_class"],
+                        "validation_state": row["validation_state"],
+                        "source": row["source"],
+                        "license": row["license"],
+                    },
+                }
+            )
+            if len(features) >= limit:
+                collection["properties"]["truncated"] = True
+                break
+
+        collection["features"] = features
+        collection["properties"]["count"] = len(features)
+        return collection
+
     def nearest_road(self, lat: float, lon: float, radius_deg: float = 0.02) -> Optional[dict[str, Any]]:
         """Return the nearest road feature to a WGS84 point, if any.
 

@@ -1482,7 +1482,18 @@ class SimulationRunner:
                 self.human_repo.delete(stored_uid)
 
     def checkpoint(self) -> None:
-        """Persist current state snapshot to SQLite."""
+        """Persist the current state snapshot to SQLite in one transaction.
+
+        The individual repositories each open a transaction of their own.  At
+        checkpoint frequency that meant dozens of separate commits (and WAL
+        syncs) per simulated day; wrapping the whole snapshot collapses them
+        into one, which the persistence layer supports because nested
+        transactions yield the already-open connection.
+        """
+        with self.db.transaction():
+            self._checkpoint_body()
+
+    def _checkpoint_body(self) -> None:
         if self.human_repo and self.state_repo and self.rel_repo:
             living = self.population.get_all()
             living_ids = [str(h.uid) for h in living]

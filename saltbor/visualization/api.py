@@ -3021,6 +3021,33 @@ def get_geography_manifest() -> dict[str, Any]:
     return _geography().manifest()
 
 
+@router.get("/geography/geojson")
+def get_geography_geojson(
+    min_lon: float = Query(..., ge=-180.0, le=180.0),
+    min_lat: float = Query(..., ge=-90.0, le=90.0),
+    max_lon: float = Query(..., ge=-180.0, le=180.0),
+    max_lat: float = Query(..., ge=-90.0, le=90.0),
+    layers: str = Query(default="roads,buildings"),
+    limit: int = Query(default=3000, ge=1, le=6000),
+) -> dict[str, Any]:
+    """Return viewport geometry as GeoJSON for the world map.
+
+    The response is a standard ``FeatureCollection`` so MapLibre can consume
+    it directly; every feature carries its layer, class, validation state and
+    license, and the collection carries the ODbL attribution.
+    """
+    requested = tuple(item.strip() for item in layers.split(",") if item.strip())
+    allowed = {"roads", "buildings"}
+    unknown = sorted(set(requested) - allowed)
+    if unknown:
+        raise HTTPException(status_code=400, detail=f"unsupported layers: {', '.join(unknown)}")
+    return _geography().geojson(
+        (min_lon, min_lat, max_lon, max_lat),
+        layers=requested or ("roads",),
+        limit=limit,
+    )
+
+
 @router.get("/geography/features")
 def get_geography_features(
     min_lon: float = Query(..., ge=-180.0, le=180.0),

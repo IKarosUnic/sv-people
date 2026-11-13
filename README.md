@@ -16,7 +16,7 @@ Phase 0.4 introduces **Social Complexity, Biological Lifecycle, Dynamic Economy 
 - **Real road routing**: `OSMRoadNetwork` builds its topology from actual OSM geometry, supports walking and driving with class speeds and one-way tags, and returns explicit failure reasons instead of teleporting agents.
 - **Perception engine**: agents only know what they perceived. Acuity depends on age, fatigue, health, stress, night and rain; clarity gates identity and detail, so a stranger is **never** identity-resolved; interpretations carry named biases and alternative readings; testimony is discounted by credibility × trust; memory encoding is salience-gated; randomness derives from the deterministic identity serial so seeds reproduce across processes.
 - **Experiments EXP_16_A … EXP_16_T** (61 hypotheses) covering perception, interpretation, development, bias, physical cost, romance, infidelity, illness, environmental exposure, accidents, caregiving, institutional access, degradation and recovery, causal cascades, trajectories, generations, navigation, LOD performance and an integrated 96-tick run.
-- **API/UI**: `/api/perception/*`, `/api/geography/{manifest,features,route,ecological_profile}`, a perception block in the individual dossier, and an OSM attribution badge in the frontend.
+- **API/UI**: `/api/perception/*`, `/api/geography/{manifest,features,geojson,route,ecological_profile}`, a perception block in the individual dossier, an OSM attribution badge, and real OSM roads/buildings rendered on the MapLibre world map from `/api/geography/geojson` (refreshed per viewport).
 
 See `SALTBOR_PHASE_1_6_AUDIT.md`, `SALTBOR_PHASE_1_6_OSM_GEOGRAPHY.md` and `SALTBOR_PHASE_1_6_FINAL_REPORT.md`. Known limitations are listed there explicitly (checkpoint stalls, pilot-only buildings, no map rendering, CNR licensing unresolved).
 
@@ -228,7 +228,7 @@ pytest -v
 - **Section 19 Authentic Salvadoran Integration Tests**: 10 experiments (`EXP_SV_01` through `EXP_SV_10`) in `tests/test_experiments/test_salvadoran_experiments.py` covering urban/rural differentiation, canícula/temporales, informal markets, and remesas.
 - **Phase 0.8 Real Geographic World & El Salvador Integration**: 31 tests (20 experiments `EXP_08_A` through `EXP_08_T` in `tests/test_experiments/test_phase08_territorial_experiments.py` and 11 unit/integration tests in `tests/test_world/test_phase08_geography.py`) verifying the 2024 administrative restructuring (14 departments, 44 municipalities, 262 districts), CNR/Google Maps/OSM cartographic sources, real establishments with 7 validation states, spatial indexing with Dijkstra multimodal navigation, river bridges across Río Lempa, natural obstacle avoidance, pupusería unit economics, walking-radius fiado microcredit, individual epistemic spatial cognition, and 100% offline-first SQLite persistence.
 
-Total tests: **526 passing automated tests** across all phases with 0 regressions (`python -m pytest -q`). Phase 1.6 added 47: perception (11), OSM pipeline and routing (11), experiment suite (22), API contracts (3).
+Total tests: **531 passing automated tests** across all phases with 0 regressions (`python -m pytest -q`). Phase 1.6 added 52: perception (11), OSM pipeline and routing (11), viewport GeoJSON (5), experiment suite (22), API contracts (3).
 
 ---
 

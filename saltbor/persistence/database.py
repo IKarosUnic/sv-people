@@ -31,6 +31,12 @@ class DatabaseManager:
     def __init__(self, db_path: Path | str) -> None:
         self.db_path: Path | str = Path(db_path) if isinstance(db_path, str) and db_path != ":memory:" else db_path
         self._conn: Optional[sqlite3.Connection] = None
+        # Nesting depth of ``transaction()``.  ``Connection.in_transaction`` is
+        # not a reliable nesting signal: the sqlite3 legacy isolation mode only
+        # opens a transaction on the first DML statement, so an inner block that
+        # runs before the outer block has written anything would commit on its
+        # own.  An explicit depth counter makes an outer block authoritative.
+        self._txn_depth: int = 0
 
     # ------------------------------------------------------------------
     # Connection lifecycle
@@ -116,15 +122,34 @@ class DatabaseManager:
     def transaction(self) -> Generator[sqlite3.Connection, None, None]:
         """Context manager for an atomic transaction.
 
-        Commits on clean exit; rolls back on exception.
-        Handles nested transactions safely.
+        Commits on clean exit; rolls back on exception.  Nested use joins the
+        outermost transaction and never commits on its own, so a bulk operation
+        (a checkpoint, an ingest) costs one commit instead of one per row.
         """
         conn = self.get_connection()
-        if conn.in_transaction:
-            yield conn
+        if self._txn_depth > 0:
+            self._txn_depth += 1
+            try:
+                yield conn
+            finally:
+                self._txn_depth -= 1
             return
-        with conn:
+
+        self._txn_depth = 1
+        already_open = conn.in_transaction
+        if not already_open:
+            conn.execute("BEGIN IMMEDIATE")
+        try:
             yield conn
+        except BaseException:
+            if not already_open:
+                conn.rollback()
+            raise
+        else:
+            if not already_open:
+                conn.commit()
+        finally:
+            self._txn_depth = 0
 
     # ------------------------------------------------------------------
     # Context-manager protocol

@@ -142,6 +142,10 @@ Measured on the real extract (pilot area): a 483 m walk takes 6.5 min while the
 - `features_in_bbox(bbox, layer, class, limit, include_geometry)`.
 - `nearest_road(lat, lon)` — progressive bbox widening.
 - `nearest_features(lat, lon, layer, limit)`.
+- `geojson(bbox, layers, limit)` — viewport geometry for the map, using the
+  composite index as a pre-filter and an exact bbox test per feature. Measured
+  on the pilot viewport: 1,787 features in 102 ms; 500 features in 9 ms.
+  Candidates are streamed, never `LIMIT`-ed before the exact test.
 - `ecological_profile(lat, lon)` — landuse/water/vegetation context.
 
 ### 4.1 Index migration (performance fix, measured)
@@ -199,6 +203,7 @@ REST feature layer is later authorized, it can be read with
 | --- | --- |
 | `GET /api/geography/manifest` | Dataset + layer provenance, counts, license, attribution, partial flags |
 | `GET /api/geography/features?min_lon&min_lat&max_lon&max_lat&layer&limit&include_geometry` | Bounded feature query |
+| `GET /api/geography/geojson?min_lon&min_lat&max_lon&max_lat&layers=roads,buildings&limit` | Standard FeatureCollection for the MapLibre world map |
 | `GET /api/geography/route?from_lat&from_lon&to_lat&to_lon&mode=walk|drive` | Real-network route with distance/duration/provenance |
 | `GET /api/geography/ecological_profile?lat&lon` | Environmental context of a point |
 
@@ -209,8 +214,13 @@ All responses include `source`, `license` and `attribution`.
 ## 7. Known limitations of the geographic foundation
 
 1. Buildings are national-**incomplete**: only the pilot bbox is ingested.
-2. No MBTiles/vector-tile packaging: the UI receives GeoJSON from the API, which
-   is adequate at pilot scale but not for country-wide rendering.
+2. No MBTiles/vector-tile packaging: the map receives GeoJSON per viewport from
+   `/api/geography/geojson`, which is adequate at pilot scale (1,787 features,
+   ~100 ms) but not for country-wide rendering. A tile pipeline would be needed
+   at national scale.
+   - **Viewport approximation:** the pre-filter uses feature centroids plus a
+     0.003° margin, so a way crossing the viewport with its centroid further
+     outside is omitted.
 3. Road **closures, congestion and travel cost** are not modelled; routing is
    static per ingest.
 4. Footpaths/cycleways are treated with class speeds, not with surface or

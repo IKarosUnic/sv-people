@@ -43,6 +43,37 @@ from saltbor.social.relationship import Relationship
 logger = logging.getLogger(__name__)
 
 
+# Upsert statements are shared by the single-record and bulk paths so the two
+# can never drift apart.
+_HUMAN_UPSERT = """
+INSERT OR REPLACE INTO humans (
+    uid, serial, given_name, family_name, nickname, data_source,
+    demographics_json, physical_state_json, personality_json, emotions_json
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+"""
+
+_EPISODIC_UPSERT = """
+INSERT OR REPLACE INTO memories_episodic (
+    memory_id, human_uid, summary, tick, importance,
+    emotional_valence, associated_humans_json, location_id,
+    access_count, last_accessed
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+"""
+
+_PROCEDURAL_UPSERT = """
+INSERT OR REPLACE INTO memories_procedural (
+    skill_id, human_uid, name, category, level,
+    experience_points, practice_count
+) VALUES (?, ?, ?, ?, ?, ?, ?)
+"""
+
+_SEMANTIC_UPSERT = """
+INSERT OR REPLACE INTO memories_semantic (
+    fact_id, human_uid, category, content, confidence, source, learned_tick
+) VALUES (?, ?, ?, ?, ?, ?, ?)
+"""
+
+
 class HumanRepository:
     """Persistence operations for SyntheticHuman records."""
 
@@ -52,12 +83,7 @@ class HumanRepository:
     def save(self, human: SyntheticHuman) -> None:
         """Insert or replace a synthetic human and their memories."""
         data = Serializer.serialize_human(human)
-        sql = """
-        INSERT OR REPLACE INTO humans (
-            uid, serial, given_name, family_name, nickname, data_source,
-            demographics_json, physical_state_json, personality_json, emotions_json
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """
+        sql = _HUMAN_UPSERT
         with self.db.transaction():
             self.db.execute(
                 sql,
@@ -88,10 +114,97 @@ class HumanRepository:
                         mem_repo.save_semantic_fact(human.uid, fact)
 
     def save_all(self, humans: list[SyntheticHuman]) -> None:
-        """Bulk save a list of humans in a single transaction."""
+        """Bulk save humans and their memories with one statement per table.
+
+        The row-by-row path issues one ``execute`` per human plus one per
+        memory record; a 200-agent checkpoint measured ~1.4 s that way, almost
+        entirely statement overhead inside a transaction that was already open.
+        Serializing into batches and using ``executemany`` keeps the same
+        upsert semantics without the per-statement cost.
+        """
+        human_rows: list[tuple[Any, ...]] = []
+        episodic_rows: list[tuple[Any, ...]] = []
+        procedural_rows: list[tuple[Any, ...]] = []
+        semantic_rows: list[tuple[Any, ...]] = []
+
+        for human in humans:
+            data = Serializer.serialize_human(human)
+            human_rows.append(
+                (
+                    data["uid"],
+                    data["serial"],
+                    data["given_name"],
+                    data["family_name"],
+                    data["nickname"],
+                    data["data_source"],
+                    data["demographics_json"],
+                    data["physical_state_json"],
+                    data["personality_json"],
+                    data["emotions_json"],
+                )
+            )
+
+            memory = getattr(human, "memory", None)
+            if memory is None:
+                continue
+            episodic = getattr(memory, "episodic", None)
+            if episodic is not None:
+                for record in episodic.get_all(include_dormant=True):
+                    d = Serializer.serialize_episodic(record)
+                    episodic_rows.append(
+                        (
+                            d["memory_id"],
+                            str(human.uid),
+                            d["summary"],
+                            d["tick"],
+                            d["importance"],
+                            d["emotional_valence"],
+                            d["associated_humans_json"],
+                            d["location_id"],
+                            d["access_count"],
+                            d["last_accessed"],
+                        )
+                    )
+            procedural = getattr(memory, "procedural", None)
+            if procedural is not None:
+                for skill in procedural.get_all_skills():
+                    d = Serializer.serialize_procedural(skill)
+                    procedural_rows.append(
+                        (
+                            d["skill_id"],
+                            str(human.uid),
+                            d["name"],
+                            d["category"],
+                            d["level"],
+                            d["experience_points"],
+                            d["practice_count"],
+                        )
+                    )
+            semantic = getattr(memory, "semantic", None)
+            if semantic is not None:
+                for fact in semantic.get_all():
+                    d = Serializer.serialize_semantic(fact)
+                    semantic_rows.append(
+                        (
+                            d["fact_id"],
+                            str(human.uid),
+                            d["category"],
+                            d["content"],
+                            d["confidence"],
+                            d["source"],
+                            d["learned_tick"],
+                        )
+                    )
+
         with self.db.transaction():
-            for h in humans:
-                self.save(h)
+            if human_rows:
+                self.db.executemany(_HUMAN_UPSERT, human_rows)
+            if episodic_rows:
+                self.db.executemany(_EPISODIC_UPSERT, episodic_rows)
+            if procedural_rows:
+                self.db.executemany(_PROCEDURAL_UPSERT, procedural_rows)
+            if semantic_rows:
+                self.db.executemany(_SEMANTIC_UPSERT, semantic_rows)
 
     def delete(self, uid: HumanID | str) -> None:
         """Remove a deceased individual from the live-population table.
@@ -436,13 +549,7 @@ class MemoryRepository:
 
     def save_episodic_record(self, human_uid: HumanID, record: EpisodicRecord) -> None:
         data = Serializer.serialize_episodic(record)
-        sql = """
-        INSERT OR REPLACE INTO memories_episodic (
-            memory_id, human_uid, summary, tick, importance,
-            emotional_valence, associated_humans_json, location_id,
-            access_count, last_accessed
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """
+        sql = _EPISODIC_UPSERT
         self.db.execute(
             sql,
             (
@@ -484,12 +591,7 @@ class MemoryRepository:
 
     def save_procedural_skill(self, human_uid: HumanID, skill: Skill) -> None:
         data = Serializer.serialize_procedural(skill)
-        sql = """
-        INSERT OR REPLACE INTO memories_procedural (
-            skill_id, human_uid, name, category, level,
-            experience_points, practice_count
-        ) VALUES (?, ?, ?, ?, ?, ?, ?)
-        """
+        sql = _PROCEDURAL_UPSERT
         self.db.execute(
             sql,
             (
@@ -530,11 +632,7 @@ class MemoryRepository:
 
     def save_semantic_fact(self, human_uid: HumanID, fact: SemanticFact) -> None:
         data = Serializer.serialize_semantic(fact)
-        sql = """
-        INSERT OR REPLACE INTO memories_semantic (
-            fact_id, human_uid, category, content, confidence, source, learned_tick
-        ) VALUES (?, ?, ?, ?, ?, ?, ?)
-        """
+        sql = _SEMANTIC_UPSERT
         self.db.execute(
             sql,
             (
