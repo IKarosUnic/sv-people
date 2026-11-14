@@ -2993,7 +2993,9 @@
                     targetPanel.classList.add("active");
                 }
 
-                if (target === "justice") {
+                if (target === "phase19") {
+                    fetchPhase19Data();
+                } else if (target === "justice") {
                     fetchJusticeDocket();
                 } else if (target === "adesco") {
                     fetchADESCOData();
@@ -4022,6 +4024,141 @@
                                     <td>${(n.importance ?? 0).toFixed(2)}</td>
                                 </tr>
                             `).join("") || "<tr><td colspan='5'>Sin eventos causales registrados.</td></tr>"}
+                        </tbody>
+                    </table>
+                `;
+            }
+        });
+    }
+
+    function fetchPhase19Data() {
+        Promise.all([
+            fetch("/api/social/stratification/overview").then((r) => r.json()).catch(() => null),
+            fetch("/api/social/organizations").then((r) => r.json()).catch(() => null),
+            fetch("/api/social/institutions").then((r) => r.json()).catch(() => null),
+            fetch("/api/social/resources/cpr").then((r) => r.json()).catch(() => null),
+            fetch("/api/social/norms").then((r) => r.json()).catch(() => null),
+            fetch("/api/social/conflicts/intergroup").then((r) => r.json()).catch(() => null),
+        ]).then(([strat, orgs, insts, cpr, norms, conflicts]) => {
+            // Update Stratification cards
+            if (strat) {
+                const elGiniInc = document.getElementById("stat-strat-gini-income");
+                const elGiniW = document.getElementById("stat-strat-gini-wealth");
+                const elPalma = document.getElementById("stat-strat-palma");
+                const elMob = document.getElementById("stat-strat-mobility");
+                if (elGiniInc) elGiniInc.textContent = strat.gini_income?.toFixed(3) || "0.320";
+                if (elGiniW) elGiniW.textContent = strat.gini_wealth?.toFixed(3) || "0.380";
+                if (elPalma) elPalma.textContent = strat.palma_ratio?.toFixed(2) || "1.35";
+                if (elMob) elMob.textContent = `${strat.upward_mobility_count || 0} ↗ | ${strat.downward_mobility_count || 0} ↘`;
+            }
+
+            // Render Organizations
+            const orgsContainer = document.getElementById("phase19-orgs-container");
+            if (orgsContainer) {
+                const list = orgs?.organizations || [];
+                if (list.length === 0) {
+                    orgsContainer.innerHTML = "<div class='loading-placeholder'>No hay organizaciones registradas aún.</div>";
+                } else {
+                    orgsContainer.innerHTML = `
+                        <table class="data-table">
+                            <thead><tr><th>Organización</th><th>Tipo</th><th>Miembros</th><th>Tesorería</th><th>Cohesión</th><th>Estado</th></tr></thead>
+                            <tbody>
+                                ${list.map((o) => `
+                                    <tr>
+                                        <td><strong>${escapeExtensionHtml(o.name)}</strong></td>
+                                        <td><span class="badge badge-outline">${escapeExtensionHtml(o.org_type)}</span></td>
+                                        <td>${o.active_members_count}</td>
+                                        <td>$${o.treasury_usd.toFixed(2)}</td>
+                                        <td>${(o.cohesion * 100).toFixed(0)}%</td>
+                                        <td><span class="badge ${o.status === 'thriving' || o.status === 'stable' ? 'badge-success' : 'badge-warning'}">${escapeExtensionHtml(o.status)}</span></td>
+                                    </tr>
+                                `).join("")}
+                            </tbody>
+                        </table>
+                    `;
+                }
+            }
+
+            // Render Institutions
+            const instContainer = document.getElementById("phase19-institutions-container");
+            if (instContainer) {
+                const list = insts?.institutions || [];
+                if (list.length === 0) {
+                    instContainer.innerHTML = "<div class='loading-placeholder'>No hay instituciones activas.</div>";
+                } else {
+                    instContainer.innerHTML = `
+                        <table class="data-table">
+                            <thead><tr><th>Institución</th><th>Dominio</th><th>Tesorería</th><th>Legitimidad</th><th>Trámites Pendientes</th><th>Estado</th></tr></thead>
+                            <tbody>
+                                ${list.map((i) => `
+                                    <tr>
+                                        <td><strong>${escapeExtensionHtml(i.name)}</strong> (${escapeExtensionHtml(i.formal_acronym)})</td>
+                                        <td><span class="badge badge-info">${escapeExtensionHtml(i.domain)}</span></td>
+                                        <td>$${i.treasury_usd.toFixed(2)}</td>
+                                        <td>${(i.legitimacy * 100).toFixed(0)}%</td>
+                                        <td>${i.backlog_queue_length}</td>
+                                        <td><span class="badge ${i.status === 'active_functioning' ? 'badge-success' : 'badge-warning'}">${escapeExtensionHtml(i.status)}</span></td>
+                                    </tr>
+                                `).join("")}
+                            </tbody>
+                        </table>
+                    `;
+                }
+            }
+
+            // Render CPR
+            const cprContainer = document.getElementById("phase19-cpr-container");
+            if (cprContainer) {
+                const list = cpr?.resources || [];
+                if (list.length === 0) {
+                    cprContainer.innerHTML = "<div class='loading-placeholder'>Sin recursos comunes monitoreados.</div>";
+                } else {
+                    cprContainer.innerHTML = `
+                        <table class="data-table">
+                            <thead><tr><th>Recurso Común</th><th>Tipo</th><th>Existencias / Capacidad</th><th>Uso</th><th>Cuota/Día</th><th>Condición</th></tr></thead>
+                            <tbody>
+                                ${list.map((r) => `
+                                    <tr>
+                                        <td><strong>${escapeExtensionHtml(r.name)}</strong></td>
+                                        <td>${escapeExtensionHtml(r.resource_type)}</td>
+                                        <td>${r.current_stock.toFixed(0)} / ${r.max_capacity} ${r.unit}</td>
+                                        <td>${(r.stock_ratio * 100).toFixed(0)}%</td>
+                                        <td>${r.daily_quota_per_user} ${r.unit}</td>
+                                        <td><span class="badge ${r.status === 'abundant' || r.status === 'stable' ? 'badge-success' : (r.status === 'stressed' ? 'badge-warning' : 'badge-danger')}">${escapeExtensionHtml(r.status)}</span></td>
+                                    </tr>
+                                `).join("")}
+                            </tbody>
+                        </table>
+                    `;
+                }
+            }
+
+            // Render Norms and Disputes
+            const normsContainer = document.getElementById("phase19-norms-container");
+            if (normsContainer) {
+                const normList = norms?.norms || [];
+                const dispList = conflicts?.disputes || [];
+                normsContainer.innerHTML = `
+                    <div style="font-size:11px; margin-bottom:8px;"><strong>Normas Comunitarias Vigentes:</strong> ${normList.length} | <strong>Disputas Intergrupales:</strong> ${dispList.length}</div>
+                    <table class="data-table">
+                        <thead><tr><th>Norma / Disputa</th><th>Ámbito</th><th>Cumplimiento / Tensión</th><th>Sanción / Estado</th></tr></thead>
+                        <tbody>
+                            ${normList.map((n) => `
+                                <tr>
+                                    <td>${escapeExtensionHtml(n.title)}</td>
+                                    <td><span class="badge badge-outline">${escapeExtensionHtml(n.domain)}</span></td>
+                                    <td>${(n.adherence_rate * 100).toFixed(0)}% cumplimiento</td>
+                                    <td>${escapeExtensionHtml(n.default_sanction)}</td>
+                                </tr>
+                            `).join("")}
+                            ${dispList.map((d) => `
+                                <tr style="background:rgba(220,53,69,0.08);">
+                                    <td><strong>Disputa:</strong> ${escapeExtensionHtml(d.core_grievance)}</td>
+                                    <td><span class="badge badge-danger">${escapeExtensionHtml(d.conflict_type)}</span></td>
+                                    <td>Tensión: ${(d.intensity * 100).toFixed(0)}%</td>
+                                    <td><span class="badge badge-warning">${escapeExtensionHtml(d.stage)}</span></td>
+                                </tr>
+                            `).join("")}
                         </tbody>
                     </table>
                 `;

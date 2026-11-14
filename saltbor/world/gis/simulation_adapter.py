@@ -109,7 +109,46 @@ class SimulationGISAdapter:
                 dest_loc_id = getattr(h.physical_state, "target_location_id", None) or "plaza_central"
                 dest_lat, dest_lon, dest_label = get_anchor_point(dest_loc_id)
 
-                if is_traveling:
+                # Check if integrated transportation engine has high-fidelity street trajectory
+                integrated_w = getattr(self.runner, "integrated_world", None)
+                active_j = None
+                if integrated_w and hasattr(integrated_w, "transportation"):
+                    active_j = integrated_w.transportation.active_journeys.get(uid_str)
+
+                if active_j and active_j.status.value == "in_progress":
+                    is_traveling = True
+                    agent_lat, agent_lon = active_j.current_coordinate
+                    vec_id = f"sim_vector_{uid_str[:8]}_{current_tick}"
+                    poly_coords = (
+                        [[p_lon, p_lat] for p_lat, p_lon in active_j.polyline]
+                        if active_j.polyline
+                        else [[base_lon, base_lat], [agent_lon, agent_lat], [dest_lon, dest_lat]]
+                    )
+                    features.append({
+                        "type": "Feature",
+                        "id": vec_id,
+                        "geometry": {
+                            "type": "LineString",
+                            "coordinates": poly_coords,
+                        },
+                        "properties": {
+                            "feature_id": vec_id,
+                            "layer_system": "SIMULATION_LAYER",
+                            "agent_uid": uid_str,
+                            "agent_name": h.identity.full_name,
+                            "origin_location": loc_label,
+                            "destination_location": dest_label,
+                            "activity": "travel",
+                            "mode": active_j.mode.value,
+                            "progress_ratio": round(active_j.progress_ratio, 3),
+                            "distance_km": round(active_j.total_distance_km, 3),
+                            "validation_state": "SIMULATED",
+                            "source": "SALTBOR_SIMULATION",
+                            "license": "SALTBOR_AGENT_STATE",
+                            "known_accuracy": "sub-meter",
+                        }
+                    })
+                elif is_traveling:
                     ticks_rem = getattr(h.physical_state, "activity_ticks_remaining", 1)
                     progress = 0.5  # Midpoint during travel tick
                     agent_lat = base_lat + (dest_lat - base_lat) * progress
@@ -181,6 +220,31 @@ class SimulationGISAdapter:
                     }
                 }
                 features.append(feat)
+
+        # Include active road blockages (hazards, floods, landslides)
+        integrated_w = getattr(self.runner, "integrated_world", None)
+        if integrated_w and hasattr(integrated_w, "transportation"):
+            for b in integrated_w.transportation.blockages:
+                features.append({
+                    "type": "Feature",
+                    "id": f"sim_blockage_{b.road_id}",
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [b.lon, b.lat],
+                    },
+                    "properties": {
+                        "feature_id": f"sim_blockage_{b.road_id}",
+                        "layer_system": "SIMULATION_LAYER",
+                        "hazard_type": "road_blockage",
+                        "cause": b.cause,
+                        "location_name": b.location_name,
+                        "severity": b.severity,
+                        "passable": b.passable,
+                        "validation_state": "SIMULATED",
+                        "source": "SALTBOR_SIMULATION",
+                        "license": "SALTBOR_AGENT_STATE",
+                    },
+                })
 
         return {
             "type": "FeatureCollection",

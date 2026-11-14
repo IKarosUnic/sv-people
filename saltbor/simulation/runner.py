@@ -149,6 +149,52 @@ from saltbor.psychology.engine import PsychologicalEngine
 from saltbor.world.interaction.world_human_engine import WorldHumanInteractionEngine
 from saltbor.lifecycle.family.caregiving import FamilyCaregivingEngine
 from saltbor.simulation.extension_runtime import ExtensionRuntime
+from saltbor.simulation.integrated_world import IntegratedWorldSimulationEngine
+
+# Phase 1.9 Emergent Society, Institutional Evolution, Governance & CPR
+from saltbor.social.organization.emergent_engine import (
+    EmergentOrganizationEngine,
+    EmergentOrganization,
+    OrganizationType,
+    MemberRole as OrgMemberRole,
+    OrgLifecycleStatus,
+)
+from saltbor.social.institutions.institutional_evolution import (
+    InstitutionalEvolutionEngine,
+    EvolvingInstitution,
+    InstitutionDomain,
+    InstitutionalStatus,
+)
+from saltbor.social.governance.collective_decision import (
+    CollectiveGovernanceEngine,
+    CollectiveProposal,
+    VotingProtocol as DeliberativeVotingProtocol,
+    ProposalStatus,
+)
+from saltbor.social.norms.norm_evolution import (
+    SocialNormEvolutionEngine,
+    SocialNorm,
+    NormDomain,
+    NormFormalization,
+    SanctionType,
+)
+from saltbor.social.resources.cpr_manager import (
+    CollectiveResourceManager,
+    CommonPoolResource,
+    CPRType,
+    CPRHealthStatus,
+)
+from saltbor.social.stratification.mobility_engine import (
+    SocialStratificationEngine,
+    StratificationProfile,
+    InequalityMetrics,
+)
+from saltbor.social.conflict.intergroup_engine import (
+    IntergroupConflictEngine,
+    IntergroupDispute,
+    IntergroupConflictType,
+    ConflictTensionStage,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -164,6 +210,9 @@ class SimulationRunner:
 
         # Master RNG
         seed = self.config.random_seed
+        if seed is not None:
+            import random
+            random.seed(seed)
         self.master_rng = np.random.default_rng(seed) if seed is not None else np.random.default_rng()
 
         # World
@@ -262,6 +311,21 @@ class SimulationRunner:
         # Phase 1.5 Extension runtime: ties health, romance, misfortune, family
         # lifecycle and territorial interaction into the live tick loop.
         self.extension = ExtensionRuntime(self)
+
+        # Phase 1.8 Integrated World Simulation Engine: unifies street kinematics,
+        # places capability hierarchy, diurnal daily life, and environmental causality.
+        self.integrated_world = IntegratedWorldSimulationEngine(self)
+        self.transportation = self.integrated_world.transportation
+        self.daily_life = self.integrated_world.daily_life
+
+        # Phase 1.9 Emergent Society, Institutional Evolution, Governance & CPR
+        self.emergent_organizations = EmergentOrganizationEngine()
+        self.institutional_evolution = InstitutionalEvolutionEngine()
+        self.collective_governance = CollectiveGovernanceEngine()
+        self.social_norms = SocialNormEvolutionEngine()
+        self.cpr_manager = CollectiveResourceManager()
+        self.social_stratification = SocialStratificationEngine()
+        self.intergroup_conflicts = IntergroupConflictEngine()
 
         # Connect causal event graph to listen to all simulation events
         self.event_bus.subscribe(None, lambda evt: self.causal_graph.add_event(evt))
@@ -369,6 +433,10 @@ class SimulationRunner:
                         hours_contributed=3.0,
                     )
                     if res.get("is_completed"):
+                        if hasattr(self, "cpr_manager") and self.cpr_manager:
+                            road = self.cpr_manager.get_resource("camino_el_calvario")
+                            if road:
+                                road.contribute_maintenance(str(h.uid), labor_hours=3.0, funds_usd=0.0, tick=evt.tick)
                         self.event_bus.emit(
                             SimulationEvent(
                                 event_type=EventType.FAENA_COMPLETED,
@@ -1236,6 +1304,130 @@ class SimulationRunner:
                 location_id="comedor_dona_maria",
             )
 
+        # 9. Phase 1.9 Common-Pool Resources (CPR)
+        if not self.cpr_manager.get_all_resources() and self.population.count > 0:
+            humans = self.population.get_all()
+            all_uids = {str(h.uid) for h in humans}
+            self.cpr_manager.register_resource(
+                resource_id="pozo_san_esteban",
+                name="Pozo Comunal y Tanque San Esteban",
+                resource_type=CPRType.WATER_WELL,
+                community_id="comunidad_centro_historico",
+                location_id="plaza_central",
+                max_capacity=15000.0,
+                initial_stock=12000.0,
+                regeneration_rate=1200.0,
+                unit="litros",
+                daily_quota=50.0,
+                authorized_users=all_uids,
+                tick=0,
+            )
+            self.cpr_manager.register_resource(
+                resource_id="camino_el_calvario",
+                name="Cuesta y Camino Vecinal El Calvario",
+                resource_type=CPRType.COMMUNAL_ROAD,
+                community_id="comunidad_centro_historico",
+                location_id="casa_norte_1",
+                max_capacity=100.0,
+                initial_stock=90.0,
+                regeneration_rate=2.0,
+                unit="transitabilidad_%",
+                daily_quota=100.0,
+                authorized_users=all_uids,
+                tick=0,
+            )
+            self.cpr_manager.register_resource(
+                resource_id="troja_comunal_centro",
+                name="Troja y Silo Comunal de Granos Básicos",
+                resource_type=CPRType.COMMUNITY_GRAIN_BANK,
+                community_id="comunidad_centro_historico",
+                location_id="mercado_central",
+                max_capacity=200.0,
+                initial_stock=150.0,
+                regeneration_rate=0.0,
+                unit="quintales",
+                daily_quota=2.0,
+                authorized_users=all_uids,
+                tick=0,
+            )
+
+        # 10. Phase 1.9 Social Norms
+        if not self.social_norms.get_all_norms():
+            self.social_norms.register_norm(
+                title="Turno y Cuota Hídrica en Pozo Comunal",
+                description="Extracción máxima de 50 litros por familia por día para asegurar sostenibilidad del pozo.",
+                domain=NormDomain.RESOURCE_SHARING,
+                formalization=NormFormalization.COMMUNITY_AGREEMENT,
+                default_sanction=SanctionType.REPUTATION_LOSS,
+                fine_usd=2.50,
+                legitimacy=0.88,
+                enforcement_rigor=0.75,
+                tick=0,
+            )
+            self.social_norms.register_norm(
+                title="Solidaridad Obligatoria en Faenas Comunitarias",
+                description="Participación activa en cuadrillas voluntarias de mantenimiento vial y limpieza convocadas por ADESCO.",
+                domain=NormDomain.CIVIC_COOPERATION,
+                formalization=NormFormalization.FORMAL_BYLAW,
+                default_sanction=SanctionType.ECONOMIC_FINE,
+                fine_usd=5.00,
+                legitimacy=0.90,
+                enforcement_rigor=0.80,
+                tick=0,
+            )
+            self.social_norms.register_norm(
+                title="Cumplimiento del Fiado Vecinal en Puestos de Mercado",
+                description="Pago puntual de deudas de confianza por alimentos básicos en la fecha pactada.",
+                domain=NormDomain.COMMERCIAL_PRACTICE,
+                formalization=NormFormalization.IMPLICIT_CUSTOM,
+                default_sanction=SanctionType.SOCIAL_OSTRACISM,
+                fine_usd=0.0,
+                legitimacy=0.85,
+                enforcement_rigor=0.65,
+                tick=0,
+            )
+
+        # 11. Phase 1.9 Evolving Institutions
+        if not self.institutional_evolution.get_all_institutions():
+            humans = self.population.get_all()
+            director_uid = str(humans[0].uid) if humans else "admin_01"
+            self.institutional_evolution.register_institution(
+                name="ADESCO y Administración Comunal Centro Histórico",
+                formal_acronym="ADESCO-CH",
+                domain=InstitutionDomain.COMMUNITY_ADMINISTRATION,
+                mission="Organización vecinal, gestión de faenas y defensa de infraestructura comunitaria.",
+                headquarters_loc_id="casa_comunal",
+                initial_treasury_usd=250.0,
+                director_uid=director_uid,
+                initial_rules=["Asamblea mensual obligatoria", "Aporte de faena comunal", "Veeduría de tesorería"],
+                tick=0,
+            )
+            self.institutional_evolution.register_institution(
+                name="Unidad Comunitaria de Salud Familiar El Calvario",
+                formal_acronym="UCSF-CALVARIO",
+                domain=InstitutionDomain.HEALTHCARE,
+                mission="Atención médica ambulatoria, prevención de epidemias y saneamiento ambiental.",
+                headquarters_loc_id="clinica_salud",
+                initial_treasury_usd=400.0,
+                director_uid=director_uid,
+                initial_rules=["Atención prioritaria a menores", "Uso racional de medicamentos básicos"],
+                tick=0,
+            )
+
+        # 12. Phase 1.9 Emergent Organizations
+        if not self.emergent_organizations.get_all_organizations() and self.population.count >= 3:
+            humans = self.population.get_all()
+            founder_uids = [str(h.uid) for h in humans[:3]]
+            self.emergent_organizations.create_organization(
+                name="Asociación Gremial de Comerciantes del Mercado Central",
+                org_type=OrganizationType.COMMERCIAL_ASSOCIATION,
+                mission="Defensa colectiva de puestos, regulación de fiado y compras mayoristas de maíz.",
+                founder_uids=founder_uids,
+                initial_treasury_usd=120.0,
+                headquarters_location_id="mercado_central",
+                tick=0,
+            )
+
     def initialize(self, load_existing: bool = False) -> None:
         """Set up database schema, initialize or load population, and wire events."""
         self.db.connect()
@@ -1416,6 +1608,67 @@ class SimulationRunner:
                 self.community_engine.check_spontaneous_formation(candidates, tick=current_tick)
             except Exception:
                 pass
+
+            # Phase 1.9 Emergent Society, Institutions, Norms & CPR daily cycles
+            self.social_norms.step(current_tick)
+            self.cpr_manager.step(current_tick)
+            self.institutional_evolution.step(current_tick)
+            strat_metrics = self.social_stratification.step(self.population, self.social, current_tick)
+            if strat_metrics:
+                self.event_bus.emit(
+                    SimulationEvent(
+                        event_type=EventType.SOCIAL_STRATIFICATION_UPDATED,
+                        tick=current_tick,
+                        data={
+                            "gini_income": strat_metrics.gini_income,
+                            "gini_wealth": strat_metrics.gini_wealth,
+                            "palma_ratio": strat_metrics.palma_ratio,
+                            "upward_mobility": strat_metrics.upward_mobility_count,
+                            "downward_mobility": strat_metrics.downward_mobility_count,
+                        },
+                        importance=0.45,
+                    )
+                )
+
+            # Collect periodic membership dues for emergent organizations
+            for org in self.emergent_organizations.get_all_organizations():
+                org.collect_member_dues(self.population, current_tick)
+
+            # Check spontaneous formation of organizations based on needs and resources
+            try:
+                org_candidates = []
+                for h in self.population.get_all():
+                    h_needs = []
+                    if h.physical_state.money < 25.0:
+                        h_needs.append("socorro")
+                    occ = h.demographics.occupation.lower() if h.demographics.occupation else ""
+                    if any(w in occ for w in ("comerciante", "vendedora", "pupusera")):
+                        h_needs.append("comercio")
+                    elif any(w in occ for w in ("agricultor", "jornalero", "peon")):
+                        h_needs.append("agricultura")
+                    org_candidates.append({
+                        "uid": str(h.uid),
+                        "needs": h_needs,
+                        "location": h.physical_state.current_location_id,
+                        "capital": max(5.0, h.physical_state.money * 0.15),
+                    })
+                spontaneous_org = self.emergent_organizations.attempt_spontaneous_formation(org_candidates, tick=current_tick)
+                if spontaneous_org:
+                    self.event_bus.emit(
+                        SimulationEvent(
+                            event_type=EventType.ORGANIZATION_FORMED,
+                            tick=current_tick,
+                            data={
+                                "org_id": spontaneous_org.org_id,
+                                "name": spontaneous_org.name,
+                                "org_type": spontaneous_org.org_type.value,
+                                "founder_count": len(spontaneous_org.leaders),
+                            },
+                            importance=0.65,
+                        )
+                    )
+            except Exception:
+                pass
             self.event_bus.emit(
                 SimulationEvent(
                     event_type=EventType.DAY_STARTED,
@@ -1448,6 +1701,7 @@ class SimulationRunner:
                 activity_catalog=self.activities,
                 social_engine=self.social,
                 nearby_humans=co_located,
+                integrated_world=self.integrated_world,
             )
 
             # Phase 1.5 Extension: biological and emotional trajectories
@@ -1456,6 +1710,10 @@ class SimulationRunner:
         # Phase 1.5 Extension: global daily orchestration (exposure, treatment,
         # accidents, disasters, romance, family lifecycle).
         self.extension.step(current_tick)
+
+        # Phase 1.8 Integrated World: advances street journeys, verifies place occupancy,
+        # handles road blockages, and synchronizes community historical memory.
+        self.integrated_world.step(current_tick)
 
         # Phase 1.7: appraise the events that actually reached each person in
         # this tick, then advance the psychological state.  The cursor prevents
@@ -1639,6 +1897,52 @@ class SimulationRunner:
                     for c in self.court.get_all_cases()
                 ]
                 self.state_repo.save_state("civilization_judicial", cases_data)
+
+                # Persist Phase 1.9 Society, Institutions, CPR & Norms
+                phase19_data = {
+                    "organizations": [
+                        {
+                            "id": o.org_id,
+                            "name": o.name,
+                            "type": o.org_type.value,
+                            "treasury": o.treasury_usd,
+                            "status": o.status.value,
+                            "members_count": len(o.members),
+                        }
+                        for o in self.emergent_organizations.get_all_organizations(active_only=False)
+                    ],
+                    "institutions": [
+                        {
+                            "id": i.institution_id,
+                            "name": i.name,
+                            "domain": i.domain.value,
+                            "treasury": i.treasury_usd,
+                            "legitimacy": i.legitimacy,
+                            "status": i.status.value,
+                        }
+                        for i in self.institutional_evolution.get_all_institutions(active_only=False)
+                    ],
+                    "cpr": [
+                        {
+                            "id": r.resource_id,
+                            "name": r.name,
+                            "stock": r.current_stock,
+                            "capacity": r.max_capacity,
+                            "status": r.status.value,
+                        }
+                        for r in self.cpr_manager.get_all_resources()
+                    ],
+                    "norms": [
+                        {
+                            "id": n.norm_id,
+                            "title": n.title,
+                            "adherence": n.adherence_rate,
+                            "active": n.is_active,
+                        }
+                        for n in self.social_norms.get_all_norms(active_only=False)
+                    ],
+                }
+                self.state_repo.save_state("civilization_phase19_society", phase19_data)
             except Exception as ex:
                 logger.warning("Error persisting Phase 1.4 civilization entities: %s", ex)
 

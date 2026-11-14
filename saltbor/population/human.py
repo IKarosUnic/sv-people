@@ -105,6 +105,8 @@ class SyntheticHuman:
             memory=self.memory,
         )
         self.reasoning = reasoning or AdvancedReasoningEngine()
+        self.received_broadcasts: list[Any] = []
+        self.active_evacuation_alert: bool = False
         self.problem_solver = problem_solver or ProblemSolvingEngine(reasoning=self.reasoning)
         self.metacognition = metacognition or MetacognitionEngine()
         self.creativity = creativity or CreativeCombinationEngine()
@@ -282,6 +284,7 @@ class SyntheticHuman:
         activity_catalog: ActivityCatalog,
         social_engine: SocialEngine,
         nearby_humans: list[HumanID],
+        integrated_world: Optional[Any] = None,
     ) -> None:
         """Main per-tick update loop for this individual."""
         # Natural emotional decay with individual regulation
@@ -417,6 +420,16 @@ class SyntheticHuman:
         )
         available_acts = current_loc.available_activities if current_loc else [ActivityType.REST]
 
+        sug_act = None
+        sug_loc = None
+        phase_str = None
+        if integrated_world is not None and getattr(integrated_world, "daily_life", None) is not None:
+            sug_act, sug_loc, _ = integrated_world.daily_life.suggest_next_activity(
+                self, current_tick=tick, current_hour=clock.current_hour_int
+            )
+            from saltbor.lifecycle.daily_life.engine import get_diurnal_phase
+            phase_str = get_diurnal_phase(clock.current_hour_int).value
+
         context = DecisionContext(
             current_location_id=self.physical_state.current_location_id,
             available_activities=available_acts,
@@ -426,6 +439,9 @@ class SyntheticHuman:
             current_money=self.physical_state.money,
             is_daytime=clock.is_daytime,
             hour_int=clock.current_hour_int,
+            diurnal_phase=phase_str,
+            suggested_daily_activity=sug_act,
+            suggested_daily_location=sug_loc,
             active_goals=self.autonomy.get_active_goals(),
             nearby_humans=nearby_humans,
             home_location_id=self.physical_state.home_location_id,
@@ -466,20 +482,32 @@ class SyntheticHuman:
         # If chosen action requires being at another location, initiate TRAVEL first
         if target_loc_id and target_loc_id != self.physical_state.current_location_id:
             old_loc = self.physical_state.current_location_id
-            self.physical_state.current_activity = ActivityType.TRAVEL
-            self.physical_state.activity_ticks_remaining = 1
-            self.physical_state.current_location_id = target_loc_id
-
-            event_bus.emit(
-                SimulationEvent(
-                    event_type=EventType.ARRIVED_AT_LOCATION,
-                    tick=tick,
-                    source_human_id=self.uid,
-                    location_id=target_loc_id,
-                    data={"from": old_loc, "to": target_loc_id},
-                    importance=0.15,
+            if integrated_world is not None:
+                ok, reason = integrated_world.initiate_agent_movement(
+                    human=self,
+                    destination_loc_id=target_loc_id,
+                    current_tick=tick,
+                    purpose=chosen.reasoning or "movement",
                 )
-            )
+                if not ok:
+                    # Blocked by landslide, flood, or inaccessible route
+                    self.physical_state.current_activity = ActivityType.REST
+                    self.physical_state.activity_ticks_remaining = 1
+            else:
+                self.physical_state.current_activity = ActivityType.TRAVEL
+                self.physical_state.activity_ticks_remaining = 1
+                self.physical_state.current_location_id = target_loc_id
+
+                event_bus.emit(
+                    SimulationEvent(
+                        event_type=EventType.ARRIVED_AT_LOCATION,
+                        tick=tick,
+                        source_human_id=self.uid,
+                        location_id=target_loc_id,
+                        data={"from": old_loc, "to": target_loc_id},
+                        importance=0.15,
+                    )
+                )
         else:
             # Begin activity at current location
             act_type = chosen.action_type
@@ -506,6 +534,18 @@ class SyntheticHuman:
         # -------------------------------------------------------------------
         if clock.tick_of_day == 0 and tick > 0:
             self.memory.consolidate(tick)
+
+    def receive_media_broadcast(self, broadcast: Any, believed: bool = True) -> None:
+        """Process an incoming media broadcast (e.g. from radio, megaphone, or newspaper)."""
+        self.received_broadcasts.append(broadcast)
+        if believed and getattr(broadcast, "topic", "") == "weather" and getattr(broadcast, "urgency", 0.0) > 0.6:
+            self.active_evacuation_alert = True
+            if hasattr(self, "emotions") and hasattr(self.emotions, "profile"):
+                if hasattr(self.emotions.profile, "state") and hasattr(self.emotions.profile.state, "fear"):
+                    self.emotions.profile.state.fear = min(1.0, self.emotions.profile.state.fear + 0.6)
+            if getattr(self, "physical_state", None):
+                self.physical_state.current_activity = ActivityType.REST
+                self.physical_state.activity_ticks_remaining = 4
 
     def get_status_summary(self) -> dict[str, Any]:
         """Compact status overview for inspection and visualization."""

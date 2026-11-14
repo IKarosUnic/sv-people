@@ -117,6 +117,10 @@ class ActivityType(enum.Enum):
     CARE_FOR_ELDER = "care_for_elder"
     COMMUNITY_CLEANUP = "community_cleanup"
     REPAIR_DAMAGE = "repair_damage"
+    CLEAN_HOUSE = "clean_house"
+    ATTEND_RELIGIOUS_SERVICE = "attend_religious_service"
+    IDLE_INACTIVE = "idle_inactive"
+    HYGIENE = "hygiene"
 
 
 class HousingTenureType(enum.Enum):

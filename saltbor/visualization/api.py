@@ -3198,10 +3198,10 @@ def get_geography_manifest() -> dict[str, Any]:
 
 @router.get("/geography/geojson")
 def get_geography_geojson(
-    min_lon: float = Query(..., ge=-180.0, le=180.0),
-    min_lat: float = Query(..., ge=-90.0, le=90.0),
-    max_lon: float = Query(..., ge=-180.0, le=180.0),
-    max_lat: float = Query(..., ge=-90.0, le=90.0),
+    min_lon: float = Query(default=-89.3),
+    min_lat: float = Query(default=13.6),
+    max_lon: float = Query(default=-89.1),
+    max_lat: float = Query(default=13.8),
     layers: str = Query(default="roads,buildings"),
     limit: int = Query(default=3000, ge=1, le=6000),
 ) -> dict[str, Any]:
@@ -3211,6 +3211,16 @@ def get_geography_geojson(
     it directly; every feature carries its layer, class, validation state and
     license, and the collection carries the ODbL attribution.
     """
+    # Safe boundary clamping prevents 422 errors on panning/wrapping
+    min_lon = max(-180.0, min(180.0, float(min_lon)))
+    max_lon = max(-180.0, min(180.0, float(max_lon)))
+    min_lat = max(-90.0, min(90.0, float(min_lat)))
+    max_lat = max(-90.0, min(90.0, float(max_lat)))
+    if min_lon > max_lon:
+        min_lon, max_lon = max_lon, min_lon
+    if min_lat > max_lat:
+        min_lat, max_lat = max_lat, min_lat
+
     requested = tuple(item.strip() for item in layers.split(",") if item.strip())
     allowed = {"roads", "buildings"}
     unknown = sorted(set(requested) - allowed)
@@ -3225,16 +3235,25 @@ def get_geography_geojson(
 
 @router.get("/geography/features")
 def get_geography_features(
-    min_lon: float = Query(..., ge=-180.0, le=180.0),
-    min_lat: float = Query(..., ge=-90.0, le=90.0),
-    max_lon: float = Query(..., ge=-180.0, le=180.0),
-    max_lat: float = Query(..., ge=-90.0, le=90.0),
+    min_lon: float = Query(default=-89.3),
+    min_lat: float = Query(default=13.6),
+    max_lon: float = Query(default=-89.1),
+    max_lat: float = Query(default=13.8),
     layer: Optional[str] = Query(default=None),
     feature_class: Optional[str] = Query(default=None),
     limit: int = Query(default=400, ge=1, le=3000),
     include_geometry: bool = Query(default=True),
 ) -> dict[str, Any]:
     """Return normalized OSM features intersecting a WGS84 bounding box."""
+    min_lon = max(-180.0, min(180.0, float(min_lon)))
+    max_lon = max(-180.0, min(180.0, float(max_lon)))
+    min_lat = max(-90.0, min(90.0, float(min_lat)))
+    max_lat = max(-90.0, min(90.0, float(max_lat)))
+    if min_lon > max_lon:
+        min_lon, max_lon = max_lon, min_lon
+    if min_lat > max_lat:
+        min_lat, max_lat = max_lat, min_lat
+
     geography = _geography()
     features = geography.features_in_bbox(
         (min_lon, min_lat, max_lon, max_lat),
@@ -3286,13 +3305,805 @@ def get_geography_route(
 
 @router.get("/geography/ecological_profile")
 def get_ecological_profile(
-    min_lon: float = Query(..., ge=-180.0, le=180.0),
-    min_lat: float = Query(..., ge=-90.0, le=90.0),
-    max_lon: float = Query(..., ge=-180.0, le=180.0),
-    max_lat: float = Query(..., ge=-90.0, le=90.0),
+    min_lon: float = Query(default=-89.3),
+    min_lat: float = Query(default=13.6),
+    max_lon: float = Query(default=-89.1),
+    max_lat: float = Query(default=13.8),
 ) -> dict[str, Any]:
     """Land-cover and infrastructure composition of a territory from OSM."""
+    min_lon = max(-180.0, min(180.0, float(min_lon)))
+    max_lon = max(-180.0, min(180.0, float(max_lon)))
+    min_lat = max(-90.0, min(90.0, float(min_lat)))
+    max_lat = max(-90.0, min(90.0, float(max_lat)))
+    if min_lon > max_lon:
+        min_lon, max_lon = max_lon, min_lon
+    if min_lat > max_lat:
+        min_lat, max_lat = max_lat, min_lat
     return _geography().ecological_profile((min_lon, min_lat, max_lon, max_lat))
+
+
+# =============================================================================
+# Phase 1.8: Integrated World, Real Places, Transit & Causality Endpoints
+# =============================================================================
+
+class PlaceInteractRequest(BaseModel):
+    human_uid: str
+    action: str = Field(description="enter, leave, buy, request_service")
+    item_name: Optional[str] = None
+    quantity: int = 1
+    service_name: Optional[str] = None
+
+
+@router.get("/world/places")
+def get_world_places(category: Optional[str] = None) -> dict[str, Any]:
+    """Return all interactive places in the simulated world."""
+    ctrl = get_controller()
+    runner = ctrl.runner
+    if runner is None or not hasattr(runner, "integrated_world"):
+        raise HTTPException(status_code=500, detail="Integrated world uninitialized")
+    whe = getattr(runner, "world_interaction", None)
+    if whe is None:
+        raise HTTPException(status_code=404, detail="WorldInteractionEngine uninitialized")
+
+    places_list = []
+    for pid, p in whe.places.items():
+        if category and p.category.value != category:
+            continue
+        places_list.append(p.to_dict())
+    return {
+        "count": len(places_list),
+        "places": places_list,
+    }
+
+
+@router.get("/world/places/{place_id}")
+def get_world_place_detail(place_id: str) -> dict[str, Any]:
+    """Return complete profile, services, inventory, and occupants of a place."""
+    ctrl = get_controller()
+    runner = ctrl.runner
+    if runner is None:
+        raise HTTPException(status_code=500, detail="Runner uninitialized")
+    whe = getattr(runner, "world_interaction", None)
+    if whe is None:
+        raise HTTPException(status_code=404, detail="WorldInteractionEngine uninitialized")
+    place = whe.get_place(place_id)
+    if place is None:
+        raise HTTPException(status_code=404, detail=f"Place '{place_id}' not found")
+
+    occupant_details = []
+    for uid_str in place.current_occupants:
+        try:
+            h = runner.population.get_optional(uuid.UUID(uid_str)) if runner.population else None
+        except Exception:
+            h = None
+        if h:
+            occupant_details.append({"uid": uid_str, "name": h.name, "age": h.demographics.age})
+        else:
+            occupant_details.append({"uid": uid_str, "name": "Desconocido", "age": 0})
+
+    res = place.to_dict()
+    res["occupant_details"] = occupant_details
+    return res
+
+
+@router.post("/world/places/{place_id}/interact")
+def post_world_place_interact(place_id: str, req: PlaceInteractRequest) -> dict[str, Any]:
+    """Execute human-place interaction: enter, leave, buy items, request services."""
+    ctrl = get_controller()
+    runner = ctrl.runner
+    if runner is None:
+        raise HTTPException(status_code=500, detail="Runner uninitialized")
+    whe = getattr(runner, "world_interaction", None)
+    if whe is None:
+        raise HTTPException(status_code=404, detail="WorldInteractionEngine uninitialized")
+    place = whe.get_place(place_id)
+    if place is None:
+        raise HTTPException(status_code=404, detail=f"Place '{place_id}' not found")
+
+    try:
+        human = runner.population.get_optional(uuid.UUID(req.human_uid))
+    except Exception:
+        human = None
+    if not human:
+        raise HTTPException(status_code=404, detail=f"Human '{req.human_uid}' not found")
+
+    hour = runner.clock.current_hour_int
+    if req.action == "enter":
+        allowed, reason = whe.can_enter_place(place_id, req.human_uid, hour)
+        if not allowed:
+            return {"success": False, "reason": reason}
+        ok = whe.enter_place(place_id, req.human_uid)
+        return {"success": ok, "action": "enter", "occupancy": place.current_occupancy}
+    elif req.action == "leave":
+        ok = whe.leave_place(place_id, req.human_uid)
+        return {"success": ok, "action": "leave", "occupancy": place.current_occupancy}
+    elif req.action == "buy":
+        if not req.item_name:
+            raise HTTPException(status_code=400, detail="item_name required for buy action")
+        cost = place.price_catalog.get(req.item_name, 0.0) * req.quantity
+        inv = place.inventory.get(req.item_name, 0)
+        if inv < req.quantity:
+            return {"success": False, "reason": f"Stock insuficiente ({inv} disponibles)"}
+        wallet = getattr(human.economy, "wallet", getattr(human.physical_state, "money", 0.0))
+        if wallet < cost:
+            return {"success": False, "reason": f"Fondos insuficientes: requiere ${cost:.2f}, saldo ${wallet:.2f}"}
+        if hasattr(human, "economy"):
+            human.economy.wallet -= cost
+        human.physical_state.money -= cost
+        place.inventory[req.item_name] -= req.quantity
+        return {
+            "success": True,
+            "action": "buy",
+            "item": req.item_name,
+            "quantity": req.quantity,
+            "cost": cost,
+            "remaining_wallet": human.physical_state.money,
+            "remaining_stock": place.inventory[req.item_name],
+        }
+    elif req.action == "request_service":
+        if not req.service_name:
+            raise HTTPException(status_code=400, detail="service_name required")
+        res = place.request_service(req.service_name, human, runner.clock.current_tick)
+        return {"success": res.get("success", False), "action": "request_service", "result": res}
+    else:
+        raise HTTPException(status_code=400, detail=f"Unknown action: {req.action}")
+
+
+@router.get("/world/transit")
+def get_world_transit() -> dict[str, Any]:
+    """Return all active street journeys currently progressing in the road network."""
+    ctrl = get_controller()
+    runner = ctrl.runner
+    if runner is None or not hasattr(runner, "integrated_world"):
+        raise HTTPException(status_code=500, detail="Runner uninitialized")
+
+    transp = runner.integrated_world.transportation
+    journeys_data = []
+    for uid_str, j in transp.active_journeys.items():
+        try:
+            h = runner.population.get_optional(uuid.UUID(uid_str)) if runner.population else None
+        except Exception:
+            h = None
+        h_name = h.name if h else "Unknown"
+        journeys_data.append({
+            "human_uid": uid_str,
+            "human_name": h_name,
+            "status": j.status.value,
+            "mode": j.mode.value,
+            "origin_location_id": j.origin_location_id,
+            "destination_location_id": j.destination_location_id,
+            "progress_ratio": round(j.progress_ratio, 3),
+            "distance_km": round(j.total_distance_km, 3),
+            "current_coord": j.current_coordinate,
+            "polyline": j.polyline,
+            "start_tick": j.start_tick,
+            "speed_kmh": round(j.effective_speed_kmh, 1),
+        })
+    return {
+        "count": len(journeys_data),
+        "active_journeys": journeys_data,
+    }
+
+
+@router.get("/world/blockages")
+def get_world_blockages() -> dict[str, Any]:
+    """Return all active infrastructure hazards (floods, landslides, closed passes)."""
+    ctrl = get_controller()
+    runner = ctrl.runner
+    if runner is None or not hasattr(runner, "integrated_world"):
+        raise HTTPException(status_code=500, detail="Runner uninitialized")
+
+    transp = runner.integrated_world.transportation
+    return {
+        "count": len(transp.blockages),
+        "blockages": [b.to_dict() for b in transp.blockages],
+    }
+
+
+@router.get("/world/causality/{event_id}")
+def get_world_causality(event_id: str) -> dict[str, Any]:
+    """Query DAG root causes and downstream consequences for an event."""
+    ctrl = get_controller()
+    runner = ctrl.runner
+    if runner is None:
+        raise HTTPException(status_code=500, detail="Runner uninitialized")
+    cg = getattr(runner, "causal_graph", None)
+    if not cg:
+        raise HTTPException(status_code=404, detail="CausalEventGraph uninitialized")
+    node = cg.get_node(event_id)
+    if not node:
+        raise HTTPException(status_code=404, detail=f"Event {event_id} not found")
+    return {
+        "event_id": event_id,
+        "event": node.to_dict(),
+        "ancestor_causes": [n.to_dict() for n in cg.get_causal_chain(event_id)],
+        "descendant_consequences": [n.to_dict() for n in cg.get_consequence_tree(event_id)],
+        "explanation": cg.explain_event(event_id),
+    }
+
+
+@router.get("/world/daily_life/profiles")
+def get_world_daily_life_profiles() -> dict[str, Any]:
+    """Return current diurnal phase and daily life profiles across population."""
+    ctrl = get_controller()
+    runner = ctrl.runner
+    if runner is None or not hasattr(runner, "integrated_world"):
+        raise HTTPException(status_code=500, detail="Runner uninitialized")
+    daily_life = runner.integrated_world.daily_life
+    current_hour = runner.clock.current_hour_int
+    phase = daily_life.get_diurnal_phase(current_hour)
+
+    profiles = []
+    for h in runner.population.get_all():
+        uid_str = str(h.uid)
+        prof = daily_life.get_or_create_profile(uid_str, h)
+        profiles.append(prof.to_dict())
+
+    return {
+        "current_hour": current_hour,
+        "diurnal_phase": phase.value,
+        "count": len(profiles),
+        "profiles": profiles,
+    }
+
+
+# =============================================================================
+# Phase 1.9: Emergent Society, Organizations, Institutions, CPR & Governance
+# =============================================================================
+
+class ProposeCollectiveMotionRequest(BaseModel):
+    organization_id: str
+    proposer_uid: str
+    title: str
+    description: str
+    cost_usd: float = 0.0
+    protocol: str = "simple_majority"
+
+
+class CastDeliberativeVoteRequest(BaseModel):
+    voter_uid: str
+    stance: str = Field(description="for, against, abstain")
+    influence_weight: float = 1.0
+    reason: str = ""
+
+
+class ResolveAssemblyRequest(BaseModel):
+    total_eligible_members: int = 10
+    quorum_fraction: float = 0.40
+
+
+class CPRExtractRequest(BaseModel):
+    user_uid: str
+    amount: float = Field(ge=0.0)
+
+
+class CPRMaintainRequest(BaseModel):
+    contributor_uid: str
+    labor_hours: float = Field(default=3.0, ge=0.0)
+    funds_usd: float = Field(default=0.0, ge=0.0)
+
+
+class InitiateIntergroupDisputeRequest(BaseModel):
+    initiator_org_id: str
+    respondent_org_id: str
+    conflict_type: str = "commercial_rivalry"
+    grievance: str
+
+
+@router.get("/social/organizations")
+def get_social_organizations(active_only: bool = True) -> dict[str, Any]:
+    """List all autonomous emergent organizations, memberships, and treasuries."""
+    ctrl = get_controller()
+    runner = ctrl.runner
+    if runner is None or not hasattr(runner, "emergent_organizations"):
+        raise HTTPException(status_code=500, detail="Runner uninitialized")
+
+    orgs = runner.emergent_organizations.get_all_organizations(active_only=active_only)
+    return {
+        "count": len(orgs),
+        "organizations": [
+            {
+                "org_id": o.org_id,
+                "name": o.name,
+                "org_type": o.org_type.value,
+                "mission_purpose": o.mission_purpose,
+                "status": o.status.value,
+                "active_members_count": o.active_member_count,
+                "total_members_count": len(o.members),
+                "treasury_usd": round(o.treasury_usd, 2),
+                "cohesion": o.cohesion,
+                "legitimacy": round(o.legitimacy, 3),
+                "internal_conflict": round(o.internal_conflict_level, 3),
+                "headquarters_location_id": o.headquarters_location_id,
+                "leaders": o.leaders,
+                "founding_tick": o.founding_tick,
+            }
+            for o in orgs
+        ],
+    }
+
+
+@router.get("/social/organizations/{org_id}")
+def get_social_organization_detail(org_id: str) -> dict[str, Any]:
+    """Retrieve full detail, membership roster, and event history of an organization."""
+    ctrl = get_controller()
+    runner = ctrl.runner
+    if runner is None or not hasattr(runner, "emergent_organizations"):
+        raise HTTPException(status_code=500, detail="Runner uninitialized")
+
+    org = runner.emergent_organizations.get_organization(org_id)
+    if not org:
+        raise HTTPException(status_code=404, detail=f"Organization {org_id} not found")
+
+    return {
+        "org_id": org.org_id,
+        "name": org.name,
+        "org_type": org.org_type.value,
+        "mission_purpose": org.mission_purpose,
+        "status": org.status.value,
+        "cohesion": org.cohesion,
+        "legitimacy": round(org.legitimacy, 3),
+        "internal_conflict_level": round(org.internal_conflict_level, 3),
+        "treasury_usd": round(org.treasury_usd, 2),
+        "periodic_dues_usd": org.periodic_dues_usd,
+        "shared_inventory": org.shared_inventory,
+        "headquarters_location_id": org.headquarters_location_id,
+        "leaders": org.leaders,
+        "members": [
+            {
+                "human_uid": m.human_uid,
+                "role": m.role.value,
+                "status": m.status,
+                "commitment": round(m.commitment, 2),
+                "satisfaction": round(m.satisfaction, 2),
+                "joined_tick": m.joined_tick,
+            }
+            for m in org.members.values()
+        ],
+        "history_log": org.history_log[-30:],
+    }
+
+
+@router.get("/social/institutions")
+def get_social_institutions(active_only: bool = True) -> dict[str, Any]:
+    """List formal and semi-formal societal institutions across domains."""
+    ctrl = get_controller()
+    runner = ctrl.runner
+    if runner is None or not hasattr(runner, "institutional_evolution"):
+        raise HTTPException(status_code=500, detail="Runner uninitialized")
+
+    institutions = runner.institutional_evolution.get_all_institutions(active_only=active_only)
+    return {
+        "count": len(institutions),
+        "institutions": [
+            {
+                "institution_id": inst.institution_id,
+                "name": inst.name,
+                "formal_acronym": inst.formal_acronym,
+                "domain": inst.domain.value,
+                "mandate_mission": inst.mandate_mission,
+                "headquarters_location_id": inst.headquarters_location_id,
+                "department_code": inst.department_code,
+                "municipality_id": inst.municipality_id,
+                "treasury_usd": round(inst.treasury_usd, 2),
+                "legitimacy": round(inst.legitimacy, 3),
+                "reputation": round(inst.reputation, 3),
+                "status": inst.status.value,
+                "backlog_queue_length": len(inst.active_backlog_queue),
+                "officers": inst.officers,
+                "rules_count": len(inst.rules_and_bylaws),
+            }
+            for inst in institutions
+        ],
+    }
+
+
+@router.get("/social/institutions/{inst_id}")
+def get_social_institution_detail(inst_id: str) -> dict[str, Any]:
+    """Retrieve full detail, decision history, and operational queue of an institution."""
+    ctrl = get_controller()
+    runner = ctrl.runner
+    if runner is None or not hasattr(runner, "institutional_evolution"):
+        raise HTTPException(status_code=500, detail="Runner uninitialized")
+
+    inst = runner.institutional_evolution.get_institution(inst_id)
+    if not inst:
+        raise HTTPException(status_code=404, detail=f"Institution {inst_id} not found")
+
+    return {
+        "institution_id": inst.institution_id,
+        "name": inst.name,
+        "formal_acronym": inst.formal_acronym,
+        "domain": inst.domain.value,
+        "mandate_mission": inst.mandate_mission,
+        "headquarters_location_id": inst.headquarters_location_id,
+        "department_code": inst.department_code,
+        "municipality_id": inst.municipality_id,
+        "district_id": inst.district_id,
+        "canton_name": inst.canton_name,
+        "treasury_usd": round(inst.treasury_usd, 2),
+        "operating_budget_per_day": inst.operating_budget_per_day,
+        "legitimacy": round(inst.legitimacy, 3),
+        "reputation": round(inst.reputation, 3),
+        "status": inst.status.value,
+        "officers": inst.officers,
+        "rules_and_bylaws": inst.rules_and_bylaws,
+        "backlog_queue": inst.active_backlog_queue,
+        "decision_history": inst.decision_history[-30:],
+    }
+
+
+@router.get("/social/governance/proposals")
+def get_governance_proposals(organization_id: Optional[str] = None) -> dict[str, Any]:
+    """Retrieve active and historical collective deliberative proposals."""
+    ctrl = get_controller()
+    runner = ctrl.runner
+    if runner is None or not hasattr(runner, "collective_governance"):
+        raise HTTPException(status_code=500, detail="Runner uninitialized")
+
+    cg = runner.collective_governance
+    if organization_id:
+        props = cg.get_proposals_by_organization(organization_id)
+    else:
+        props = list(cg._proposals.values())
+
+    return {
+        "count": len(props),
+        "proposals": [
+            {
+                "proposal_id": p.proposal_id,
+                "organization_id": p.organization_id,
+                "proposer_uid": p.proposer_uid,
+                "title": p.title,
+                "description": p.description,
+                "protocol": p.protocol.value,
+                "cost_usd": p.cost_usd,
+                "status": p.status.value,
+                "votes_for_count": len(p.votes_for),
+                "votes_against_count": len(p.votes_against),
+                "abstentions_count": len(p.abstentions),
+                "effective_votes_for": round(p.effective_votes_for, 2),
+                "effective_votes_against": round(p.effective_votes_against, 2),
+                "weighted_approval_ratio": p.weighted_approval_ratio,
+                "outcome_summary": p.outcome_summary,
+                "created_tick": p.created_tick,
+                "decided_tick": p.decided_tick,
+            }
+            for p in props
+        ],
+    }
+
+
+@router.post("/social/governance/proposals")
+def submit_governance_proposal(req: ProposeCollectiveMotionRequest) -> dict[str, Any]:
+    """Submit a collective motion in an organization's deliberative assembly."""
+    ctrl = get_controller()
+    runner = ctrl.runner
+    if runner is None or not hasattr(runner, "collective_governance"):
+        raise HTTPException(status_code=500, detail="Runner uninitialized")
+
+    from saltbor.social.governance.collective_decision import VotingProtocol
+
+    protocol = VotingProtocol(req.protocol) if req.protocol in [v.value for v in VotingProtocol] else VotingProtocol.SIMPLE_MAJORITY
+    prop = runner.collective_governance.submit_proposal(
+        organization_id=req.organization_id,
+        proposer_uid=req.proposer_uid,
+        title=req.title,
+        description=req.description,
+        cost_usd=req.cost_usd,
+        protocol=protocol,
+        tick=runner.clock.current_tick,
+    )
+    return {
+        "success": True,
+        "proposal_id": prop.proposal_id,
+        "title": prop.title,
+        "status": prop.status.value,
+    }
+
+
+@router.post("/social/governance/proposals/{prop_id}/vote")
+def cast_governance_vote(prop_id: str, req: CastDeliberativeVoteRequest) -> dict[str, Any]:
+    """Cast a weighted deliberative vote on an active proposal."""
+    ctrl = get_controller()
+    runner = ctrl.runner
+    if runner is None or not hasattr(runner, "collective_governance"):
+        raise HTTPException(status_code=500, detail="Runner uninitialized")
+
+    ok = runner.collective_governance.cast_deliberative_vote(
+        proposal_id=prop_id,
+        voter_uid=req.voter_uid,
+        stance=req.stance,
+        influence_weight=req.influence_weight,
+        reason=req.reason,
+    )
+    if not ok:
+        raise HTTPException(status_code=400, detail="Unable to register vote (proposal inactive or not found)")
+
+    prop = runner.collective_governance.get_proposal(prop_id)
+    return {
+        "success": True,
+        "proposal_id": prop_id,
+        "votes_for": len(prop.votes_for) if prop else 0,
+        "votes_against": len(prop.votes_against) if prop else 0,
+        "abstentions": len(prop.abstentions) if prop else 0,
+    }
+
+
+@router.post("/social/governance/proposals/{prop_id}/resolve")
+def resolve_governance_proposal(prop_id: str, req: ResolveAssemblyRequest) -> dict[str, Any]:
+    """Conclude voting and tally outcome according to the protocol rules."""
+    ctrl = get_controller()
+    runner = ctrl.runner
+    if runner is None or not hasattr(runner, "collective_governance"):
+        raise HTTPException(status_code=500, detail="Runner uninitialized")
+
+    prop = runner.collective_governance.get_proposal(prop_id)
+    if not prop:
+        raise HTTPException(status_code=404, detail=f"Proposal {prop_id} not found")
+
+    org = runner.emergent_organizations.get_organization(prop.organization_id)
+    treasury = org.treasury_usd if org else 1000.0
+
+    enacted, summary = runner.collective_governance.resolve_assembly_vote(
+        proposal_id=prop_id,
+        total_eligible_members=req.total_eligible_members,
+        treasury_balance_usd=treasury,
+        quorum_fraction=req.quorum_fraction,
+        tick=runner.clock.current_tick,
+    )
+
+    if enacted and org and prop.cost_usd > 0:
+        org.treasury_usd = max(0.0, org.treasury_usd - prop.cost_usd)
+
+    return {
+        "success": True,
+        "is_enacted": enacted,
+        "status": prop.status.value,
+        "summary": summary,
+    }
+
+
+@router.get("/social/resources/cpr")
+def get_cpr_resources() -> dict[str, Any]:
+    """Retrieve all Common-Pool Resources (pozos, caminos, trojas) and health conditions."""
+    ctrl = get_controller()
+    runner = ctrl.runner
+    if runner is None or not hasattr(runner, "cpr_manager"):
+        raise HTTPException(status_code=500, detail="Runner uninitialized")
+
+    resources = runner.cpr_manager.get_all_resources()
+    return {
+        "count": len(resources),
+        "resources": [
+            {
+                "resource_id": r.resource_id,
+                "name": r.name,
+                "resource_type": r.resource_type.value,
+                "community_id": r.community_id,
+                "location_id": r.location_id,
+                "unit": r.unit_of_measure,
+                "current_stock": round(r.current_stock, 1),
+                "max_capacity": r.max_capacity,
+                "stock_ratio": r.stock_ratio,
+                "status": r.status.value,
+                "daily_quota_per_user": r.daily_quota_per_user,
+                "natural_regeneration_rate": r.natural_regeneration_rate,
+                "authorized_users_count": len(r.authorized_users),
+                "total_extracted_historical": round(r.total_extracted_historical, 1),
+                "total_maintenance_hours_historical": round(r.total_maintenance_hours_historical, 1),
+            }
+            for r in resources
+        ],
+    }
+
+
+@router.get("/social/resources/cpr/{res_id}")
+def get_cpr_resource_detail(res_id: str) -> dict[str, Any]:
+    """Retrieve audit history and extraction ledger of a Common-Pool Resource."""
+    ctrl = get_controller()
+    runner = ctrl.runner
+    if runner is None or not hasattr(runner, "cpr_manager"):
+        raise HTTPException(status_code=500, detail="Runner uninitialized")
+
+    r = runner.cpr_manager.get_resource(res_id)
+    if not r:
+        raise HTTPException(status_code=404, detail=f"CPR Resource {res_id} not found")
+
+    return {
+        "resource_id": r.resource_id,
+        "name": r.name,
+        "resource_type": r.resource_type.value,
+        "unit": r.unit_of_measure,
+        "current_stock": round(r.current_stock, 1),
+        "max_capacity": r.max_capacity,
+        "stock_ratio": r.stock_ratio,
+        "status": r.status.value,
+        "daily_quota_per_user": r.daily_quota_per_user,
+        "natural_regeneration_rate": r.natural_regeneration_rate,
+        "authorized_users": list(r.authorized_users),
+        "recent_extractions": [
+            {
+                "record_id": e.record_id,
+                "user_uid": e.user_uid,
+                "quantity": e.quantity_extracted,
+                "authorized": e.authorized,
+                "tick": e.tick,
+            }
+            for e in r.extraction_history[-20:]
+        ],
+        "recent_maintenance": [
+            {
+                "record_id": m.record_id,
+                "contributor_uid": m.contributor_uid,
+                "hours": m.labor_hours,
+                "funds_usd": m.funds_contributed_usd,
+                "tick": m.tick,
+            }
+            for m in r.maintenance_history[-20:]
+        ],
+    }
+
+
+@router.post("/social/resources/cpr/{res_id}/extract")
+def extract_from_cpr_resource(res_id: str, req: CPRExtractRequest) -> dict[str, Any]:
+    """Extract quantity from a Common-Pool Resource with Ostrom quota checking."""
+    ctrl = get_controller()
+    runner = ctrl.runner
+    if runner is None or not hasattr(runner, "cpr_manager"):
+        raise HTTPException(status_code=500, detail="Runner uninitialized")
+
+    r = runner.cpr_manager.get_resource(res_id)
+    if not r:
+        raise HTTPException(status_code=404, detail=f"CPR Resource {res_id} not found")
+
+    extracted, authorized, msg = r.extract(
+        user_uid=req.user_uid,
+        amount=req.amount,
+        tick=runner.clock.current_tick,
+    )
+    return {
+        "success": extracted > 0.0,
+        "quantity_extracted": extracted,
+        "authorized": authorized,
+        "remaining_stock": round(r.current_stock, 1),
+        "status": r.status.value,
+        "message": msg,
+    }
+
+
+@router.post("/social/resources/cpr/{res_id}/maintain")
+def maintain_cpr_resource(res_id: str, req: CPRMaintainRequest) -> dict[str, Any]:
+    """Contribute labor hours or funds to restore/maintain a Common-Pool Resource."""
+    ctrl = get_controller()
+    runner = ctrl.runner
+    if runner is None or not hasattr(runner, "cpr_manager"):
+        raise HTTPException(status_code=500, detail="Runner uninitialized")
+
+    r = runner.cpr_manager.get_resource(res_id)
+    if not r:
+        raise HTTPException(status_code=404, detail=f"CPR Resource {res_id} not found")
+
+    r.contribute_maintenance(
+        contributor_uid=req.contributor_uid,
+        labor_hours=req.labor_hours,
+        funds_usd=req.funds_usd,
+        tick=runner.clock.current_tick,
+    )
+    return {
+        "success": True,
+        "current_stock": round(r.current_stock, 1),
+        "stock_ratio": r.stock_ratio,
+        "status": r.status.value,
+    }
+
+
+@router.get("/social/stratification/overview")
+def get_stratification_overview() -> dict[str, Any]:
+    """Retrieve multidimensional inequality metrics (Gini, Palma, Quintiles, Mobility)."""
+    ctrl = get_controller()
+    runner = ctrl.runner
+    if runner is None or not hasattr(runner, "social_stratification"):
+        raise HTTPException(status_code=500, detail="Runner uninitialized")
+
+    metrics = runner.social_stratification.get_latest_metrics()
+    profiles = runner.social_stratification.get_all_profiles()
+
+    if not metrics and runner.population.count > 0:
+        # Compute on the fly if not yet run
+        metrics = runner.social_stratification.step(runner.population, runner.social, runner.clock.current_tick)
+        profiles = runner.social_stratification.get_all_profiles()
+
+    return {
+        "gini_income": metrics.gini_income if metrics else 0.35,
+        "gini_wealth": metrics.gini_wealth if metrics else 0.42,
+        "palma_ratio": metrics.palma_ratio if metrics else 1.45,
+        "quintile_counts": metrics.quintile_counts if metrics else {1: 0, 2: 0, 3: 0, 4: 0, 5: 0},
+        "upward_mobility_count": metrics.upward_mobility_count if metrics else 0,
+        "downward_mobility_count": metrics.downward_mobility_count if metrics else 0,
+        "immobility_count": metrics.immobility_count if metrics else 0,
+        "profiles_count": len(profiles),
+        "sample_profiles": [
+            {
+                "human_uid": p.human_uid,
+                "composite_ses": p.composite_ses,
+                "quintile": p.quintile,
+                "income_score": p.income_score,
+                "wealth_score": p.wealth_score,
+                "housing_security": p.housing_security_score,
+                "human_capital": p.human_capital_score,
+                "occupational_prestige": p.occupational_prestige,
+                "social_capital": p.social_capital_score,
+                "civic_influence": p.civic_influence_score,
+            }
+            for p in profiles[:15]
+        ],
+    }
+
+
+@router.get("/social/norms")
+def get_social_norms(active_only: bool = True) -> dict[str, Any]:
+    """Retrieve social norms, compliance ratios, and sanctions recorded."""
+    ctrl = get_controller()
+    runner = ctrl.runner
+    if runner is None or not hasattr(runner, "social_norms"):
+        raise HTTPException(status_code=500, detail="Runner uninitialized")
+
+    norms = runner.social_norms.get_all_norms(active_only=active_only)
+    return {
+        "count": len(norms),
+        "norms": [
+            {
+                "norm_id": n.norm_id,
+                "title": n.title,
+                "domain": n.domain.value,
+                "formalization": n.formalization.value,
+                "legitimacy": round(n.legitimacy, 3),
+                "enforcement_rigor": round(n.enforcement_rigor, 3),
+                "adherence_rate": n.adherence_rate,
+                "total_compliances": n.total_compliances,
+                "total_violations": n.total_violations,
+                "total_sanctions_applied": n.total_sanctions_applied,
+                "fine_amount_usd": n.fine_amount_usd,
+                "default_sanction": n.default_sanction.value,
+                "is_active": n.is_active,
+            }
+            for n in norms
+        ],
+    }
+
+
+@router.get("/social/conflicts/intergroup")
+def get_intergroup_conflicts(active_only: bool = True) -> dict[str, Any]:
+    """Retrieve active and historical collective disputes between organizations."""
+    ctrl = get_controller()
+    runner = ctrl.runner
+    if runner is None or not hasattr(runner, "intergroup_conflicts"):
+        raise HTTPException(status_code=500, detail="Runner uninitialized")
+
+    disputes = runner.intergroup_conflicts.get_all_disputes(active_only=active_only)
+    return {
+        "count": len(disputes),
+        "disputes": [
+            {
+                "dispute_id": d.dispute_id,
+                "conflict_type": d.conflict_type.value,
+                "initiator_org_id": d.initiator_org_id,
+                "respondent_org_id": d.respondent_org_id,
+                "core_grievance": d.core_grievance,
+                "intensity": round(d.intensity, 3),
+                "stage": d.stage.value,
+                "mediator_id": d.mediator_id,
+                "compensation_usd": d.compensation_usd,
+                "terms_agreed": d.terms_agreed,
+                "created_tick": d.created_tick,
+                "resolved_tick": d.resolved_tick,
+            }
+            for d in disputes
+        ],
+    }
+
+
 
 
 

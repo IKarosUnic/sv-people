@@ -1,0 +1,89 @@
+{
+  "generated_at": "2026-11-13T22:10:16",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "python": "3.14.5",
+  "processor": "AMD64 Family 25 Model 117 Stepping 2, AuthenticAMD",
+  "hardware_reference": "Ryzen 7 8700G / Radeon 780M / 32 GB DDR5 / Windows 11",
+  "social_layer_runs": [
+    {
+      "population": 20,
+      "ticks": 5,
+      "rss_before_mb": 64.3,
+      "rss_after_mb": 67.4,
+      "ms_per_tick_mean": 0.1742,
+      "ms_per_tick_median": 0.1208,
+      "ms_per_tick_p95": 0.3813,
+      "ms_per_agent_tick": 0.008708
+    },
+    {
+      "population": 100,
+      "ticks": 5,
+      "rss_before_mb": 67.4,
+      "rss_after_mb": 69.6,
+      "ms_per_tick_mean": 0.513,
+      "ms_per_tick_median": 0.4405,
+      "ms_per_tick_p95": 0.8151,
+      "ms_per_agent_tick": 0.00513
+    },
+    {
+      "population": 500,
+      "ticks": 5,
+      "rss_before_mb": 69.6,
+      "rss_after_mb": 83.0,
+      "ms_per_tick_mean": 2.6643,
+      "ms_per_tick_median": 2.1971,
+      "ms_per_tick_p95": 4.3072,
+      "ms_per_agent_tick": 0.005329
+    },
+    {
+      "population": 1000,
+      "ticks": 5,
+      "rss_before_mb": 71.7,
+      "rss_after_mb": 99.8,
+      "ms_per_tick_mean": 7.0107,
+      "ms_per_tick_median": 7.3011,
+      "ms_per_tick_p95": 8.2082,
+      "ms_per_agent_tick": 0.007011
+    },
+    {
+      "population": 10000,
+      "ticks": 5,
+      "rss_before_mb": 74.5,
+      "rss_after_mb": 395.5,
+      "ms_per_tick_mean": 82.9604,
+      "ms_per_tick_median": 79.7978,
+      "ms_per_tick_p95": 97.7799,
+      "ms_per_agent_tick": 0.008296
+    }
+  ],
+  "full_simulation_runs": [
+    {
+      "population": 20,
+      "warmup_ticks": 12,
+      "measured_ticks": 48,
+      "initialize_seconds": 0.116,
+      "ms_per_tick_mean": 7.945,
+      "ms_per_tick_median": 7.283,
+      "ms_per_tick_p95": 20.337,
+      "ms_per_agent_tick": 0.39724,
+      "ticks_per_second": 125.87,
+      "rss_mb": 80.3,
+      "sqlite_bytes": 4096,
+      "wal_bytes": 898192
+    },
+    {
+      "population": 100,
+      "warmup_ticks": 12,
+      "measured_ticks": 48,
+      "initialize_seconds": 0.151,
+      "ms_per_tick_mean": 73.091,
+      "ms_per_tick_median": 73.308,
+      "ms_per_tick_p95": 161.553,
+      "ms_per_agent_tick": 0.73091,
+      "ticks_per_second": 13.68,
+      "rss_mb": 142.7,
+      "sqlite_bytes": 4096,
+      "wal_bytes": 3514392
+    }
+  ]
+}

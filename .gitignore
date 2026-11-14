@@ -32,3 +32,6 @@ htmlcov/
 *.db-shm
 .vscode/
 .idea/
+
+graphify-out/
+

@@ -1,6 +1,30 @@
 """Simulation Experiments Package."""
 
 from saltbor.simulation.experiments.base import BaseExperiment, ExperimentConfig, ExperimentResult
+from saltbor.simulation.experiments.phase18_experiments import (
+    PHASE18_EXPERIMENTS,
+    run_all_phase18_experiments,
+    Experiment18_A_DailyLifeCycle,
+    Experiment18_B_LaborSearchMobility,
+    Experiment18_C_ZeroPurchaseVisits,
+    Experiment18_D_PriceComparisonPurchase,
+    Experiment18_E_IncomeShockBudgetContraction,
+    Experiment18_F_IllnessAlteringActivities,
+    Experiment18_G_TrafficAccidentTrajectory,
+    Experiment18_H_TropicalStormTransportWork,
+    Experiment18_I_RoadBlockageReroutingCancellation,
+    Experiment18_J_FamilyBudgetAdjustmentCrisis,
+    Experiment18_K_SharedExperienceRelationshipEvolution,
+    Experiment18_L_InterpersonalConflictSocialRepercussions,
+    Experiment18_M_EstablishmentScheduleInventoryModulation,
+    Experiment18_N_ScarcityPriceShifts,
+    Experiment18_O_CommunityResponseAdescoFaena,
+    Experiment18_P_HistoricalMemoryTransmission,
+    Experiment18_Q_ObserverInterventionCausality,
+    Experiment18_R_FrontendBackendStateFidelity,
+    Experiment18_S_CheckpointPersistenceExactRecovery,
+    Experiment18_T_SustainedSimulationGrowingPopulation,
+)
 from saltbor.simulation.experiments.phase16_experiments import (
     PHASE16_EXPERIMENTS,
     run_all_phase16_experiments,
@@ -287,4 +311,27 @@ __all__ = [
     # Phase 1.7 Psychological Realism, Fragility & Adaptive Behavior
     "PHASE17_EXPERIMENTS",
     "run_all_phase17_experiments",
+    # Phase 1.8 Integrated Human Life & World Simulation Experiments
+    "PHASE18_EXPERIMENTS",
+    "run_all_phase18_experiments",
+    "Experiment18_A_DailyLifeCycle",
+    "Experiment18_B_LaborSearchMobility",
+    "Experiment18_C_ZeroPurchaseVisits",
+    "Experiment18_D_PriceComparisonPurchase",
+    "Experiment18_E_IncomeShockBudgetContraction",
+    "Experiment18_F_IllnessAlteringActivities",
+    "Experiment18_G_TrafficAccidentTrajectory",
+    "Experiment18_H_TropicalStormTransportWork",
+    "Experiment18_I_RoadBlockageReroutingCancellation",
+    "Experiment18_J_FamilyBudgetAdjustmentCrisis",
+    "Experiment18_K_SharedExperienceRelationshipEvolution",
+    "Experiment18_L_InterpersonalConflictSocialRepercussions",
+    "Experiment18_M_EstablishmentScheduleInventoryModulation",
+    "Experiment18_N_ScarcityPriceShifts",
+    "Experiment18_O_CommunityResponseAdescoFaena",
+    "Experiment18_P_HistoricalMemoryTransmission",
+    "Experiment18_Q_ObserverInterventionCausality",
+    "Experiment18_R_FrontendBackendStateFidelity",
+    "Experiment18_S_CheckpointPersistenceExactRecovery",
+    "Experiment18_T_SustainedSimulationGrowingPopulation",
 ]

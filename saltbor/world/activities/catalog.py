@@ -1460,3 +1460,73 @@ class ActivityCatalog:
                 ),
             )
         )
+
+        self.register(
+            ActivityDefinition(
+                activity_type=ActivityType.CLEAN_HOUSE,
+                name="Limpiar y Ordenar el Hogar",
+                description="Barrer, trapear, lavar trastes o ropa y ordenar la vivienda familiar.",
+                default_duration_ticks=3,
+                requirements=ActivityRequirement(
+                    min_energy=0.15,
+                    allowed_location_types=(LocationType.RESIDENTIAL,),
+                ),
+                effects_per_tick=ActivityEffect(
+                    energy_delta=-0.04,
+                    hunger_delta=+0.02,
+                    social_delta=+0.02,
+                ),
+            )
+        )
+
+        self.register(
+            ActivityDefinition(
+                activity_type=ActivityType.ATTEND_RELIGIOUS_SERVICE,
+                name="Asistir al Culto o Misa",
+                description="Participar en servicios religiosos dominicales o comunitarios.",
+                default_duration_ticks=4,
+                requirements=ActivityRequirement(
+                    min_energy=0.10,
+                    allowed_location_types=(LocationType.PUBLIC_SPACE, LocationType.RECREATIONAL),
+                ),
+                effects_per_tick=ActivityEffect(
+                    energy_delta=-0.01,
+                    hunger_delta=+0.01,
+                    social_delta=+0.08,
+                ),
+            )
+        )
+
+        self.register(
+            ActivityDefinition(
+                activity_type=ActivityType.IDLE_INACTIVE,
+                name="Quedarse en Casa / Descanso Ocioso",
+                description="Permanecer en el hogar sin realizar actividad productiva; descansar o contemplar.",
+                default_duration_ticks=4,
+                requirements=ActivityRequirement(
+                    min_energy=0.0,
+                    allowed_location_types=(LocationType.RESIDENTIAL, LocationType.PUBLIC_SPACE),
+                ),
+                effects_per_tick=ActivityEffect(
+                    energy_delta=+0.02,
+                    hunger_delta=+0.01,
+                ),
+            )
+        )
+
+        self.register(
+            ActivityDefinition(
+                activity_type=ActivityType.HYGIENE,
+                name="Asearse / Bañarse",
+                description="Lavarse las manos, la cara o ducharse para aseo personal.",
+                default_duration_ticks=1,
+                requirements=ActivityRequirement(
+                    min_energy=0.05,
+                    allowed_location_types=(LocationType.RESIDENTIAL, LocationType.WORKPLACE),
+                ),
+                effects_per_tick=ActivityEffect(
+                    energy_delta=+0.03,
+                    health_delta=+0.01,
+                ),
+            )
+        )

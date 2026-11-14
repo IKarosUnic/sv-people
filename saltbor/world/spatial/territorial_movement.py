@@ -58,8 +58,17 @@ class TerritorialMovementEngine:
         transport_mode: str = "walking",
         is_rainy_season: bool = False,
         is_temporal: bool = False,
+        environment_engine: Optional[Any] = None,
     ) -> Optional[MovementJourney]:
-        """Initiate physical displacement along road network."""
+        """Initiate physical displacement along road network, modulating by dynamic weather."""
+        if environment_engine is not None and hasattr(environment_engine, "current_state"):
+            env_state = environment_engine.current_state
+            if env_state is not None:
+                if getattr(env_state, "condition", None) and env_state.condition.value in ["torrential_downpour", "moderate_rain"]:
+                    is_rainy_season = True
+                if getattr(env_state, "condition", None) and env_state.condition.value == "torrential_downpour":
+                    is_temporal = True
+
         route = self.geo.calculate_route(
             origin_district_id=origin_district_id,
             destination_district_id=destination_district_id,

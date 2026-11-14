@@ -82,6 +82,33 @@ pip install -e ".[dev]"
 
 The project includes an intuitive command-line interface via `saltbor.main`:
 
+### Launch Interactive Web UI & Visual Platform (Phase 1.3-V+)
+
+Launch the interactive web platform, REST API, and real-time visualization dashboard:
+
+```bash
+python -m saltbor.main serve
+```
+
+To automatically open your default browser on startup:
+
+```bash
+python -m saltbor.main serve --open-browser
+```
+
+#### Web UI CLI Options for `serve`:
+- `--host <str>`: Network interface host to bind (default: `127.0.0.1`).
+- `--port <int>`: Port to listen on (default: `8000`).
+- `--seed <int>`: Master random seed for deterministic reproducibility (default: `42`).
+- `--db <path>`: SQLite database file path (default: `saltbor.db`).
+- `--open-browser`: Automatically launch your web browser upon server start.
+
+Once running:
+- **Web Interface**: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
+- **Interactive OpenAPI/Swagger Docs**: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+
+---
+
 ### Run Simulation Loop
 
 Simulate 1 day (96 ticks at 15 minutes per tick) with live terminal reports every 6 simulated hours (24 ticks):

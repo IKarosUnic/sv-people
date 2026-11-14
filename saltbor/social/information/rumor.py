@@ -69,6 +69,25 @@ class RumorEngine:
         self.rng = rng or np.random.default_rng()
         self._known_information: dict[HumanID, dict[str, InformationItem]] = {} # human -> {info_id: item}
 
+    def ingest_broadcast_as_origin(
+        self,
+        listener_id: HumanID,
+        broadcast: Any,
+        current_tick: Tick,
+    ) -> InformationItem:
+        """Register a radio broadcast as initial factual knowledge in an agent's memory."""
+        info_id = getattr(broadcast, "broadcast_id", f"bcast_{current_tick}")
+        topic = getattr(broadcast, "topic", "news")
+        statement = getattr(broadcast, "headline", "Public Announcement")
+        return self.register_origin_knowledge(
+            human_id=listener_id,
+            info_id=info_id,
+            topic=topic,
+            statement=statement,
+            is_true=True,
+            current_tick=current_tick,
+        )
+
     def register_origin_knowledge(
         self,
         human_id: HumanID,

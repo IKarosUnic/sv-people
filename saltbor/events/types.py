@@ -209,8 +209,40 @@ class EventType(enum.Enum):
     INFRASTRUCTURE_DAMAGED = "infrastructure_damaged"
     ROAD_BLOCKED = "road_blocked"
     ROAD_REOPENED = "road_reopened"
+    JOURNEY_STARTED = "journey_started"
+    JOURNEY_CANCELLED = "journey_cancelled"
+    PLACE_ENTERED = "place_entered"
+    PLACE_EXITED = "place_exited"
+    PLACE_SATURATED = "place_saturated"
+    SERVICE_REQUESTED = "service_requested"
+    SERVICE_COMPLETED = "service_completed"
+    SERVICE_DENIED = "service_denied"
+    PRICE_ADJUSTED = "price_adjusted"
+    SUPPLY_SHORTAGE_EXPERIENCED = "supply_shortage_experienced"
     ENVIRONMENTAL_DEGRADATION = "environmental_degradation"
     RESOURCES_DEPLETED = "resources_depleted"
+
+    # --- Emergent Society & Institutions (Phase 1.9) ---
+    ORGANIZATION_FORMED = "organization_formed"
+    ORGANIZATION_FISSIONED = "organization_fissioned"
+    ORGANIZATION_MERGED = "organization_merged"
+    ORGANIZATION_DISSOLVED = "organization_dissolved"
+    INSTITUTION_FOUNDED = "institution_founded"
+    INSTITUTION_CRISIS = "institution_crisis"
+    INSTITUTION_REFORMED = "institution_reformed"
+    COLLECTIVE_PROPOSAL_TABLED = "collective_proposal_tabled"
+    COLLECTIVE_DECISION_ENACTED = "collective_decision_enacted"
+    COLLECTIVE_DECISION_REJECTED = "collective_decision_rejected"
+    NORM_ENACTED = "norm_enacted"
+    NORM_VIOLATED = "norm_violated"
+    NORM_SANCTIONED = "norm_sanctioned"
+    CPR_EXTRACTED = "cpr_extracted"
+    CPR_MAINTAINED = "cpr_maintained"
+    CPR_DEPLETED = "cpr_depleted"
+    INTERGROUP_DISPUTE_STARTED = "intergroup_dispute_started"
+    INTERGROUP_PACT_SIGNED = "intergroup_pact_signed"
+    INTERGROUP_PACT_BROKEN = "intergroup_pact_broken"
+    SOCIAL_STRATIFICATION_UPDATED = "social_stratification_updated"
 
 
 # Map each EventType to its category
@@ -381,8 +413,38 @@ EVENT_CATEGORIES: dict[EventType, EventCategory] = {
     EventType.INFRASTRUCTURE_DAMAGED: EventCategory.ENVIRONMENTAL,
     EventType.ROAD_BLOCKED: EventCategory.ENVIRONMENTAL,
     EventType.ROAD_REOPENED: EventCategory.ENVIRONMENTAL,
+    EventType.JOURNEY_STARTED: EventCategory.ENVIRONMENTAL,
+    EventType.JOURNEY_CANCELLED: EventCategory.ENVIRONMENTAL,
+    EventType.PLACE_ENTERED: EventCategory.ENVIRONMENTAL,
+    EventType.PLACE_EXITED: EventCategory.ENVIRONMENTAL,
+    EventType.PLACE_SATURATED: EventCategory.ENVIRONMENTAL,
+    EventType.SERVICE_REQUESTED: EventCategory.ECONOMIC,
+    EventType.SERVICE_COMPLETED: EventCategory.ECONOMIC,
+    EventType.SERVICE_DENIED: EventCategory.ECONOMIC,
+    EventType.PRICE_ADJUSTED: EventCategory.ECONOMIC,
+    EventType.SUPPLY_SHORTAGE_EXPERIENCED: EventCategory.ECONOMIC,
     EventType.ENVIRONMENTAL_DEGRADATION: EventCategory.ENVIRONMENTAL,
     EventType.RESOURCES_DEPLETED: EventCategory.ENVIRONMENTAL,
+    EventType.ORGANIZATION_FORMED: EventCategory.SOCIAL,
+    EventType.ORGANIZATION_FISSIONED: EventCategory.SOCIAL,
+    EventType.ORGANIZATION_MERGED: EventCategory.SOCIAL,
+    EventType.ORGANIZATION_DISSOLVED: EventCategory.SOCIAL,
+    EventType.INSTITUTION_FOUNDED: EventCategory.SOCIAL,
+    EventType.INSTITUTION_CRISIS: EventCategory.SOCIAL,
+    EventType.INSTITUTION_REFORMED: EventCategory.SOCIAL,
+    EventType.COLLECTIVE_PROPOSAL_TABLED: EventCategory.SOCIAL,
+    EventType.COLLECTIVE_DECISION_ENACTED: EventCategory.SOCIAL,
+    EventType.COLLECTIVE_DECISION_REJECTED: EventCategory.SOCIAL,
+    EventType.NORM_ENACTED: EventCategory.SOCIAL,
+    EventType.NORM_VIOLATED: EventCategory.SOCIAL,
+    EventType.NORM_SANCTIONED: EventCategory.SOCIAL,
+    EventType.CPR_EXTRACTED: EventCategory.ENVIRONMENTAL,
+    EventType.CPR_MAINTAINED: EventCategory.SOCIAL,
+    EventType.CPR_DEPLETED: EventCategory.ENVIRONMENTAL,
+    EventType.INTERGROUP_DISPUTE_STARTED: EventCategory.SOCIAL,
+    EventType.INTERGROUP_PACT_SIGNED: EventCategory.SOCIAL,
+    EventType.INTERGROUP_PACT_BROKEN: EventCategory.SOCIAL,
+    EventType.SOCIAL_STRATIFICATION_UPDATED: EventCategory.SOCIAL,
 }
 
 

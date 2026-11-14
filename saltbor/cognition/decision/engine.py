@@ -84,6 +84,12 @@ class DecisionContext:
     # a strong goal or a critical need must still be able to win.
     psychological: dict[str, Any] = field(default_factory=dict)
 
+    # Phase 1.8 Diurnal daily life schedule & transportation signals
+    diurnal_phase: Optional[str] = None
+    suggested_daily_activity: Optional[ActivityType] = None
+    suggested_daily_location: Optional[LocationID] = None
+    is_road_blocked_ahead: bool = False
+
 
 class DecisionEngine:
     """Multi-attribute utility decision engine with bounded rationality and cognitive traceability."""
@@ -689,6 +695,24 @@ class DecisionEngine:
                         affinity_bonus = val * 0.25
                         opt.expected_utility += affinity_bonus
                         opt.reasoning += f" [Affinity: positive memories at {opt.target_location_id}]"
+
+        # Phase 1.8: Diurnal routine alignment and daily life intentionality
+        if context.suggested_daily_activity:
+            matched = False
+            for opt in options:
+                if opt.action_type == context.suggested_daily_activity:
+                    matched = True
+                    opt.expected_utility += 0.35
+                    opt.reasoning += f" [Rutina diaria: {context.diurnal_phase or 'horario'}]"
+            if not matched:
+                options.append(
+                    ActionOption(
+                        action_type=context.suggested_daily_activity,
+                        target_location_id=context.suggested_daily_location or context.current_location_id,
+                        expected_utility=0.45,
+                        reasoning=f"Iniciativa de rutina diaria: {context.diurnal_phase or 'cotidiana'}",
+                    )
+                )
 
         return options
 

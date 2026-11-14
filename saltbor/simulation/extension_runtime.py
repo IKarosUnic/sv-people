@@ -203,6 +203,9 @@ class ExtensionRuntime:
             "world_interaction": self.runner.world_interaction.to_dict(),
             "perception": self.runner.perception.to_dict(),
             "psychology": self.runner.psychology.to_dict(),
+            "integrated_world": getattr(self.runner, "integrated_world", None).to_dict()
+            if getattr(self.runner, "integrated_world", None) is not None
+            else {},
             "life_events": self.life_events.to_dict(),
             "caregiving_history": list(self.runner.family_caregiving.caregiving_history),
             "causal_graph": self.runner.causal_graph.to_dict(),
@@ -237,6 +240,8 @@ class ExtensionRuntime:
             self.runner._psych_event_cursor = len(
                 getattr(self.runner.event_bus, "event_log", [])
             )
+        if data.get("integrated_world") and getattr(self.runner, "integrated_world", None) is not None:
+            self.runner.integrated_world.load_dict(data["integrated_world"])
         if data.get("life_events"):
             self.life_events.load_dict(data["life_events"])
             self.life_events._identity_factory = self.runner.identity_factory

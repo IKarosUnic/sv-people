@@ -550,6 +550,7 @@
                         <!-- Civilization Sub-Navigation Bar -->
                         <div class="civ-subnav-bar">
                             <button id="btn-civ-sub-macro" class="btn-subnav active" data-subpanel="macro">📊 Indicadores Macro</button>
+                            <button id="btn-civ-sub-phase19" class="btn-subnav" data-subpanel="phase19">🏛️ Sociedad, Instituciones & CPR</button>
                             <button id="btn-civ-sub-labor" class="btn-subnav" data-subpanel="labor">💼 Mercado Laboral & Empleo</button>
                             <button id="btn-civ-sub-housing" class="btn-subnav" data-subpanel="housing">🏠 Vivienda & Tenencia</button>
                             <button id="btn-civ-sub-commerce" class="btn-subnav" data-subpanel="commerce">🛒 Comercio & Consumo</button>
@@ -921,6 +922,70 @@
                                     <h4>Línea de Tiempo Causal Reciente</h4>
                                     <div id="extension-causal-container" class="data-table-container">
                                         <div class="loading-placeholder">Cargando eventos causales...</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Subpanel Phase 1.9: Emergent Society, Institutions, CPR & Governance -->
+                        <div id="civ-subpanel-phase19" class="civ-subpanel" style="display:none;">
+                            <div class="panel-section-header">
+                                <h3>Sociedad Emergente, Instituciones & Recursos Colectivos (Fase 1.9)</h3>
+                                <p class="section-desc">Evolución institucional, asambleas deliberativas, gestión Ostrom de bienes comunes (CPR), estratificación social y movilidad longitudinal.</p>
+                            </div>
+
+                            <!-- Stratification and Inequality Cards -->
+                            <div class="dashboard-summary-cards" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 16px;">
+                                <div class="stat-card">
+                                    <div class="stat-title">Gini Ingreso / SES</div>
+                                    <div id="stat-strat-gini-income" class="stat-number">0.32</div>
+                                    <div class="stat-sub">Desigualdad corriente</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-title">Gini Riqueza & Activos</div>
+                                    <div id="stat-strat-gini-wealth" class="stat-number">0.38</div>
+                                    <div class="stat-sub">Patrimonio acumulado</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-title">Ratio de Palma</div>
+                                    <div id="stat-strat-palma" class="stat-number">1.35</div>
+                                    <div class="stat-sub">Top 10% / Bottom 40%</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-title">Movilidad Social</div>
+                                    <div id="stat-strat-mobility" class="stat-number">0 ↗ | 0 ↘</div>
+                                    <div class="stat-sub">Transiciones de quintil</div>
+                                </div>
+                            </div>
+
+                            <!-- Two Columns: Organizations and Institutions -->
+                            <div class="adesco-grid">
+                                <div class="col-box">
+                                    <h4>Organizaciones Emergentes (Cooperativas & Gremios)</h4>
+                                    <div id="phase19-orgs-container" class="data-table-container">
+                                        <div class="loading-placeholder">Cargando organizaciones...</div>
+                                    </div>
+                                </div>
+                                <div class="col-box">
+                                    <h4>Instituciones Evolutivas (Salud, Educación, Justicia)</h4>
+                                    <div id="phase19-institutions-container" class="data-table-container">
+                                        <div class="loading-placeholder">Cargando instituciones...</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Two Columns: CPR Resources and Governance/Norms -->
+                            <div class="adesco-grid" style="margin-top:16px;">
+                                <div class="col-box">
+                                    <h4>Recursos de Uso Común (CPR — Ostrom)</h4>
+                                    <div id="phase19-cpr-container" class="data-table-container">
+                                        <div class="loading-placeholder">Cargando recursos comunes...</div>
+                                    </div>
+                                </div>
+                                <div class="col-box">
+                                    <h4>Normas Comunitarias & Disputas Intergrupales</h4>
+                                    <div id="phase19-norms-container" class="data-table-container">
+                                        <div class="loading-placeholder">Cargando normas y disputas...</div>
                                     </div>
                                 </div>
                             </div>
