@@ -1,9 +1,12 @@
-"""Technological and Knowledge Evolution Engine for SALTBOR Phase 1.0.
+"""Technological and Knowledge Evolution Engine for SALTBOR Phase 1.11.
 
 Models knowledge acquisition, innovation discovery, empirical constraints, diffusion, and potential loss/recovery:
-- Knowledge types: practical, scientific, technical, agricultural, commercial, medical, architectural, organizational, environmental, cultural.
-- Innovation steps: need identification, exploration, observation, hypothesis, experiment, solution, validation, transmission, adaptation, refinement.
-- Realistic constraints: requires material prerequisites, existing knowledge bases, labor time; non-linear loss and rediscovery.
+- Knowledge types: practical, scientific, technical, agricultural, commercial, medical, architectural,
+  organizational, environmental, cultural.
+- Innovation steps: need identification, exploration, observation, hypothesis, experiment, solution,
+  validation, transmission, adaptation, refinement.
+- Realistic constraints: requires material prerequisites, existing knowledge bases, labor time; non-linear loss,
+  obsolescence, and rediscovery.
 """
 
 from __future__ import annotations
@@ -38,6 +41,7 @@ class InnovationStatus(str, Enum):
     FORGOTTEN = "forgotten"
     RECOVERED = "recovered"
     FAILED = "failed"
+    OBSOLETE = "obsolete"
 
 
 @dataclass
@@ -53,10 +57,14 @@ class TechnologyNode:
     productivity_bonus: float = 0.1  # boost when adopted
     known_by_settlements: Set[str] = field(default_factory=set)
     known_by_individuals: Set[str] = field(default_factory=set)
+    superseded_by: Optional[str] = None
+    failure_history: List[str] = field(default_factory=list)
 
 
 class TechnologicalEvolutionEngine:
-    """Manages knowledge synthesis, invention, material constraints, transmission, and recovery."""
+    """Manages knowledge synthesis, invention, material constraints, transmission,
+    diffusion channels, failure, and obsolescence.
+    """
 
     def __init__(self) -> None:
         self.technologies: Dict[str, TechnologyNode] = {}
@@ -114,17 +122,27 @@ class TechnologicalEvolutionEngine:
         tech.known_by_individuals.add(innovator_id)
         return True
 
-    def diffuse_to_settlement(self, tech_id: str, target_settlement_id: str) -> bool:
+    def diffuse_to_settlement(
+        self,
+        tech_id: str,
+        target_settlement_id: str,
+        channel: str = "trade",
+    ) -> bool:
         if tech_id not in self.technologies:
             return False
         tech = self.technologies[tech_id]
-        if tech.status not in (InnovationStatus.VALIDATED, InnovationStatus.DIFFUSED, InnovationStatus.RECOVERED):
+        if tech.status not in (
+            InnovationStatus.VALIDATED,
+            InnovationStatus.DIFFUSED,
+            InnovationStatus.RECOVERED,
+        ):
             return False
         tech.known_by_settlements.add(target_settlement_id)
         tech.status = InnovationStatus.DIFFUSED
         self.diffusion_history.append({
             "tech_id": tech_id,
             "settlement_id": target_settlement_id,
+            "channel": channel,
             "status": tech.status.value,
         })
         return True
@@ -152,6 +170,15 @@ class TechnologicalEvolutionEngine:
             return True
         return False
 
+    def mark_obsolete(self, tech_id: str, superseding_tech_id: str) -> bool:
+        """Marks a technology as obsolete when a superior technique replaces it."""
+        if tech_id not in self.technologies:
+            return False
+        tech = self.technologies[tech_id]
+        tech.status = InnovationStatus.OBSOLETE
+        tech.superseded_by = superseding_tech_id
+        return True
+
     def record_failed_attempt(
         self,
         tech_id: str,
@@ -166,6 +193,7 @@ class TechnologicalEvolutionEngine:
             return False
         tech = self.technologies[tech_id]
         tech.status = InnovationStatus.FAILED
+        tech.failure_history.append(reason)
         self.diffusion_history.append({
             "tech_id": tech_id,
             "innovator_id": innovator_id,

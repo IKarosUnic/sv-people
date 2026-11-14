@@ -1,12 +1,15 @@
-"""Civilization and Historical Evolution modules for SALTBOR Phase 1.0."""
+"""Civilization and Historical Evolution modules for SALTBOR Phase 1.11."""
 
 from saltbor.civilization.economy import (
     EconomicCivilizationEngine,
     EconomicSector,
     Enterprise,
+    EnterpriseStatus,
     IntergenerationalWealthRecord,
+    RegionalEconomyProfile,
 )
 from saltbor.civilization.engine import (
+    CivilizationCondition,
     CivilizationEvolutionEngine,
     CivilizationPhase,
     CivilizationState,
@@ -35,6 +38,7 @@ from saltbor.civilization.migration import (
     MigrationStatus,
 )
 from saltbor.civilization.multigenerational import (
+    DemographicSnapshot,
     FamilyLineage,
     IndividualGenerationRecord,
     MultiGenerationalEngine,
@@ -44,14 +48,21 @@ from saltbor.civilization.resilience import (
     CivilizationResilienceEngine,
     CrisisEvent,
     CrisisType,
+    EnvironmentalFeedbackResult,
+    EnvironmentalState,
 )
 from saltbor.civilization.settlement import (
+    InfrastructureAsset,
+    InfrastructureOwnership,
+    InfrastructureType,
+    LandUseType,
     Settlement,
     SettlementEvolutionEngine,
     SettlementResources,
     SettlementStatus,
     SettlementType,
 )
+from saltbor.civilization.society_vector import SocietalIdentityVector
 from saltbor.civilization.stratification import (
     SocialProfile,
     SocialStratificationEngine,
@@ -68,6 +79,8 @@ __all__ = [
     "CivilizationEvolutionEngine",
     "CivilizationState",
     "CivilizationPhase",
+    "CivilizationCondition",
+    "SocietalIdentityVector",
     "HistoricalMemoryEngine",
     "HistoricalEvent",
     "HistoricalCategory",
@@ -78,6 +91,10 @@ __all__ = [
     "SettlementType",
     "SettlementStatus",
     "SettlementResources",
+    "InfrastructureAsset",
+    "InfrastructureType",
+    "InfrastructureOwnership",
+    "LandUseType",
     "MigrationDynamicsEngine",
     "MigrationRecord",
     "MigrationReason",
@@ -85,25 +102,30 @@ __all__ = [
     "EconomicCivilizationEngine",
     "EconomicSector",
     "Enterprise",
+    "EnterpriseStatus",
+    "RegionalEconomyProfile",
     "IntergenerationalWealthRecord",
     "TechnologicalEvolutionEngine",
     "TechnologyNode",
     "KnowledgeDomain",
     "InnovationStatus",
     "SocialStratificationEngine",
-    "SocialProfile",
     "SocialTier",
+    "SocialProfile",
     "CivilizationResilienceEngine",
-    "CrisisEvent",
     "CrisisType",
+    "CrisisEvent",
     "AdaptationStrategy",
+    "EnvironmentalState",
+    "EnvironmentalFeedbackResult",
     "MultiSocietyInteractionEngine",
-    "SocietyRelation",
     "RelationType",
+    "SocietyRelation",
+    "MultiGenerationalEngine",
+    "FamilyLineage",
+    "IndividualGenerationRecord",
+    "DemographicSnapshot",
     "HistoricalKnowledgeGraph",
     "HistoricalNodeType",
     "HistoricalRelType",
-    "MultiGenerationalEngine",
-    "IndividualGenerationRecord",
-    "FamilyLineage",
 ]

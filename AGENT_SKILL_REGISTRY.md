@@ -1,6 +1,6 @@
 # SALTBOR AGENT SKILL REGISTRY (AGENT_SKILL_REGISTRY.md)
 **Status**: ACTIVE ECOSYSTEM REGISTRY (Phase 1.10)  
-**Total Registered Skills**: 24 Specialized Domains  
+**Total Registered Skills**: 25 Specialized Domains  
 
 ---
 
@@ -9,6 +9,7 @@
 | Domain ID | Category | Skill Path | Primary Capabilities & Target |
 | :--- | :--- | :--- | :--- |
 | `architecture` | Systems Engineering | [agent_skills/architecture/SKILL.md](file:///c:/GIT%20HUB/sv%20people/agent_skills/architecture/SKILL.md) | Decoupled engines, state flow, dependency inversion, clean boundaries |
+| `orchestration` | Multi-Agent Systems | [agent_skills/orchestration/SKILL.md](file:///c:/GIT%20HUB/sv%20people/agent_skills/orchestration/SKILL.md) | Hierarchical multi-agent loop orchestration, cost-aware dynamic routing, review-and-fix |
 | `simulation` | Core Engine | [agent_skills/simulation/SKILL.md](file:///c:/GIT%20HUB/sv%20people/agent_skills/simulation/SKILL.md) | Tick loops, state checkpoints, clock synchronization, reproducibility |
 | `multi_agent_systems` | Agent Systems | [agent_skills/multi_agent_systems/SKILL.md](file:///c:/GIT%20HUB/sv%20people/agent_skills/multi_agent_systems/SKILL.md) | Spontaneous organization, leadership, social fission, cooperative norms |
 | `artificial_life` | Emergence & ALife | [agent_skills/artificial_life/SKILL.md](file:///c:/GIT%20HUB/sv%20people/agent_skills/artificial_life/SKILL.md) | Metabolic loops, physiological drives, open-ended cultural survival |

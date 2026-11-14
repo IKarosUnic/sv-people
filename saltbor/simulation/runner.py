@@ -116,6 +116,17 @@ from saltbor.simulation.scenarios.profiles import (
 )
 from saltbor.institutions.legal.code import LegalStatuteType
 
+# Phase 1.11 Civilization Evolution & Longitudinal Simulation
+from saltbor.civilization.engine import (
+    CivilizationCondition,
+    CivilizationEvolutionEngine,
+    CivilizationPhase,
+)
+from saltbor.civilization.longitudinal import (
+    LongitudinalCivilizationEngine,
+    LongitudinalTrajectoryResult,
+)
+
 # Phase 1.5 Human Daily Life, Labor Market & Housing Engines
 from saltbor.economy.commerce.commercial_engine import (
     CommercialEngine,
@@ -194,6 +205,16 @@ from saltbor.social.conflict.intergroup_engine import (
     IntergroupDispute,
     IntergroupConflictType,
     ConflictTensionStage,
+)
+from saltbor.scientific import (
+    CausalEventTraceabilityEngine,
+    CausalInferenceEngine,
+    CounterfactualCivilizationEngine,
+    ElSalvadorResearchContext,
+    ParameterSensitivityEngine,
+    PopulationSamplingEngine,
+    ScientificExperimentationEngine,
+    ScientificValidationFramework,
 )
 
 logger = logging.getLogger(__name__)
@@ -330,6 +351,16 @@ class SimulationRunner:
         # Connect causal event graph to listen to all simulation events
         self.event_bus.subscribe(None, lambda evt: self.causal_graph.add_event(evt))
 
+        # Phase 1.12 Scientific Experimentation & Causal Inference
+        self.causal_traceability = CausalEventTraceabilityEngine(self.causal_graph)
+        self.causal_inference = CausalInferenceEngine()
+        self.scientific_experiments = ScientificExperimentationEngine(self.causal_inference)
+        self.parameter_sensitivity = ParameterSensitivityEngine()
+        self.counterfactual_civilization = CounterfactualCivilizationEngine()
+        self.scientific_validation = ScientificValidationFramework()
+        self.salvadoran_context = ElSalvadorResearchContext()
+        self.population_sampling = PopulationSamplingEngine(self.population)
+
         # Persistence
         self.db = DatabaseManager(self.config.database_path)
         self.human_repo: Optional[HumanRepository] = None
@@ -357,6 +388,14 @@ class SimulationRunner:
         # Phase 1.4 Runtime Orchestrator
         self.orchestrator = SimulationRuntimeOrchestrator(self)
         self._register_orchestrator_engines()
+
+        # Phase 1.11 Civilization Evolution & Longitudinal Engine
+        self.civilization = CivilizationEvolutionEngine(rng=self.master_rng)
+        self.longitudinal_civilization = LongitudinalCivilizationEngine(
+            seed=self.config.random_seed,
+            initial_year=2026.0,
+            civilization_name="Sociedad Cuscatleca",
+        )
 
     def _register_orchestrator_engines(self) -> None:
         """Register all civilization engines into the master orchestrator."""
@@ -1100,6 +1139,15 @@ class SimulationRunner:
             if commerce_data:
                 logger.info("Restored civilization commerce state from database.")
 
+        # 0. Phase 1.11 Master Civilization Entity
+        if not self.civilization.civilizations:
+            self.civilization.found_civilization(
+                name="Sociedad Cuscatleca",
+                territory="El Salvador",
+                initial_year=2026.0,
+                initial_settlement_name="San Salvador Centro",
+            )
+
         # 1. Corner Store (Tienda San Pedro)
         if not self.salvadoran_informal_commerce.get_store("tienda_san_pedro"):
             owner = self.population.get_all()[1] if self.population.count > 1 else self.population.get_all()[0]
@@ -1669,6 +1717,9 @@ class SimulationRunner:
                     )
             except Exception:
                 pass
+
+            # Phase 1.11 Civilization Daily Synchronization
+            self.civilization.step_daily(current_tick)
             self.event_bus.emit(
                 SimulationEvent(
                     event_type=EventType.DAY_STARTED,
@@ -1763,6 +1814,21 @@ class SimulationRunner:
         """Run the simulation loop for a specified number of ticks."""
         for _ in range(num_ticks):
             self.step()
+
+    def run_longitudinal(
+        self,
+        years: float = 10.0,
+        seed: Optional[int] = None,
+        intervention: Optional[Callable[[LongitudinalCivilizationEngine], None]] = None,
+    ) -> LongitudinalTrajectoryResult:
+        """Execute a multi-year longitudinal civilization simulation run."""
+        used_seed = seed if seed is not None else self.config.random_seed
+        engine = LongitudinalCivilizationEngine(
+            seed=used_seed,
+            initial_year=2026.0,
+            civilization_name="Sociedad Cuscatleca",
+        )
+        return engine.run_horizon(years=years, intervention=intervention)
 
     def _prune_deceased_rows(self, living_ids: list[str]) -> None:
         """Remove database rows for humans no longer in the live registry."""

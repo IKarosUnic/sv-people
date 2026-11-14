@@ -166,6 +166,10 @@
                         <span class="nav-icon">📊</span>
                         <span class="nav-title">Informes de Validación</span>
                     </li>
+                    <li class="nav-item" data-view="scientific">
+                        <span class="nav-icon">🧪</span>
+                        <span class="nav-title">Investigación & Causalidad</span>
+                    </li>
                 </ul>
 
                 <div class="sidebar-footer">
@@ -1114,6 +1118,172 @@
                         </div>
                         <div class="reports-content-box" id="report-view-area">
                             <!-- Formatted report rendered here -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 11. SCIENTIFIC RESEARCH & CAUSAL INFERENCE WORKSPACE (PHASE 1.12) -->
+                <section id="view-scientific" class="view-panel">
+                    <div class="laboratory-container">
+                        <div class="lab-header">
+                            <h2>Espacio de Investigación Científica & Inferencia Causal (Fase 1.12)</h2>
+                            <p>Ambiente formal de experimentación reproducible: modelos causales estructurales (SCM), intervención do-calculus, análisis de sensibilidad paramétrica y contrafactuales civilizatorios en El Salvador.</p>
+                        </div>
+
+                        <!-- 5 Sub-Workspace Tabs -->
+                        <div class="scientific-subtabs-nav" style="display:flex; gap:8px; margin-bottom:20px; border-bottom:1px solid var(--border-strong); padding-bottom:10px;">
+                            <button class="btn btn-sm btn-primary active sci-subtab-btn" data-target="sci-panel-experiments">🔬 1. Explorador de Experimentos</button>
+                            <button class="btn btn-sm btn-secondary sci-subtab-btn" data-target="sci-panel-causal">🕸️ 2. Inferencia Causal & DAG</button>
+                            <button class="btn btn-sm btn-secondary sci-subtab-btn" data-target="sci-panel-geographic">🇸🇻 3. Investigación Territorial (14 Dptos)</button>
+                            <button class="btn btn-sm btn-secondary sci-subtab-btn" data-target="sci-panel-counterfactual">⏳ 4. Comparación Histórica & Contrafactuales</button>
+                            <button class="btn btn-sm btn-secondary sci-subtab-btn" data-target="sci-panel-observatory">📊 5. Observatorio Estadístico & Validación</button>
+                        </div>
+
+                        <!-- Sub-Panel 1: Experiment Explorer -->
+                        <div id="sci-panel-experiments" class="sci-subpanel-content">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                                <h3 style="margin:0;">Catálogo de Experimentos Fase 1.12 (A - T)</h3>
+                                <button id="btn-run-all-sci-experiments" class="btn btn-sm btn-primary">⚡ Ejecutar Batería 20 Experimentos</button>
+                            </div>
+                            <div class="experiments-grid" id="scientific-experiments-grid">
+                                <!-- Populated dynamically by app.js -->
+                            </div>
+                            <div class="lab-results-box" id="sci-experiment-result-box" style="display:none; margin-top:20px;">
+                                <h3>Resultado del Experimento Científico</h3>
+                                <div id="sci-experiment-result-content"></div>
+                            </div>
+                        </div>
+
+                        <!-- Sub-Panel 2: Causal Analysis & DAG -->
+                        <div id="sci-panel-causal" class="sci-subpanel-content" style="display:none;">
+                            <div class="economy-two-col" style="margin-bottom:24px;">
+                                <div class="col-box" style="flex:1;">
+                                    <h3>Modelo Causal Estructural (SCM) & Grafo DAG</h3>
+                                    <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Grafo Acíclico Dirigido (DAG) con variables socioeconómicas y climáticas de El Salvador. Distingue formalmente causas mecánicas vs correlaciones espurias.</p>
+                                    <div id="sci-causal-dag-container" style="background:var(--bg-surface); padding:12px; border-radius:var(--radius-md); border:1px solid var(--border-subtle); max-height:360px; overflow-y:auto;">
+                                        <div class="loading-placeholder">Cargando DAG Causal Estructural...</div>
+                                    </div>
+                                </div>
+                                <div class="col-box" style="flex:1;">
+                                    <h3>Estimador de Efecto Causal (do-Calculus de Pearl)</h3>
+                                    <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Estimación de Efecto Medio del Tratamiento (ATE), CATE por estrato, Cohen's d e intervalo de confianza bootstrap 95%.</p>
+                                    <div style="background:var(--bg-surface); padding:14px; border-radius:var(--radius-md); border:1px solid var(--border-subtle);">
+                                        <div style="display:flex; gap:10px; margin-bottom:10px;">
+                                            <div style="flex:1;">
+                                                <label style="font-size:11px; color:var(--text-muted);">Variable de Tratamiento (do(X=x))</label>
+                                                <select id="sel-causal-treatment" class="dropdown-select" style="width:100%;">
+                                                    <option value="drought_severity">drought_severity (Sequía)</option>
+                                                    <option value="education_level" selected>education_level (Educación)</option>
+                                                    <option value="parental_wealth">parental_wealth (Riqueza Parental)</option>
+                                                </select>
+                                            </div>
+                                            <div style="flex:1;">
+                                                <label style="font-size:11px; color:var(--text-muted);">Variable de Resultado (Y)</label>
+                                                <select id="sel-causal-outcome" class="dropdown-select" style="width:100%;">
+                                                    <option value="adult_income" selected>adult_income (Ingreso Adulto)</option>
+                                                    <option value="crop_productivity">crop_productivity (Rendimiento Agrícola)</option>
+                                                    <option value="internal_migration">internal_migration (Migración Interna)</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <button id="btn-calc-ate" class="btn btn-sm btn-primary" style="width:100%; margin-bottom:12px;">📊 Calcular ATE & Intervalos Bootstrap (95%)</button>
+                                        <div id="sci-ate-results-box" style="font-size:12px; line-height:1.6; color:var(--text-secondary);">
+                                            Seleccione variables y haga clic para estimar el efecto causal unconfounded.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 9-Tier Retrospective Causal Trace -->
+                            <div class="col-box" style="margin-top:16px;">
+                                <h3>Trazador Causal Retrospectivo en 9 Niveles</h3>
+                                <p style="font-size:12px; color:var(--text-muted); margin-bottom:10px;">Reconstruye la cadena causal completa desde condiciones iniciales y choques ambientales hasta decisiones micro, transacciones económicas y consecuencias históricas.</p>
+                                <div style="display:flex; gap:10px; margin-bottom:12px;">
+                                    <input type="text" id="input-trace-event-id" placeholder="ID de Evento de Simulación (o deje vacío para evento reciente)" class="input-pop-num" style="flex:1; text-align:left; padding:6px 10px;">
+                                    <button id="btn-run-causal-trace" class="btn btn-sm btn-primary">🔍 Trazar Cadena Causal</button>
+                                </div>
+                                <div id="sci-causal-trace-output" style="background:var(--bg-surface); padding:12px; border-radius:var(--radius-md); font-size:12px; max-height:280px; overflow-y:auto;">
+                                    Ingrese un ID de evento o presione 'Trazar Cadena Causal' para inspeccionar la genealogía causal del sistema.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sub-Panel 3: Geographic Research -->
+                        <div id="sci-panel-geographic" class="sci-subpanel-content" style="display:none;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                                <h3>Matriz Territorial & Ambiental de los 14 Departamentos</h3>
+                                <span style="font-size:11px; color:var(--accent-sky); font-weight:600;">Fundación Cartográfica OSM El Salvador (151,251 entidades)</span>
+                            </div>
+                            <div id="sci-departments-table-container" class="data-table-container" style="max-height:420px; overflow-y:auto;">
+                                <div class="loading-placeholder">Cargando perfiles departamentales de El Salvador...</div>
+                            </div>
+                        </div>
+
+                        <!-- Sub-Panel 4: Historical Comparison & Counterfactuals -->
+                        <div id="sci-panel-counterfactual" class="sci-subpanel-content" style="display:none;">
+                            <div class="economy-two-col">
+                                <div class="col-box" style="flex:1;">
+                                    <h3>Generador de Contrafactuales Civilizatorios</h3>
+                                    <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Bifurca el estado de la simulación en tick T_0 y ejecuta trayectorias paralelas bajo el mismo flujo estocástico de fondo.</p>
+                                    <div style="background:var(--bg-surface); padding:14px; border-radius:var(--radius-md); border:1px solid var(--border-subtle);">
+                                        <div style="margin-bottom:10px;">
+                                            <label style="font-size:11px; color:var(--text-muted);">Escenario Contrafactual</label>
+                                            <select id="sel-counterfactual-scenario" class="dropdown-select" style="width:100%;">
+                                                <option value="highway_infrastructure">Ampliación Red Vial Troncal del Norte (Chalatenango)</option>
+                                                <option value="prolonged_drought">Sequía Canicular Prolongada (Corredor Seco Oriental)</option>
+                                                <option value="remittance_drop">Choque de Reducción de Remesas (-75%)</option>
+                                                <option value="adesco_water_rule">Regla Ostrom Estricta en Comité de Agua Potable</option>
+                                            </select>
+                                        </div>
+                                        <div style="margin-bottom:10px;">
+                                            <label style="font-size:11px; color:var(--text-muted);">Tick de Intervención (Bifurcación)</label>
+                                            <input type="number" id="input-cf-tick" value="30" min="5" max="100" class="input-pop-num" style="width:100%; text-align:left; padding:6px 10px;">
+                                        </div>
+                                        <button id="btn-run-counterfactual" class="btn btn-sm btn-primary" style="width:100%;">⚡ Bifurcar y Comparar Trayectorias</button>
+                                    </div>
+                                </div>
+                                <div class="col-box" style="flex:1;">
+                                    <h3>Divergencia de Trayectorias (Factual vs Contrafactual)</h3>
+                                    <div id="sci-counterfactual-results-box" style="background:var(--bg-surface); padding:14px; border-radius:var(--radius-md); border:1px solid var(--border-subtle); min-height:220px; font-size:12px; line-height:1.6;">
+                                        Seleccione un escenario y ejecute la bifurcación para medir el punto exacto de divergencia y el área bajo la curva.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sub-Panel 5: Statistical Observatory & Sensitivity -->
+                        <div id="sci-panel-observatory" class="sci-subpanel-content" style="display:none;">
+                            <div class="economy-two-col" style="margin-bottom:20px;">
+                                <div class="col-box" style="flex:1;">
+                                    <h3>Observatorio Estadístico de Población & Riqueza</h3>
+                                    <div id="sci-observatory-metrics-box" style="background:var(--bg-surface); padding:14px; border-radius:var(--radius-md); border:1px solid var(--border-subtle); font-size:12px; line-height:1.7;">
+                                        <div class="loading-placeholder">Cargando métricas de desigualdad, Gini y CIs 95%...</div>
+                                    </div>
+                                </div>
+                                <div class="col-box" style="flex:1;">
+                                    <h3>Barrer Sensibilidad Paramétrica (OAT)</h3>
+                                    <p style="font-size:12px; color:var(--text-muted); margin-bottom:10px;">Evalúa elasticidad, monotonicidad y puntos de inflexión no-lineales.</p>
+                                    <div style="display:flex; gap:10px; margin-bottom:10px;">
+                                        <select id="sel-sensitivity-param" class="dropdown-select" style="flex:1;">
+                                            <option value="initial_wealth">Riqueza Inicial de Hogares</option>
+                                            <option value="drought_severity">Severidad de Sequía</option>
+                                            <option value="remittance_pct">Dependencia de Remesas</option>
+                                        </select>
+                                        <button id="btn-run-sensitivity-sweep" class="btn btn-sm btn-primary">📊 Barrer Parámetro</button>
+                                    </div>
+                                    <div id="sci-sensitivity-results-box" style="background:var(--bg-surface); padding:12px; border-radius:var(--radius-md); font-size:12px; line-height:1.5; min-height:120px;">
+                                        Presione 'Barrer Parámetro' para calcular elasticidad y detectar puntos de quiebre.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Validation Framework & Official Benchmarks -->
+                            <div class="col-box">
+                                <h3>Matriz de Validación Científica & Comparación Multilateral</h3>
+                                <div id="sci-validation-report-box" style="background:var(--bg-surface); padding:14px; border-radius:var(--radius-md); border:1px solid var(--border-subtle); font-size:12px; line-height:1.6;">
+                                    <div class="loading-placeholder">Cargando benchmarks oficiales BCR / Banco Mundial / FAO...</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </section>

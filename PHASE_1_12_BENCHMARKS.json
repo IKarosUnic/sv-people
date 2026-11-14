@@ -1,0 +1,160 @@
+{
+  "timestamp": "2026-11-14T11:41:29Z",
+  "platform": "Windows 11 (AMD64)",
+  "python_version": "3.14.5",
+  "baseline_rss_mb": 0.0,
+  "benchmarks": {
+    "causal_inference_bootstrap": {
+      "duration_ms": 74.34,
+      "ate_estimated": 2.5,
+      "sample_size": 200,
+      "n_bootstraps": 500,
+      "memory_rss_mb": 0.0
+    },
+    "household_coping_exp": {
+      "duration_ms": 0.32,
+      "success": true,
+      "metrics": {
+        "resilience_rate": 0.43333333333333335,
+        "mean_fiado_debt": 13.914821459557041,
+        "shock_magnitude_pct": 80.0
+      }
+    },
+    "community_cpr_water": {
+      "duration_ms": 0.77,
+      "success": true,
+      "metrics": {
+        "stock_regulated_cpr": 1100.0,
+        "stock_open_access": 0.0,
+        "water_preserved_differential": 1100.0
+      }
+    },
+    "regional_14_departments": {
+      "duration_ms": 0.48,
+      "departments_count": 14,
+      "osm_feature_count": 151251
+    },
+    "longitudinal_50_years": {
+      "duration_ms": 0.04,
+      "success": true,
+      "metrics": {
+        "pop_sustainable_year50": 210.52424206074647,
+        "pop_collapse_year50": 20.0,
+        "resource_sustainable_year50": 302.6868783800747,
+        "resource_collapse_year50": 31.79806058431739
+      }
+    },
+    "multi_seed_reproducibility": {
+      "duration_ms": 5.48,
+      "success": true,
+      "seeds_count": 5,
+      "std_variance": 0.0638
+    },
+    "throughput_scaling": {
+      "agents_20": {
+        "duration_ms": 0.066,
+        "agent_ticks_per_sec": 303951.3
+      },
+      "agents_100": {
+        "duration_ms": 0.033,
+        "agent_ticks_per_sec": 3012049.0
+      },
+      "agents_500": {
+        "duration_ms": 0.04,
+        "agent_ticks_per_sec": 12531333.4
+      },
+      "agents_1000": {
+        "duration_ms": 0.069,
+        "agent_ticks_per_sec": 14556040.9
+      }
+    },
+    "suite_20_experiments": {
+      "total_duration_sec": 0.065,
+      "mean_duration_per_exp_ms": 3.24,
+      "all_pass": true,
+      "experiments": {
+        "EXP_112_A": {
+          "success": true,
+          "duration_ms": 0.29
+        },
+        "EXP_112_B": {
+          "success": true,
+          "duration_ms": 0.29
+        },
+        "EXP_112_C": {
+          "success": true,
+          "duration_ms": 0.27
+        },
+        "EXP_112_D": {
+          "success": true,
+          "duration_ms": 1.21
+        },
+        "EXP_112_E": {
+          "success": true,
+          "duration_ms": 1.78
+        },
+        "EXP_112_F": {
+          "success": true,
+          "duration_ms": 0.73
+        },
+        "EXP_112_G": {
+          "success": true,
+          "duration_ms": 0.22
+        },
+        "EXP_112_H": {
+          "success": true,
+          "duration_ms": 0.38
+        },
+        "EXP_112_I": {
+          "success": true,
+          "duration_ms": 0.1
+        },
+        "EXP_112_J": {
+          "success": true,
+          "duration_ms": 0.33
+        },
+        "EXP_112_K": {
+          "success": true,
+          "duration_ms": 0.04
+        },
+        "EXP_112_L": {
+          "success": true,
+          "duration_ms": 0.06
+        },
+        "EXP_112_M": {
+          "success": true,
+          "duration_ms": 0.29
+        },
+        "EXP_112_N": {
+          "success": true,
+          "duration_ms": 0.01
+        },
+        "EXP_112_O": {
+          "success": true,
+          "duration_ms": 0.13
+        },
+        "EXP_112_P": {
+          "success": true,
+          "duration_ms": 5.23
+        },
+        "EXP_112_Q": {
+          "success": true,
+          "duration_ms": 53.11
+        },
+        "EXP_112_R": {
+          "success": true,
+          "duration_ms": 0.15
+        },
+        "EXP_112_S": {
+          "success": true,
+          "duration_ms": 0.03
+        },
+        "EXP_112_T": {
+          "success": true,
+          "duration_ms": 0.19
+        }
+      }
+    }
+  },
+  "peak_rss_mb": 0.0
+}

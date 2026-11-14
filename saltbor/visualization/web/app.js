@@ -233,6 +233,8 @@
             fetchIndividualDetail(state.selectedAgentUid);
         } else if (viewName === "cognitive" && state.selectedAgentUid) {
             fetchCognitiveSubsystems(state.selectedAgentUid);
+        } else if (viewName === "scientific") {
+            fetchScientificWorkspaceData();
         }
     }
 
@@ -4164,6 +4166,508 @@
                 `;
             }
         });
+    }
+
+    // =========================================================================
+    // 14. SCIENTIFIC RESEARCH & CAUSAL INFERENCE WORKSPACE (PHASE 1.12)
+    // =========================================================================
+    function initScientificWorkspaceListeners() {
+        document.querySelectorAll(".sci-subtab-btn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                document.querySelectorAll(".sci-subtab-btn").forEach((b) => {
+                    b.classList.remove("active", "btn-primary");
+                    b.classList.add("btn-secondary");
+                });
+                btn.classList.remove("btn-secondary");
+                btn.classList.add("active", "btn-primary");
+
+                const targetId = btn.dataset.target;
+                document.querySelectorAll(".sci-subpanel-content").forEach((panel) => {
+                    panel.style.display = (panel.id === targetId) ? "block" : "none";
+                });
+
+                if (targetId === "sci-panel-experiments") fetchScientificExperiments();
+                else if (targetId === "sci-panel-causal") fetchCausalDAG();
+                else if (targetId === "sci-panel-geographic") fetchGeographicDepartments();
+                else if (targetId === "sci-panel-observatory") {
+                    fetchStatisticalObservatory();
+                    fetchValidationReport();
+                }
+            });
+        });
+
+        const btnRunAll = document.getElementById("btn-run-all-sci-experiments");
+        if (btnRunAll) {
+            btnRunAll.addEventListener("click", runAllScientificExperiments);
+        }
+
+        const btnAte = document.getElementById("btn-calc-ate");
+        if (btnAte) {
+            btnAte.addEventListener("click", estimateCausalATE);
+        }
+
+        const btnTrace = document.getElementById("btn-run-causal-trace");
+        if (btnTrace) {
+            btnTrace.addEventListener("click", runCausalTrace);
+        }
+
+        const btnCf = document.getElementById("btn-run-counterfactual");
+        if (btnCf) {
+            btnCf.addEventListener("click", runCounterfactualScenario);
+        }
+
+        const btnSweep = document.getElementById("btn-run-sensitivity-sweep");
+        if (btnSweep) {
+            btnSweep.addEventListener("click", runSensitivitySweep);
+        }
+    }
+
+    function fetchScientificWorkspaceData() {
+        initScientificWorkspaceListeners();
+        fetchScientificExperiments();
+    }
+
+    async function fetchScientificExperiments() {
+        const grid = document.getElementById("scientific-experiments-grid");
+        if (!grid) return;
+        grid.innerHTML = '<div class="loading-placeholder">Cargando catálogo de experimentos científicos...</div>';
+
+        try {
+            const res = await fetch("/api/scientific/experiments");
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const experiments = await res.json();
+
+            grid.innerHTML = experiments.map((exp) => `
+                <div class="experiment-card" id="card-${exp.experiment_id}">
+                    <div class="exp-card-header">
+                        <span class="badge badge-primary">${escapeExtensionHtml(exp.experiment_id)}</span>
+                        <h4>${escapeExtensionHtml(exp.name)}</h4>
+                    </div>
+                    <p class="exp-card-desc">${escapeExtensionHtml(exp.description)}</p>
+                    <div class="exp-card-meta">
+                        <span>Ticks: ${exp.duration_ticks}</span>
+                        <span>Semilla: ${exp.random_seed}</span>
+                    </div>
+                    <div class="exp-card-actions" style="margin-top:10px;">
+                        <button class="btn btn-sm btn-primary btn-run-sci-exp" data-exp-id="${exp.experiment_id}">▶ Ejecutar Experimento</button>
+                    </div>
+                </div>
+            `).join("");
+
+            grid.querySelectorAll(".btn-run-sci-exp").forEach((btn) => {
+                btn.addEventListener("click", () => runScientificExperiment(btn.dataset.expId));
+            });
+        } catch (err) {
+            grid.innerHTML = `<div class="error-placeholder">Error al cargar experimentos: ${err.message}</div>`;
+        }
+    }
+
+    async function runScientificExperiment(expId) {
+        const resBox = document.getElementById("sci-experiment-result-box");
+        const resContent = document.getElementById("sci-experiment-result-content");
+        if (resBox && resContent) {
+            resBox.style.display = "block";
+            resContent.innerHTML = `<div class="loading-placeholder">Ejecutando ${expId}... Por favor espere.</div>`;
+        }
+
+        try {
+            const res = await fetch(`/api/scientific/run/${expId}`, { method: "POST" });
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const data = await res.json();
+
+            if (resContent) {
+                resContent.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <h4>${escapeExtensionHtml(data.name)} (${data.experiment_id})</h4>
+                        <span class="badge ${data.success ? 'badge-success' : 'badge-danger'}" style="font-size:12px; font-weight:700;">
+                            ${data.success ? '✓ ÉXITO CIENTÍFICO' : '✕ NO CONFIRMADO'}
+                        </span>
+                    </div>
+                    <p style="font-size:13px; font-weight:500; margin-bottom:10px;">${escapeExtensionHtml(data.summary)}</p>
+                    <div style="margin-bottom:12px;">
+                        <h5 style="margin:0 0 6px 0; font-size:12px; color:var(--text-muted);">Evaluación de Hipótesis Falsables:</h5>
+                        <ul style="margin:0; padding-left:18px; font-size:12px;">
+                            ${data.hypotheses.map(h => `
+                                <li>${escapeExtensionHtml(h.hypothesis)}: <strong>${h.confirmed ? 'CONFIRMADA ✓' : 'REFUTADA ✕'}</strong></li>
+                            `).join("")}
+                        </ul>
+                    </div>
+                    <div style="background:var(--bg-elevated); padding:10px; border-radius:var(--radius-sm); font-size:11px; font-family:var(--font-mono);">
+                        <strong>Métricas Cuantitativas:</strong>
+                        <pre style="margin:6px 0 0 0; white-space:pre-wrap;">${JSON.stringify(data.metrics, null, 2)}</pre>
+                    </div>
+                `;
+            }
+        } catch (err) {
+            if (resContent) {
+                resContent.innerHTML = `<div class="error-placeholder">Error al ejecutar experimento: ${err.message}</div>`;
+            }
+        }
+    }
+
+    async function runAllScientificExperiments() {
+        const btn = document.getElementById("btn-run-all-sci-experiments");
+        if (btn) btn.disabled = true;
+
+        const resBox = document.getElementById("sci-experiment-result-box");
+        const resContent = document.getElementById("sci-experiment-result-content");
+        if (resBox && resContent) {
+            resBox.style.display = "block";
+            resContent.innerHTML = '<div class="loading-placeholder">Ejecutando suite completa de 20 experimentos...</div>';
+        }
+
+        const expIds = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T"].map(c => `EXP_112_${c}`);
+        const results = [];
+
+        for (const id of expIds) {
+            try {
+                const r = await fetch(`/api/scientific/run/${id}`, { method: "POST" });
+                const d = await r.json();
+                results.push(d);
+            } catch (ex) {
+                results.push({ experiment_id: id, name: id, success: false, summary: ex.message, hypotheses: [], metrics: {} });
+            }
+        }
+
+        if (btn) btn.disabled = false;
+
+        const passCount = results.filter(r => r.success).length;
+        if (resContent) {
+            resContent.innerHTML = `
+                <div style="margin-bottom:12px;">
+                    <h4>Batería Completa Fase 1.12 Finalizada</h4>
+                    <span class="badge ${passCount === 20 ? 'badge-success' : 'badge-warning'}" style="font-size:13px; font-weight:700;">
+                        ${passCount} / 20 EXPERIMENTOS EXITOSOS
+                    </span>
+                </div>
+                <div class="data-table-container" style="max-height:300px; overflow-y:auto;">
+                    <table class="data-table" style="font-size:11px;">
+                        <thead><tr><th>ID</th><th>Nombre</th><th>Estado</th><th>Resumen</th></tr></thead>
+                        <tbody>
+                            ${results.map(r => `
+                                <tr>
+                                    <td><strong>${r.experiment_id}</strong></td>
+                                    <td>${escapeExtensionHtml(r.name)}</td>
+                                    <td><span class="badge ${r.success ? 'badge-success' : 'badge-danger'}">${r.success ? 'PASS' : 'FAIL'}</span></td>
+                                    <td>${escapeExtensionHtml(r.summary)}</td>
+                                </tr>
+                            `).join("")}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+    }
+
+    async function fetchCausalDAG() {
+        const container = document.getElementById("sci-causal-dag-container");
+        if (!container) return;
+        try {
+            const res = await fetch("/api/scientific/causal/dag");
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const dag = await res.json();
+
+            container.innerHTML = `
+                <div style="margin-bottom:8px; font-size:11px; color:var(--text-muted);">
+                    Variables Registradas: <strong>${dag.variable_count}</strong> | Vínculos Causales: <strong>${dag.edge_count}</strong>
+                </div>
+                <table class="data-table" style="font-size:11px;">
+                    <thead><tr><th>Causa (Origen)</th><th>Efecto (Destino)</th><th>Tipo Causal</th><th>Fuerza</th><th>Mecanismo Teórico</th></tr></thead>
+                    <tbody>
+                        ${dag.edges.map(e => `
+                            <tr>
+                                <td><strong>${escapeExtensionHtml(e.source)}</strong></td>
+                                <td><strong>${escapeExtensionHtml(e.target)}</strong></td>
+                                <td><span class="badge ${e.relation_type === 'experimentally_supported' ? 'badge-success' : 'badge-warning'}">${escapeExtensionHtml(e.relation_type)}</span></td>
+                                <td>${e.weight.toFixed(2)}</td>
+                                <td style="color:var(--text-muted);">${escapeExtensionHtml(e.mechanism || 'N/A')}</td>
+                            </tr>
+                        `).join("")}
+                    </tbody>
+                </table>
+            `;
+        } catch (err) {
+            container.innerHTML = `<div class="error-placeholder">Error al cargar DAG causal: ${err.message}</div>`;
+        }
+    }
+
+    async function estimateCausalATE() {
+        const treatSel = document.getElementById("sel-causal-treatment");
+        const outSel = document.getElementById("sel-causal-outcome");
+        const resBox = document.getElementById("sci-ate-results-box");
+        if (!treatSel || !outSel || !resBox) return;
+
+        resBox.innerHTML = '<div class="loading-placeholder">Calculando ATE con do-calculus e intervalos bootstrap (95%)...</div>';
+
+        try {
+            const payload = {
+                treatment_var: treatSel.value,
+                outcome_var: outSel.value,
+                treatment_val: 12.0,
+                control_val: 6.0,
+                sample_size: 150,
+            };
+            const res = await fetch("/api/scientific/causal/estimate_ate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const data = await res.json();
+
+            resBox.innerHTML = `
+                <div style="border-left:3px solid var(--accent-emerald); padding-left:10px; margin-top:8px;">
+                    <div><strong>Efecto Medio del Tratamiento (ATE):</strong> <span style="font-size:14px; color:var(--accent-emerald); font-weight:700;">${data.ate.toFixed(2)}</span></div>
+                    <div><strong>Intervalo de Confianza Bootstrap (95%):</strong> [${data.confidence_interval_95[0].toFixed(2)}, ${data.confidence_interval_95[1].toFixed(2)}]</div>
+                    <div><strong>Tamaño del Efecto (Cohen's d):</strong> ${data.cohens_d.toFixed(2)} (${data.is_practically_significant ? 'Prácticamente Significativo' : 'Efecto Leve'})</div>
+                    <div><strong>Significancia Estadística:</strong> p-value = ${data.p_value.toFixed(4)} ${data.is_statistically_significant ? '(p < 0.05 ✓)' : '(No significativo)'}</div>
+                    <div style="margin-top:6px; font-size:11px; color:var(--accent-amber);">
+                        <strong>Confusores Detectados por Backdoor:</strong> ${data.potential_confounders.length ? data.potential_confounders.join(", ") : 'Ninguno (Directamente Identificable)'}
+                    </div>
+                </div>
+            `;
+        } catch (err) {
+            resBox.innerHTML = `<div class="error-placeholder">Error al estimar ATE: ${err.message}</div>`;
+        }
+    }
+
+    async function runCausalTrace() {
+        const input = document.getElementById("input-trace-event-id");
+        const output = document.getElementById("sci-causal-trace-output");
+        if (!output) return;
+
+        const eventId = (input && input.value.trim()) ? input.value.trim() : "recent";
+        output.innerHTML = '<div class="loading-placeholder">Reconstruyendo cadena causal multi-nivel...</div>';
+
+        try {
+            const res = await fetch(`/api/scientific/causal/trace/${eventId}`);
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const trace = await res.json();
+
+            output.innerHTML = `
+                <div style="margin-bottom:8px;">
+                    <strong>Evento Objetivo:</strong> ${escapeExtensionHtml(trace.target_description)} (Tick ${trace.target_tick})<br>
+                    <span style="font-size:11px; color:var(--text-muted);">${escapeExtensionHtml(trace.root_cause_summary)}</span>
+                </div>
+                <table class="data-table" style="font-size:11px;">
+                    <thead><tr><th>Paso</th><th>Tick</th><th>Nivel de Causalidad</th><th>Acontecimiento</th><th>Vínculo</th></tr></thead>
+                    <tbody>
+                        ${trace.steps.map((s, idx) => `
+                            <tr>
+                                <td>${idx + 1}</td>
+                                <td>${s.tick}</td>
+                                <td><span class="badge badge-outline">${escapeExtensionHtml(s.tier)}</span></td>
+                                <td>${escapeExtensionHtml(s.description)}</td>
+                                <td><span class="badge ${s.link_to_next === 'direct_cause' ? 'badge-success' : 'badge-warning'}">${escapeExtensionHtml(s.link_to_next)}</span></td>
+                            </tr>
+                        `).join("")}
+                    </tbody>
+                </table>
+            `;
+        } catch (err) {
+            output.innerHTML = `<div class="error-placeholder">Error al trazar causalidad: ${err.message}</div>`;
+        }
+    }
+
+    async function fetchGeographicDepartments() {
+        const container = document.getElementById("sci-departments-table-container");
+        if (!container) return;
+        container.innerHTML = '<div class="loading-placeholder">Cargando perfiles territoriales de los 14 departamentos...</div>';
+
+        try {
+            const res = await fetch("/api/scientific/geographic/departments");
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const depts = await res.json();
+
+            container.innerHTML = `
+                <table class="data-table" style="font-size:11px;">
+                    <thead>
+                        <tr>
+                            <th>Departamento</th>
+                            <th>Zona</th>
+                            <th>Topografía</th>
+                            <th>Urbanización</th>
+                            <th>Riesgo Sequía</th>
+                            <th>Riesgo Inundación</th>
+                            <th>Deslaves</th>
+                            <th>Remesas (%)</th>
+                            <th>Informalidad</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${depts.map(d => `
+                            <tr>
+                                <td><strong>${escapeExtensionHtml(d.department)}</strong></td>
+                                <td>${escapeExtensionHtml(d.zone)}</td>
+                                <td style="font-size:10px; color:var(--text-muted);">${escapeExtensionHtml(d.topography)}</td>
+                                <td>${(d.urban_ratio * 100).toFixed(0)}%</td>
+                                <td><span class="badge ${d.drought_risk > 0.6 ? 'badge-danger' : 'badge-outline'}">${(d.drought_risk * 100).toFixed(0)}%</span></td>
+                                <td><span class="badge ${d.flood_risk > 0.6 ? 'badge-danger' : 'badge-outline'}">${(d.flood_risk * 100).toFixed(0)}%</span></td>
+                                <td><span class="badge ${d.landslide_risk > 0.6 ? 'badge-warning' : 'badge-outline'}">${(d.landslide_risk * 100).toFixed(0)}%</span></td>
+                                <td>${(d.remittance_household_pct * 100).toFixed(0)}%</td>
+                                <td>${(d.informal_employment_rate * 100).toFixed(0)}%</td>
+                            </tr>
+                        `).join("")}
+                    </tbody>
+                </table>
+            `;
+        } catch (err) {
+            container.innerHTML = `<div class="error-placeholder">Error al cargar departamentos: ${err.message}</div>`;
+        }
+    }
+
+    async function runCounterfactualScenario() {
+        const sel = document.getElementById("sel-counterfactual-scenario");
+        const tickInput = document.getElementById("input-cf-tick");
+        const resBox = document.getElementById("sci-counterfactual-results-box");
+        if (!sel || !resBox) return;
+
+        resBox.innerHTML = '<div class="loading-placeholder">Bifurcando estado y simulando trayectorias paralelas...</div>';
+
+        try {
+            const payload = {
+                scenario_name: sel.options[sel.selectedIndex].text,
+                intervention_tick: parseInt(tickInput ? tickInput.value : "30") || 30,
+                intervention_description: sel.value,
+                altered_parameters: { multiplier: 1.45 },
+            };
+            const res = await fetch("/api/scientific/counterfactual/compare", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const data = await res.json();
+
+            resBox.innerHTML = `
+                <div style="margin-bottom:8px;">
+                    <span class="badge badge-primary">Bifurcación en Tick ${data.divergence_point_tick}</span>
+                    <h5 style="margin:6px 0;">${escapeExtensionHtml(data.scenario_name)}</h5>
+                    <p style="font-size:12px; color:var(--text-secondary); margin:0 0 10px 0;">${escapeExtensionHtml(data.qualitative_divergence)}</p>
+                </div>
+                <div style="background:var(--bg-elevated); padding:10px; border-radius:var(--radius-sm); font-size:11px;">
+                    <strong>Comparación Factual vs Contrafactual:</strong>
+                    <table class="data-table" style="font-size:11px; margin-top:6px;">
+                        <thead><tr><th>Métrica</th><th>Valor Factual Final</th><th>Valor Contrafactual Final</th><th>Divergencia Total</th></tr></thead>
+                        <tbody>
+                            ${Object.keys(data.baseline_metrics).map(k => `
+                                <tr>
+                                    <td><strong>${escapeExtensionHtml(k)}</strong></td>
+                                    <td>${data.baseline_metrics[k].slice(-1)[0].toFixed(1)}</td>
+                                    <td style="color:var(--accent-emerald); font-weight:700;">${data.counterfactual_metrics[k].slice(-1)[0].toFixed(1)}</td>
+                                    <td>${data.total_trajectory_divergence[k] ? data.total_trajectory_divergence[k].toFixed(1) : 'N/A'}</td>
+                                </tr>
+                            `).join("")}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        } catch (err) {
+            resBox.innerHTML = `<div class="error-placeholder">Error en contrafactual: ${err.message}</div>`;
+        }
+    }
+
+    async function fetchStatisticalObservatory() {
+        const box = document.getElementById("sci-observatory-metrics-box");
+        if (!box) return;
+        try {
+            const res = await fetch("/api/scientific/statistical/observatory");
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const obs = await res.json();
+
+            box.innerHTML = `
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;">
+                    <div style="background:var(--bg-elevated); padding:8px 12px; border-radius:var(--radius-sm);">
+                        <div style="color:var(--text-muted); font-size:11px;">Coeficiente de Gini (Riqueza)</div>
+                        <div style="font-size:18px; font-weight:700; color:var(--accent-amber);">${obs.gini_wealth.toFixed(3)}</div>
+                    </div>
+                    <div style="background:var(--bg-elevated); padding:8px 12px; border-radius:var(--radius-sm);">
+                        <div style="color:var(--text-muted); font-size:11px;">Razón de Palma (Top 10% / Bot 40%)</div>
+                        <div style="font-size:18px; font-weight:700; color:var(--accent-sky);">${obs.palma_ratio.toFixed(2)}</div>
+                    </div>
+                    <div style="background:var(--bg-elevated); padding:8px 12px; border-radius:var(--radius-sm);">
+                        <div style="color:var(--text-muted); font-size:11px;">Riqueza Media (CI 95% Bootstrap)</div>
+                        <div style="font-size:13px; font-weight:600;">$${obs.mean_wealth.toFixed(1)} [${obs.ci_95_wealth[0].toFixed(1)}, ${obs.ci_95_wealth[1].toFixed(1)}]</div>
+                    </div>
+                    <div style="background:var(--bg-elevated); padding:8px 12px; border-radius:var(--radius-sm);">
+                        <div style="color:var(--text-muted); font-size:11px;">Tasa Informalidad & Remesas</div>
+                        <div style="font-size:13px; font-weight:600;">${(obs.informal_employment_rate * 100).toFixed(0)}% informal | ${(obs.remittance_dependency_rate * 100).toFixed(0)}% remesas</div>
+                    </div>
+                </div>
+            `;
+        } catch (err) {
+            box.innerHTML = `<div class="error-placeholder">Error al cargar observatorio: ${err.message}</div>`;
+        }
+    }
+
+    async function runSensitivitySweep() {
+        const paramSel = document.getElementById("sel-sensitivity-param");
+        const resBox = document.getElementById("sci-sensitivity-results-box");
+        if (!paramSel || !resBox) return;
+
+        resBox.innerHTML = '<div class="loading-placeholder">Barriendo parámetro a lo largo de 7 puntos de control...</div>';
+
+        try {
+            const payload = {
+                parameter_name: paramSel.value,
+                baseline_value: 75.0,
+                low: 20.0,
+                high: 180.0,
+                steps: 7,
+            };
+            const res = await fetch("/api/scientific/sensitivity/sweep", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const data = await res.json();
+
+            resBox.innerHTML = `
+                <div><strong>Clasificación de Sensibilidad:</strong> <span class="badge badge-primary">${escapeExtensionHtml(data.sensitivity_class.toUpperCase())}</span></div>
+                <div style="margin:4px 0;"><strong>Elasticidad Máxima:</strong> ${data.elasticities.solvency_rate ? data.elasticities.solvency_rate.toFixed(2) : 'N/A'}</div>
+                <div style="margin:4px 0;"><strong>Monotónica:</strong> ${data.is_monotonic ? 'Sí ✓' : 'No (Inflexión no lineal detectada)'}</div>
+                <p style="color:var(--text-secondary); margin:6px 0 0 0;">${escapeExtensionHtml(data.narrative_conclusion)}</p>
+            `;
+        } catch (err) {
+            resBox.innerHTML = `<div class="error-placeholder">Error en barrido de sensibilidad: ${err.message}</div>`;
+        }
+    }
+
+    async function fetchValidationReport() {
+        const box = document.getElementById("sci-validation-report-box");
+        if (!box) return;
+
+        try {
+            const res = await fetch("/api/scientific/validation/report");
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const rep = await res.json();
+
+            box.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <div><strong>Nivel de Evidencia Científica:</strong> <span class="badge badge-success" style="font-size:12px; font-weight:700;">${escapeExtensionHtml(rep.validation_tier)}</span></div>
+                    <span style="font-size:11px; color:var(--text-muted);">${escapeExtensionHtml(rep.dataset_attribution)}</span>
+                </div>
+                <table class="data-table" style="font-size:11px;">
+                    <thead><tr><th>Indicador</th><th>Fuente Oficial</th><th>Rango Observado Real</th><th>Metodología</th></tr></thead>
+                    <tbody>
+                        ${rep.official_benchmarks.map(b => `
+                            <tr>
+                                <td><strong>${escapeExtensionHtml(b.indicator)}</strong></td>
+                                <td>${escapeExtensionHtml(b.source)} (${b.year})</td>
+                                <td><span class="badge badge-outline">[${b.observed_range[0]}, ${b.observed_range[1]}] ${escapeExtensionHtml(b.unit)}</span></td>
+                                <td style="color:var(--text-muted); font-size:10px;">${escapeExtensionHtml(b.methodology)}</td>
+                            </tr>
+                        `).join("")}
+                    </tbody>
+                </table>
+                <p style="font-size:11px; color:var(--text-muted); margin:8px 0 0 0; font-style:italic;">
+                    ${escapeExtensionHtml(rep.disclaimer)}
+                </p>
+            `;
+        } catch (err) {
+            box.innerHTML = `<div class="error-placeholder">Error al cargar reporte de validación: ${err.message}</div>`;
+        }
     }
 
     // Expose GIS utilities for testing and automated inspection

@@ -29,6 +29,7 @@ When assigned a task, consult the specialized skill in `agent_skills/`:
 | **System Architecture & Engine Design** | [agent_skills/architecture/SKILL.md](file:///c:/GIT%20HUB/sv%20people/agent_skills/architecture/SKILL.md) | Decoupled engines, clean state flow, SOLID principles. |
 | **Simulation Core, Ticks & Clocks** | [agent_skills/simulation/SKILL.md](file:///c:/GIT%20HUB/sv%20people/agent_skills/simulation/SKILL.md) | `SimulationRunner`, tick loops, state checkpoints. |
 | **Multi-Agent Coordination & Emergence** | [agent_skills/multi_agent_systems/SKILL.md](file:///c:/GIT%20HUB/sv%20people/agent_skills/multi_agent_systems/SKILL.md) | Spontaneous organizations, fission, mergers, leadership. |
+| **Multi-Agent Loop Orchestration** | [agent_skills/orchestration/SKILL.md](file:///c:/GIT%20HUB/sv%20people/agent_skills/orchestration/SKILL.md) | Hierarchical multi-agent loop orchestration, cost-aware dynamic routing, review-and-fix. |
 | **Geospatial & Road Topography** | [agent_skills/geospatial/SKILL.md](file:///c:/GIT%20HUB/sv%20people/agent_skills/geospatial/SKILL.md) | OpenStreetMap, coordinates, slope penalties, obstacles. |
 | **Social Norms, Governance & CPR** | [agent_skills/social_science/SKILL.md](file:///c:/GIT%20HUB/sv%20people/agent_skills/social_science/SKILL.md) | Ostrom CPR, deliberative assemblies, sanctions, desuetudo. |
 | **Economic Systems & Inequality** | [agent_skills/economics/SKILL.md](file:///c:/GIT%20HUB/sv%20people/agent_skills/economics/SKILL.md) | Conservation, *fiado*, business solvency, Gini, Palma. |

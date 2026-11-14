@@ -1,12 +1,11 @@
-"""Historical Memory Engine for SALTBOR Phase 1.0.
+"""Historical Memory and Civilizational Continuity Engine for SALTBOR Phase 1.11.
 
 Distinguishes between:
-1. Ground Truth Historical Events (simulation reality).
-2. Institutional Knowledge of events (archives, legal records).
-3. Individual Memories (recalled with subjective bias/fidelity).
-4. Transmitted Narratives (oral/written lore subject to mutation).
-5. Cultural Interpretations (symbolic framing, heroization, stigma).
-6. Incomplete / Incorrect Information (rumor, historical drift, uncertainty).
+1. Ground Truth Historical Events (simulation reality and physical events).
+2. Institutional Knowledge of events (archives, legal records, municipal acts).
+3. Personal and Family Narratives (recalled with subjective emotional bias/fidelity).
+4. Transmitted Oral Lore (subject to multi-generational drift and heroization/stigma).
+5. Historical Causality: Multi-tier causal links and backward/forward causal reconstruction.
 """
 
 from __future__ import annotations
@@ -14,7 +13,7 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Dict, List, Optional, Set, Tuple
 from uuid import uuid4
 
 from saltbor.core.types import Tick
@@ -35,6 +34,8 @@ class HistoricalCategory(str, Enum):
     DEMOGRAPHIC_CHANGE = "demographic_change"
     INFRASTRUCTURE = "infrastructure"
     ORGANIZATION_CHANGE = "organization_change"
+    ENVIRONMENTAL_DEGRADATION = "environmental_degradation"
+    SOCIAL_MOVEMENT = "social_movement"
 
 
 @dataclass
@@ -55,11 +56,12 @@ class HistoricalEvent:
     uncertainty: float = 0.0  # 0.0 (certain) to 1.0 (unverifiable)
     significance: float = 0.5  # 0.0 to 1.0 historical importance
     metadata: Dict[str, Any] = field(default_factory=dict)
+    causal_links_downstream: List[str] = field(default_factory=list)  # Target event IDs caused by this
 
 
 @dataclass
 class InstitutionalRecord:
-    """Formal institutional registry of an event (e.g. municipal archive, legal statute)."""
+    """Formal institutional registry of an event (e.g. municipal archive, legal statute, parish record)."""
 
     record_id: str
     institution_id: str
@@ -86,7 +88,9 @@ class CulturalNarrative:
 
 
 class HistoricalMemoryEngine:
-    """Manages ground-truth history, institutional archives, narratives, and collective memory."""
+    """Manages ground-truth history, institutional archives, narratives,
+    multi-generational collective memory, and historical causality reconstruction.
+    """
 
     def __init__(self) -> None:
         self.ground_truth: Dict[str, HistoricalEvent] = {}
@@ -94,6 +98,7 @@ class HistoricalMemoryEngine:
         self.narratives: Dict[str, List[CulturalNarrative]] = {}  # society_id -> narratives
         self.event_by_location: Dict[str, List[str]] = {}
         self.event_by_actor: Dict[str, List[str]] = {}
+        self.causal_graph: Dict[str, List[Tuple[str, str]]] = {}  # source_id -> [(target_id, mechanism)]
 
     def record_ground_truth(
         self,
@@ -133,6 +138,74 @@ class HistoricalMemoryEngine:
             self.event_by_actor.setdefault(actor, []).append(event_id)
 
         return event
+
+    def link_causality(
+        self,
+        cause_event_id: str,
+        effect_event_id: str,
+        mechanism: str = "direct_causal_consequence",
+    ) -> bool:
+        """Records a verified causal link between two historical events."""
+        if cause_event_id not in self.ground_truth or effect_event_id not in self.ground_truth:
+            return False
+
+        cause_ev = self.ground_truth[cause_event_id]
+        effect_ev = self.ground_truth[effect_event_id]
+
+        if effect_event_id not in cause_ev.causal_links_downstream:
+            cause_ev.causal_links_downstream.append(effect_event_id)
+        if cause_event_id not in effect_ev.causes:
+            effect_ev.causes.append(cause_event_id)
+
+        self.causal_graph.setdefault(cause_event_id, []).append((effect_event_id, mechanism))
+        # Re-evaluate historical significance based on downstream consequence cascade
+        self._recalculate_significance(cause_event_id)
+        return True
+
+    def _recalculate_significance(self, event_id: str) -> None:
+        """Derives historical significance from actual downstream consequences and affected population."""
+        if event_id not in self.ground_truth:
+            return
+        ev = self.ground_truth[event_id]
+        cascade_depth = len(ev.causal_links_downstream)
+        actor_breadth = len(ev.actors)
+        base = ev.significance
+        ev.significance = min(1.0, base + 0.05 * cascade_depth + 0.02 * actor_breadth)
+
+    def reconstruct_causal_sequence(self, root_event_id: str) -> List[HistoricalEvent]:
+        """Reconstructs the full causal chain starting from an origin event."""
+        visited: Set[str] = set()
+        sequence: List[HistoricalEvent] = []
+
+        def _traverse(current_id: str) -> None:
+            if current_id in visited or current_id not in self.ground_truth:
+                return
+            visited.add(current_id)
+            ev = self.ground_truth[current_id]
+            sequence.append(ev)
+            for downstream_id, _ in self.causal_graph.get(current_id, []):
+                _traverse(downstream_id)
+
+        _traverse(root_event_id)
+        return sequence
+
+    def trace_antecedents(self, target_event_id: str) -> List[HistoricalEvent]:
+        """Traces the backward causal ancestry that produced a given target event."""
+        visited: Set[str] = set()
+        antecedents: List[HistoricalEvent] = []
+
+        def _traverse_back(curr_id: str) -> None:
+            if curr_id in visited or curr_id not in self.ground_truth:
+                return
+            visited.add(curr_id)
+            ev = self.ground_truth[curr_id]
+            antecedents.append(ev)
+            for cause_id in ev.causes:
+                if cause_id in self.ground_truth:
+                    _traverse_back(cause_id)
+
+        _traverse_back(target_event_id)
+        return list(reversed(antecedents))
 
     def archive_institutionally(
         self,
