@@ -4755,6 +4755,460 @@ def get_scientific_validation_report() -> dict[str, Any]:
     }
 
 
+# =============================================================================
+# Phase 1.13 Universal Human Activity, Domain Simulation & Workspace API
+# =============================================================================
+
+import dataclasses
+from saltbor.domain.models import (
+    ApprovalStatus,
+    DomainCategory,
+    DomainDefinition,
+    FeatureGeometryType,
+    ObjectivePriority,
+    PermissionType,
+    UserRole,
+    WorldLayerType,
+)
+from saltbor.domain.engine import UniversalDomainEngine
+from saltbor.simulation.experiments.phase113_domain_experiments import (
+    PHASE113_EXPERIMENTS,
+    _SHARED_DOMAIN_ENGINE,
+)
+
+def _get_domain_engine() -> UniversalDomainEngine:
+    ctrl = None
+    try:
+        ctrl = get_controller()
+    except Exception:
+        pass
+    if ctrl and getattr(ctrl, "runner", None) and getattr(ctrl.runner, "domain_engine", None):
+        return ctrl.runner.domain_engine
+    return _SHARED_DOMAIN_ENGINE
+
+
+class DomainRegisterRequest(BaseModel):
+    domain_id: str
+    name: str
+    category: str
+    purpose: str
+    geographic_scope: str = "El Salvador"
+    resources: list[str] = Field(default_factory=list)
+    activities: list[str] = Field(default_factory=list)
+    indicators: list[str] = Field(default_factory=list)
+
+
+class FeatureCreateRequest(BaseModel):
+    layer: str  # "layer_b_world", "layer_c_activity", "layer_d_interventions"
+    geometry_type: str = "Point"
+    coordinates: Any
+    name: str
+    category: str
+    properties: dict[str, Any] = Field(default_factory=dict)
+    owner_id: str = "user"
+    scenario_id: Optional[str] = None
+
+
+class PermissionAuthorizeRequest(BaseModel):
+    user_id: str
+    action: str  # "read", "create", "edit", "delete", "administer"
+    target_layer: str
+    target_coords: Optional[list[float]] = None
+    institution_id: Optional[str] = None
+
+
+class ProposalSubmitRequest(BaseModel):
+    user_id: str
+    title: str
+    target_layer: str = "layer_b_world"
+    proposed_feature_data: dict[str, Any] = Field(default_factory=dict)
+    rationale: str = ""
+
+
+class RecommendationRequest(BaseModel):
+    user_objective: str
+    priorities: list[str] = Field(default_factory=lambda: ["commercial_profitability", "community_development"])
+    geographic_context: str = "San Salvador Centro"
+    domain_id: str = "food_gastronomy"
+    alternatives: list[dict[str, Any]] = Field(default_factory=list)
+
+
+class FoodFeasibilityRequest(BaseModel):
+    latitude: float
+    longitude: float
+    target_food_type: str = "pupuseria"
+    daily_fixed_cost: float = 10.0
+
+
+class PriceElasticityRequest(BaseModel):
+    establishment_id: str = "pupuseria_dona_carmen"
+    price_multiplier: float = 1.25
+
+
+@router.get("/domain/domains")
+def list_universal_domains() -> list[dict[str, Any]]:
+    """List all registered human activity domains and their active status."""
+    ude = _get_domain_engine()
+    return ude.list_domains()
+
+
+@router.post("/domain/register")
+def register_universal_domain(req: DomainRegisterRequest) -> dict[str, Any]:
+    """Register a new configurable domain into the platform."""
+    ude = _get_domain_engine()
+    try:
+        cat = DomainCategory(req.category)
+    except ValueError:
+        cat = DomainCategory.CUSTOM
+
+    defn = DomainDefinition(
+        domain_id=req.domain_id,
+        name=req.name,
+        category=cat,
+        purpose=req.purpose,
+        geographic_scope=req.geographic_scope,
+        resources=req.resources,
+        activities=req.activities,
+        indicators=req.indicators,
+    )
+    success = ude.register_domain(defn)
+    if not success:
+        raise HTTPException(status_code=400, detail="Domain configuration validation failed")
+    return {"status": "REGISTERED", "domain_id": req.domain_id}
+
+
+@router.post("/domain/activate/{domain_id}")
+def activate_domain_endpoint(domain_id: str) -> dict[str, Any]:
+    """Activate a domain for live simulation execution."""
+    ude = _get_domain_engine()
+    success = ude.activate_domain(domain_id)
+    if not success:
+        raise HTTPException(status_code=404, detail=f"Domain '{domain_id}' not found")
+    return {"status": "ACTIVE", "domain_id": domain_id}
+
+
+@router.post("/domain/deactivate/{domain_id}")
+def deactivate_domain_endpoint(domain_id: str) -> dict[str, Any]:
+    """Deactivate a running domain."""
+    ude = _get_domain_engine()
+    success = ude.deactivate_domain(domain_id)
+    if not success:
+        raise HTTPException(status_code=404, detail=f"Domain '{domain_id}' not found")
+    return {"status": "PAUSED", "domain_id": domain_id}
+
+
+@router.get("/domain/activities")
+def list_domain_activities(domain_id: Optional[str] = None, category: Optional[str] = None) -> list[dict[str, Any]]:
+    """Query the Human Activity Catalog."""
+    ude = _get_domain_engine()
+    if domain_id:
+        acts = ude.catalog.get_by_domain(domain_id)
+    else:
+        acts = ude.catalog.list_all()
+
+    if category:
+        acts = [a for a in acts if a.category.value.lower() == category.lower()]
+
+    return [
+        {
+            "activity_id": a.activity_id,
+            "name": a.name,
+            "category": a.category.value,
+            "domain_id": a.domain_id,
+            "description": a.description,
+            "default_duration_ticks": a.default_duration_ticks,
+            "requirements": {
+                "min_energy": a.requirements.min_energy,
+                "max_hunger": a.requirements.max_hunger,
+                "min_money": a.requirements.min_money,
+            },
+            "effects_per_tick": {
+                "energy_delta": a.effects_per_tick.energy_delta,
+                "hunger_delta": a.effects_per_tick.hunger_delta,
+                "money_delta": a.effects_per_tick.money_delta,
+                "social_delta": a.effects_per_tick.social_delta,
+            },
+            "context_tags": a.context_tags,
+        }
+        for a in acts
+    ]
+
+
+@router.get("/domain/world/layers")
+def get_world_layers_summary() -> dict[str, Any]:
+    """Return summary and status of Layers A, B, C, and D."""
+    ude = _get_domain_engine()
+    return ude.world_engine.get_all_active_layers_summary()
+
+
+@router.get("/domain/world/layer/{layer_name}")
+def get_world_layer_features(layer_name: str, scenario_id: Optional[str] = None) -> list[dict[str, Any]]:
+    """Retrieve features for a specified editable layer (layer_b_world, layer_c_activity, layer_d_interventions)."""
+    ude = _get_domain_engine()
+    try:
+        layer_enum = WorldLayerType(layer_name.lower())
+    except ValueError:
+        raise HTTPException(status_code=400, detail=f"Invalid layer '{layer_name}'. Valid: {[l.value for l in WorldLayerType]}")
+
+    if layer_enum == WorldLayerType.LAYER_A_BASE:
+        # Query base cartography bounding box
+        return ude.world_engine.query_base_cartography(-89.26, 13.66, -89.17, 13.74, limit=50)
+
+    features = ude.world_engine.query_layer(layer_enum, scenario_id=scenario_id)
+    return [
+        {
+            "feature_id": f.feature_id,
+            "layer": f.layer.value,
+            "geometry_type": f.geometry_type.value,
+            "coordinates": f.coordinates,
+            "name": f.name,
+            "category": f.category,
+            "properties": f.properties,
+            "owner_id": f.owner_id,
+            "scenario_id": f.scenario_id,
+            "source_attribution": f.source_attribution,
+        }
+        for f in features
+    ]
+
+
+@router.post("/domain/world/features")
+def create_world_feature(req: FeatureCreateRequest) -> dict[str, Any]:
+    """Create a new spatial feature on Layer B, C, or D (strictly blocks Layer A)."""
+    ude = _get_domain_engine()
+    try:
+        layer_enum = WorldLayerType(req.layer.lower())
+    except ValueError:
+        raise HTTPException(status_code=400, detail=f"Invalid layer: {req.layer}")
+
+    try:
+        geom_enum = FeatureGeometryType(req.geometry_type)
+    except ValueError:
+        geom_enum = FeatureGeometryType.POINT
+
+    try:
+        feat = ude.world_engine.create_feature(
+            layer=layer_enum,
+            geometry_type=geom_enum,
+            coordinates=req.coordinates,
+            name=req.name,
+            category=req.category,
+            properties=req.properties,
+            owner_id=req.owner_id,
+            scenario_id=req.scenario_id,
+        )
+        return {
+            "status": "CREATED",
+            "feature_id": feat.feature_id,
+            "layer": feat.layer.value,
+            "name": feat.name,
+        }
+    except PermissionError as ex:
+        raise HTTPException(status_code=403, detail=str(ex))
+
+
+@router.post("/domain/permissions/authorize")
+def check_permission(req: PermissionAuthorizeRequest) -> dict[str, Any]:
+    """Verify whether a user action is authorized under role and geographic bounds."""
+    ude = _get_domain_engine()
+    try:
+        act_enum = PermissionType(req.action.lower())
+        layer_enum = WorldLayerType(req.target_layer.lower())
+    except ValueError as ex:
+        raise HTTPException(status_code=400, detail=f"Invalid action or layer: {ex}")
+
+    coords = tuple(req.target_coords) if req.target_coords and len(req.target_coords) >= 2 else None
+    allowed = ude.permission_engine.authorize(
+        user_id=req.user_id,
+        action=act_enum,
+        target_layer=layer_enum,
+        target_coords=coords,
+        institution_id=req.institution_id,
+    )
+    return {
+        "user_id": req.user_id,
+        "action": req.action,
+        "layer": req.target_layer,
+        "authorized": allowed,
+    }
+
+
+@router.post("/domain/permissions/proposal")
+def submit_domain_proposal(req: ProposalSubmitRequest) -> dict[str, Any]:
+    """Submit a proposed municipal or institutional project for review."""
+    ude = _get_domain_engine()
+    try:
+        layer_enum = WorldLayerType(req.target_layer.lower())
+    except ValueError:
+        layer_enum = WorldLayerType.LAYER_B_WORLD
+
+    prop = ude.permission_engine.submit_proposal(
+        user_id=req.user_id,
+        title=req.title,
+        target_layer=layer_enum,
+        proposed_feature_data=req.proposed_feature_data,
+        rationale=req.rationale,
+    )
+    return prop
+
+
+@router.get("/domain/permissions/proposals")
+def list_proposals() -> list[dict[str, Any]]:
+    """List submitted proposals."""
+    ude = _get_domain_engine()
+    return list(ude.permission_engine.proposals.values())
+
+
+@router.post("/domain/recommendations")
+def generate_recommendation_endpoint(req: RecommendationRequest) -> dict[str, Any]:
+    """Generate explainable decision intelligence recommendation."""
+    ude = _get_domain_engine()
+    priorities = []
+    for p in req.priorities:
+        try:
+            priorities.append(ObjectivePriority(p))
+        except ValueError:
+            pass
+    if not priorities:
+        priorities = [ObjectivePriority.PROFITABILITY, ObjectivePriority.COMMUNITY_WELFARE]
+
+    rec = ude.decision_engine.generate_recommendation(
+        user_objective=req.user_objective,
+        priorities=priorities,
+        geographic_context=req.geographic_context,
+        domain_id=req.domain_id,
+        alternatives=req.alternatives or [
+            {"name": "Opción Estándar", "commercial_profitability": 0.75, "community_development": 0.70},
+            {"name": "Opción Comunitaria", "commercial_profitability": 0.55, "community_development": 0.90},
+        ],
+        simulation_evidence={"estimated_cost_usd": 1500.0},
+    )
+    return dataclasses.asdict(rec)
+
+
+@router.post("/domain/food/feasibility")
+def query_food_feasibility(req: FoodFeasibilityRequest) -> dict[str, Any]:
+    """Simulate opening a food establishment (pupusería, etc.) and evaluate viability."""
+    ude = _get_domain_engine()
+    return ude.food_domain.simulate_new_pupuseria_scenario(
+        target_lat=req.latitude,
+        target_lon=req.longitude,
+        daily_fixed_cost=req.daily_fixed_cost,
+    )
+
+
+@router.post("/domain/food/price_elasticity")
+def query_food_price_elasticity(req: PriceElasticityRequest) -> dict[str, Any]:
+    """Simulate consumer demand elasticity under price increases."""
+    ude = _get_domain_engine()
+    return ude.food_domain.simulate_price_increase_elasticity(
+        establishment_id=req.establishment_id,
+        price_multiplier=req.price_multiplier,
+    )
+
+
+@router.get("/domain/datasets")
+def list_domain_datasets(tier: Optional[str] = None) -> list[dict[str, Any]]:
+    """List registered evidence datasets with provenance and tier metadata."""
+    ude = _get_domain_engine()
+    tier_enum = None
+    if tier:
+        try:
+            tier_enum = DataProvenanceTier(tier.lower())
+        except ValueError:
+            pass
+    datasets = ude.data_registry.list_datasets(tier=tier_enum)
+    return [dataclasses.asdict(d) for d in datasets]
+
+
+# =============================================================================
+# Compact Experiment Database & Explorer API (Section 14)
+# =============================================================================
+
+@router.get("/domain/experiments/compact")
+def list_compact_experiments() -> list[dict[str, Any]]:
+    """List all stored compact experiment records with 3-tier progressive disclosure capability."""
+    ude = _get_domain_engine()
+    return ude.experiment_db.list_all_experiments()
+
+
+@router.get("/domain/experiments/compact/{experiment_id}/level/{level_name}")
+def get_compact_experiment_level(experiment_id: str, level_name: str) -> dict[str, Any]:
+    """Progressive disclosure level: 'summary', 'evidence', or 'technical'."""
+    ude = _get_domain_engine()
+    lvl = level_name.upper()
+    if lvl == "SUMMARY":
+        res = ude.experiment_db.get_summary_level(experiment_id)
+    elif lvl == "EVIDENCE":
+        res = ude.experiment_db.get_evidence_level(experiment_id)
+    elif lvl == "TECHNICAL":
+        res = ude.experiment_db.get_technical_level(experiment_id)
+    else:
+        raise HTTPException(status_code=400, detail="Invalid level. Choose 'summary', 'evidence', or 'technical'.")
+
+    if not res:
+        raise HTTPException(status_code=404, detail=f"Experiment '{experiment_id}' not found.")
+    return res
+
+
+@router.get("/domain/experiments/compact/{experiment_id}/source")
+def get_compact_experiment_source_code(experiment_id: str) -> dict[str, str]:
+    """Retrieve full source code on demand directly from the actual codebase."""
+    ude = _get_domain_engine()
+    sources = ude.experiment_db.fetch_source_code_on_demand(experiment_id)
+    if not sources:
+        raise HTTPException(status_code=404, detail=f"No source paths found for '{experiment_id}'.")
+    return sources
+
+
+@router.get("/domain/experiments/phase113")
+def list_phase113_experiments() -> list[dict[str, Any]]:
+    """List all 20 Phase 1.13 Universal Domain experiments."""
+    experiments = []
+    for exp_id, exp_cls in PHASE113_EXPERIMENTS.items():
+        inst = exp_cls()
+        cfg = inst.default_config()
+        doc = exp_cls.__doc__ or "Empirical domain experiment."
+        experiments.append({
+            "experiment_id": cfg.experiment_id,
+            "name": cfg.name,
+            "description": cfg.description,
+            "docstring": doc.strip(),
+            "random_seed": cfg.random_seed,
+            "duration_ticks": cfg.duration_ticks,
+        })
+    return experiments
+
+
+@router.post("/domain/experiments/phase113/run/{experiment_id}")
+def run_phase113_experiment_endpoint(experiment_id: str) -> dict[str, Any]:
+    """Execute a Phase 1.13 experiment on demand."""
+    exp_key = experiment_id.upper()
+    exp_cls = PHASE113_EXPERIMENTS.get(exp_key)
+    if not exp_cls:
+        raise HTTPException(status_code=404, detail=f"Experiment '{experiment_id}' not found. Available: {list(PHASE113_EXPERIMENTS.keys())}")
+
+    inst = exp_cls()
+    ctrl = None
+    try:
+        ctrl = get_controller()
+    except Exception:
+        pass
+    runner = ctrl.runner if ctrl else None
+    result = inst.run(runner=runner)
+
+    return {
+        "experiment_id": result.experiment_id,
+        "name": result.name,
+        "success": result.success,
+        "summary": result.summary,
+        "hypotheses": result.hypotheses,
+        "metrics": result.metrics,
+        "duration_seconds": round(result.duration_seconds, 4),
+    }
+
+
+
 
 
 

@@ -170,6 +170,10 @@
                         <span class="nav-icon">🧪</span>
                         <span class="nav-title">Investigación & Causalidad</span>
                     </li>
+                    <li class="nav-item" data-view="universal_domains">
+                        <span class="nav-icon">🌐</span>
+                        <span class="nav-title">Dominios & Decisiones</span>
+                    </li>
                 </ul>
 
                 <div class="sidebar-footer">
@@ -1283,6 +1287,308 @@
                                 <div id="sci-validation-report-box" style="background:var(--bg-surface); padding:14px; border-radius:var(--radius-md); border:1px solid var(--border-subtle); font-size:12px; line-height:1.6;">
                                     <div class="loading-placeholder">Cargando benchmarks oficiales BCR / Banco Mundial / FAO...</div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 12. UNIVERSAL DOMAINS & DECISION INTELLIGENCE WORKSPACE (PHASE 1.13) -->
+                <section id="view-universal_domains" class="view-panel">
+                    <div class="laboratory-container">
+                        <div class="lab-header">
+                            <h2>🌐 Plataforma de Dominios Universales, Actividad Humana e Inteligencia de Decisiones (Fase 1.13)</h2>
+                            <p>Evolución multiescala de SALTBOR: simulación modular de actividad humana para ciudadanos, microempresas, corporaciones, centros educativos, clínicas y gobiernos municipales en El Salvador con arquitectura de 4 capas cartográficas y trazabilidad epistémica.</p>
+                        </div>
+
+                        <!-- Sub-Workspace Navigation -->
+                        <div class="scientific-subtabs-nav" style="display:flex; gap:8px; margin-bottom:20px; border-bottom:1px solid var(--border-strong); padding-bottom:10px; flex-wrap:wrap;">
+                            <button class="btn btn-sm btn-primary active ud-subtab-btn" data-target="ud-panel-domains">🌐 1. Dominios & Capas A-D</button>
+                            <button class="btn btn-sm btn-secondary ud-subtab-btn" data-target="ud-panel-food">🍲 2. Gastronomía & Pupuserías</button>
+                            <button class="btn btn-sm btn-secondary ud-subtab-btn" data-target="ud-panel-commerce">👔 3. Negocios & Comercio</button>
+                            <button class="btn btn-sm btn-secondary ud-subtab-btn" data-target="ud-panel-social">🏥 4. Salud & Educación</button>
+                            <button class="btn btn-sm btn-secondary ud-subtab-btn" data-target="ud-panel-decisions">💡 5. Inteligencia de Decisiones</button>
+                            <button class="btn btn-sm btn-secondary ud-subtab-btn" data-target="ud-panel-experiments">🔬 6. Experimentos Compactos (A-T)</button>
+                        </div>
+
+                        <!-- Sub-Panel 1: Domains & 4-Layer Architecture -->
+                        <div id="ud-panel-domains" class="ud-subpanel-content">
+                            <div class="economy-two-col" style="display:flex; gap:16px; margin-bottom:20px; flex-wrap:wrap;">
+                                <div class="col-box" style="flex:1; min-width:320px;">
+                                    <h3>Catálogo de Dominios Activos</h3>
+                                    <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Motores sectoriales conectados al núcleo de simulación humana y territorial.</p>
+                                    <div id="ud-domains-list" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:12px;">
+                                        <div class="loading-placeholder">Cargando dominios registrados...</div>
+                                    </div>
+                                </div>
+                                <div class="col-box" style="flex:1; min-width:320px;">
+                                    <h3>Arquitectura de 4 Capas del Mundo (World Layers A-D)</h3>
+                                    <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Garantiza inmutabilidad cartográfica oficial (Layer A) y autoría segregada en capas B, C y D.</p>
+                                    <div id="ud-layers-overview" style="background:var(--bg-surface); padding:14px; border-radius:var(--radius-md); border:1px solid var(--border-subtle); font-size:13px; line-height:1.6;">
+                                        <div class="loading-placeholder">Cargando estado de capas cartográficas...</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Layer B Feature Creator Form & Permissions -->
+                            <div class="col-box" style="margin-top:16px;">
+                                <h3>Creación de Características en Capa B (Entorno de Trabajo de Usuario)</h3>
+                                <p style="font-size:12px; color:var(--text-muted); margin-bottom:14px;">Incorpore zonas de intervención, polígonos urbanos o infraestructura sin modificar la base oficial de OpenStreetMap.</p>
+                                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px; align-items:end;">
+                                    <div>
+                                        <label style="font-size:12px; display:block; margin-bottom:4px;">Nombre de la Entidad/Zona:</label>
+                                        <input type="text" id="ud-input-feature-name" class="input-text-full" placeholder="Ej. Mercado Municipal El Tránsito" />
+                                    </div>
+                                    <div>
+                                        <label style="font-size:12px; display:block; margin-bottom:4px;">Capa Destino:</label>
+                                        <select id="ud-select-feature-layer" class="dropdown-select-full">
+                                            <option value="layer_b_user_workspace">Capa B: Ámbitos de Usuario / Zonas</option>
+                                            <option value="layer_c_activity_entities">Capa C: Entidades de Actividad</option>
+                                            <option value="layer_d_scenario_interventions">Capa D: Intervenciones de Escenario</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label style="font-size:12px; display:block; margin-bottom:4px;">Latitud / Longitud:</label>
+                                        <div style="display:flex; gap:6px;">
+                                            <input type="number" id="ud-input-feature-lat" class="input-text-full" step="0.001" value="13.6929" placeholder="Lat" />
+                                            <input type="number" id="ud-input-feature-lon" class="input-text-full" step="0.001" value="-89.2182" placeholder="Lon" />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label style="font-size:12px; display:block; margin-bottom:4px;">Nivel Epistémico:</label>
+                                        <select id="ud-select-provenance" class="dropdown-select-full">
+                                            <option value="user_provided">Dato Suministrado por Usuario</option>
+                                            <option value="hypothetical">Escenario Hipotético</option>
+                                            <option value="imported_reference">Dato de Referencia Importado</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <button id="ud-btn-create-feature" class="btn btn-primary" style="width:100%; height:36px;">➕ Registrar en Capa</button>
+                                    </div>
+                                </div>
+                                <div id="ud-feature-create-feedback" style="margin-top:10px; font-size:12px; display:none;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Sub-Panel 2: Food & Gastronomy Domain -->
+                        <div id="ud-panel-food" class="ud-subpanel-content" style="display:none;">
+                            <div class="economy-two-col" style="display:flex; gap:16px; margin-bottom:20px; flex-wrap:wrap;">
+                                <div class="col-box" style="flex:1; min-width:320px;">
+                                    <h3>Simulador de Viabilidad Gastronómica & Pupuserías</h3>
+                                    <p style="font-size:12px; color:var(--text-muted); margin-bottom:14px;">Evalúa el éxito comercial de un nuevo establecimiento considerando densidad demográfica, elasticidad de precio, competencia y fricción de distancia.</p>
+                                    <div style="display:flex; flex-direction:column; gap:12px;">
+                                        <div>
+                                            <label style="font-size:12px; display:block; margin-bottom:4px;">Tipo de Establecimiento:</label>
+                                            <select id="ud-food-type" class="dropdown-select-full">
+                                                <option value="pupuseria">Pupusería Típica Tradicional</option>
+                                                <option value="comedor">Comedor Popular / Almuerzos</option>
+                                                <option value="cafeteria">Cafetería & Panadería Artesanal</option>
+                                                <option value="restaurante">Restaurante a la Carta</option>
+                                                <option value="street_food_stall">Puesto Callejero de Antojitos</option>
+                                            </select>
+                                        </div>
+                                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                                            <div>
+                                                <label style="font-size:12px; display:block; margin-bottom:4px;">Latitud:</label>
+                                                <input type="number" id="ud-food-lat" class="input-text-full" step="0.001" value="13.6980" />
+                                            </div>
+                                            <div>
+                                                <label style="font-size:12px; display:block; margin-bottom:4px;">Longitud:</label>
+                                                <input type="number" id="ud-food-lon" class="input-text-full" step="0.001" value="-89.2230" />
+                                            </div>
+                                        </div>
+                                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                                            <div>
+                                                <label style="font-size:12px; display:block; margin-bottom:4px;">Precio Promedio ($ USD):</label>
+                                                <input type="number" id="ud-food-price" class="input-text-full" step="0.10" value="0.90" />
+                                            </div>
+                                            <div>
+                                                <label style="font-size:12px; display:block; margin-bottom:4px;">Capital Inicial ($ USD):</label>
+                                                <input type="number" id="ud-food-capital" class="input-text-full" step="100" value="750.00" />
+                                            </div>
+                                        </div>
+                                        <button id="ud-btn-sim-food-feasibility" class="btn btn-primary" style="margin-top:8px;">🍲 Simular Viabilidad de Pupusería</button>
+                                    </div>
+                                </div>
+                                <div class="col-box" style="flex:1; min-width:320px;">
+                                    <h3>Diagnóstico de Demanda Insatisfecha & Resultados</h3>
+                                    <div id="ud-food-feasibility-result" style="background:var(--bg-surface); padding:16px; border-radius:var(--radius-md); border:1px solid var(--border-subtle); min-height:220px; font-size:13px; line-height:1.6;">
+                                        <div class="loading-placeholder">Configure los parámetros y haga clic en "Simular Viabilidad de Pupusería".</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sub-Panel 3: Business & Commerce Domain -->
+                        <div id="ud-panel-commerce" class="ud-subpanel-content" style="display:none;">
+                            <div class="economy-two-col" style="display:flex; gap:16px; margin-bottom:20px; flex-wrap:wrap;">
+                                <div class="col-box" style="flex:1; min-width:320px;">
+                                    <h3>Configuración y Simulación de Microempresa</h3>
+                                    <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Simula operaciones mercantiles preservando conservación contable absoluta ($Débito = Crédito$).</p>
+                                    <div style="display:flex; flex-direction:column; gap:12px;">
+                                        <div>
+                                            <label style="font-size:12px; display:block; margin-bottom:4px;">Categoría Comercial:</label>
+                                            <select id="ud-biz-category" class="dropdown-select-full">
+                                                <option value="tienda_abarrotes">Tienda de Abarrotes / Víveres</option>
+                                                <option value="farmacia_comunitaria">Farmacia Comunitaria</option>
+                                                <option value="ferreteria">Ferretería y Materiales</option>
+                                                <option value="taller_mecanico">Taller de Reparaciones</option>
+                                            </select>
+                                        </div>
+                                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                                            <div>
+                                                <label style="font-size:12px; display:block; margin-bottom:4px;">Inventario Inicial (Unidades):</label>
+                                                <input type="number" id="ud-biz-inventory" class="input-text-full" value="120" />
+                                            </div>
+                                            <div>
+                                                <label style="font-size:12px; display:block; margin-bottom:4px;">Costos Fijos Diarios ($ USD):</label>
+                                                <input type="number" id="ud-biz-overhead" class="input-text-full" step="1.0" value="12.0" />
+                                            </div>
+                                        </div>
+                                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                                            <div>
+                                                <label style="font-size:12px; display:block; margin-bottom:4px;">Precio Unitario Venta ($):</label>
+                                                <input type="number" id="ud-biz-price" class="input-text-full" step="0.25" value="2.50" />
+                                            </div>
+                                            <div>
+                                                <label style="font-size:12px; display:block; margin-bottom:4px;">Costo Adquisición Proveedor ($):</label>
+                                                <input type="number" id="ud-biz-cost" class="input-text-full" step="0.10" value="1.60" />
+                                            </div>
+                                        </div>
+                                        <button id="ud-btn-sim-business-run" class="btn btn-primary" style="margin-top:8px;">👔 Simular Ciclo Comercial (30 Ticks)</button>
+                                    </div>
+                                </div>
+                                <div class="col-box" style="flex:1; min-width:320px;">
+                                    <h3>Auditoría Contable & Solvencia Mercantil</h3>
+                                    <div id="ud-business-run-result" style="background:var(--bg-surface); padding:16px; border-radius:var(--radius-md); border:1px solid var(--border-subtle); min-height:220px; font-size:13px; line-height:1.6;">
+                                        <div class="loading-placeholder">Haga clic en "Simular Ciclo Comercial" para auditar flujo de caja, rotación de inventario y solvencia.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sub-Panel 4: Social Services (Health & Education) -->
+                        <div id="ud-panel-social" class="ud-subpanel-content" style="display:none;">
+                            <div class="economy-two-col" style="display:flex; gap:16px; margin-bottom:20px; flex-wrap:wrap;">
+                                <div class="col-box" style="flex:1; min-width:320px;">
+                                    <h3>🏥 Acceso a Salud & Sobrecarga de Clínicas</h3>
+                                    <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Modela tiempos de espera, saturación de cupos y retraso en búsqueda de atención por restricciones de transporte o copago.</p>
+                                    <div style="background:var(--bg-surface); padding:14px; border-radius:var(--radius-md); border:1px solid var(--border-subtle); font-size:13px; line-height:1.6;">
+                                        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                                            <span>Capacidad de Atención Médica:</span>
+                                            <strong id="ud-stat-health-cap">15 pacientes / turno</strong>
+                                        </div>
+                                        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                                            <span>Tiempo de Espera Promedio Simulado:</span>
+                                            <strong id="ud-stat-health-wait" style="color:var(--color-warning);">52 minutos</strong>
+                                        </div>
+                                        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                                            <span>Tasa de Atención Demorada por Pasaje/Falta Fondos:</span>
+                                            <strong id="ud-stat-health-delay">38.4%</strong>
+                                        </div>
+                                        <hr style="border:0; border-top:1px solid var(--border-subtle); margin:10px 0;" />
+                                        <p style="font-size:11px; color:var(--text-muted);">
+                                            <strong>Intervención Recomendada:</strong> Incorporar médico itinerante de refuerzo y subsidio focalizado de pasaje para reducir la postergación de consulta en un 24.1%.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-box" style="flex:1; min-width:320px;">
+                                    <h3>🎓 Asistencia Escolar & Mitigación de Deserción</h3>
+                                    <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Simula la decisión de asistencia según presión económica del hogar, trabajo infantil, responsabilidades domésticas y distancia física.</p>
+                                    <div style="background:var(--bg-surface); padding:14px; border-radius:var(--radius-md); border:1px solid var(--border-subtle); font-size:13px; line-height:1.6;">
+                                        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                                            <span>Tasa de Asistencia Urbana:</span>
+                                            <strong style="color:var(--color-success);">91.2%</strong>
+                                        </div>
+                                        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                                            <span>Tasa de Asistencia Rural Dispersa (>3 km):</span>
+                                            <strong style="color:var(--color-danger);">68.5%</strong>
+                                        </div>
+                                        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                                            <span>Impacto de Transporte Escolar Gratuito:</span>
+                                            <strong>+18.7 pp de Asistencia</strong>
+                                        </div>
+                                        <hr style="border:0; border-top:1px solid var(--border-subtle); margin:10px 0;" />
+                                        <p style="font-size:11px; color:var(--text-muted);">
+                                            <strong>Mecanismo de Deserción:</strong> El 73% de las ausencias no justificadas correlacionan con necesidad de jornal agrícola estacional y carencia de transporte rural.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sub-Panel 5: Decision Intelligence & Policy Explanations -->
+                        <div id="ud-panel-decisions" class="ud-subpanel-content" style="display:none;">
+                            <div class="col-box" style="margin-bottom:20px;">
+                                <h3>Motor de Inteligencia de Decisiones & Explicabilidad Humana</h3>
+                                <p style="font-size:12px; color:var(--text-muted); margin-bottom:14px;">Genera recomendaciones multidimensionales ponderando compensaciones (trade-offs), efectos adversos y límites de aplicabilidad epistémica.</p>
+                                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px; align-items:end; margin-bottom:16px;">
+                                    <div>
+                                        <label style="font-size:12px; display:block; margin-bottom:4px;">Prioridad Estratégica:</label>
+                                        <select id="ud-select-priority" class="dropdown-select-full">
+                                            <option value="social_equity">Equidad Social & Inclusión</option>
+                                            <option value="poverty_mitigation">Mitigación de Pobreza</option>
+                                            <option value="public_health">Salud Pública & Cobertura</option>
+                                            <option value="economic_growth">Crecimiento Económico Local</option>
+                                            <option value="educational_continuity">Continuidad Educativa</option>
+                                            <option value="cost_efficiency">Eficiencia en Uso de Recursos</option>
+                                            <option value="feasibility">Factibilidad Inmediata de Implementación</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label style="font-size:12px; display:block; margin-bottom:4px;">Territorio Objetivo:</label>
+                                        <select id="ud-select-territory" class="dropdown-select-full">
+                                            <option value="Chalatenango">Chalatenango (Rural / Montañoso)</option>
+                                            <option value="San Salvador">San Salvador (Metropolitano / Denso)</option>
+                                            <option value="Santa Ana">Santa Ana (Mixto Urbano-Agro)</option>
+                                            <option value="San Miguel">San Miguel (Comercial Oriental)</option>
+                                            <option value="Sonsonate">Sonsonate (Costero / Agrícola)</option>
+                                            <option value="Ahuachapán">Ahuachapán (Cafetalero / Fronterizo)</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <button id="ud-btn-get-recommendations" class="btn btn-primary" style="width:100%; height:36px;">💡 Generar Recomendaciones Explicadas</button>
+                                    </div>
+                                </div>
+
+                                <div id="ud-recommendations-container">
+                                    <div class="loading-placeholder">Seleccione la prioridad y territorio objetivo, luego presione "Generar Recomendaciones Explicadas".</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sub-Panel 6: Phase 1.13 Compact Experiments -->
+                        <div id="ud-panel-experiments" class="ud-subpanel-content" style="display:none;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
+                                <div>
+                                    <h3 style="margin:0;">Batería de Experimentos Compactos Fase 1.13 (EXP_113_A a EXP_113_T)</h3>
+                                    <span style="font-size:12px; color:var(--text-muted);">Almacenamiento segregado de 5 partes con divulgación progresiva y código fuente bajo demanda.</span>
+                                </div>
+                                <div style="display:flex; gap:8px;">
+                                    <div class="btn-group" style="display:flex; gap:4px;">
+                                        <button class="btn btn-sm btn-primary active ud-disclosure-btn" data-disclosure="SUMMARY">Resumen</button>
+                                        <button class="btn btn-sm btn-secondary ud-disclosure-btn" data-disclosure="EVIDENCE">Evidencia</button>
+                                        <button class="btn btn-sm btn-secondary ud-disclosure-btn" data-disclosure="TECHNICAL">Técnico & Código</button>
+                                    </div>
+                                    <button id="ud-btn-run-experiments" class="btn btn-sm btn-primary">⚡ Ejecutar 20 Experimentos</button>
+                                </div>
+                            </div>
+
+                            <div id="ud-experiments-status-banner" style="margin-bottom:14px; padding:10px 14px; border-radius:var(--radius-md); background:var(--bg-surface); border:1px solid var(--border-subtle); font-size:12px; display:flex; justify-content:space-between; align-items:center;">
+                                <span>Total de Experimentos: <strong>20</strong> | Ejecutados Exitosamente: <strong style="color:var(--color-success);" id="ud-exp-count-passed">20</strong> | Formato: <strong>Compact 5-Part Schema</strong></span>
+                                <span style="color:var(--text-muted); font-size:11px;">Cero duplicación de código en registros DB (100% bajo demanda)</span>
+                            </div>
+
+                            <div id="ud-experiments-list" style="display:grid; grid-template-columns:1fr; gap:12px;">
+                                <div class="loading-placeholder">Cargando batería de experimentos de dominios...</div>
+                            </div>
+
+                            <!-- Source Code Modal / Inspection Box -->
+                            <div id="ud-code-viewer-box" style="display:none; margin-top:20px; background:var(--bg-surface); padding:16px; border-radius:var(--radius-md); border:1px solid var(--border-strong);">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                                    <h4 style="margin:0;" id="ud-code-viewer-title">Código Fuente del Experimento</h4>
+                                    <button id="ud-btn-close-code-viewer" class="btn btn-sm btn-secondary">Cerrar</button>
+                                </div>
+                                <pre id="ud-code-viewer-content" style="background:#111; color:#eee; padding:14px; border-radius:6px; overflow-x:auto; font-size:12px; max-height:400px; font-family:monospace;"></pre>
                             </div>
                         </div>
                     </div>

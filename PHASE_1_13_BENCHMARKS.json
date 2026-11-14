@@ -1,0 +1,94 @@
+{
+  "timestamp": "2026-11-14T22:19:26Z",
+  "phase": "1.13",
+  "platform": "win32",
+  "python_version": "3.14.5 (tags/v3.14.5:5607950, May 10 2026, 10:43:50) [MSC v.1944 64 bit (AMD64)]",
+  "domain_registration": {
+    "iterations": 1000,
+    "duration_sec": 0.0053,
+    "ops_per_sec": 190038.2,
+    "avg_latency_us": 5.26
+  },
+  "activity_catalog": {
+    "queries": 5000,
+    "duration_sec": 0.0023,
+    "queries_per_sec": 2209651.8,
+    "avg_latency_us": 0.45
+  },
+  "contextual_behavior": {
+    "decisions": 2000,
+    "duration_sec": 0.1102,
+    "decisions_per_sec": 18148.2,
+    "avg_latency_us": 55.1
+  },
+  "multi_domain_stepping": {
+    "1_domains": {
+      "active_domains": 1,
+      "steps": 500,
+      "total_duration_sec": 0.0001,
+      "ms_per_step": 0.0001,
+      "steps_per_sec": 9208102.1
+    },
+    "2_domains": {
+      "active_domains": 2,
+      "steps": 500,
+      "total_duration_sec": 0.0004,
+      "ms_per_step": 0.0007,
+      "steps_per_sec": 1352447.9
+    },
+    "4_domains": {
+      "active_domains": 4,
+      "steps": 500,
+      "total_duration_sec": 0.0002,
+      "ms_per_step": 0.0003,
+      "steps_per_sec": 3082613.8
+    },
+    "6_domains": {
+      "active_domains": 6,
+      "steps": 500,
+      "total_duration_sec": 0.0002,
+      "ms_per_step": 0.0003,
+      "steps_per_sec": 3043213.6
+    }
+  },
+  "editable_world_layers": {
+    "immutability_checks": {
+      "attempts": 1000,
+      "rejections": 1000,
+      "duration_sec": 0.0003,
+      "checks_per_sec": 3060912.0
+    },
+    "layer_b_feature_inserts": {
+      "features_created": 1000,
+      "duration_sec": 0.0045,
+      "inserts_per_sec": 222326.0,
+      "avg_latency_us": 4.5
+    },
+    "spatial_bbox_query": {
+      "features_retrieved": 1002,
+      "query_duration_sec": 0.00015,
+      "avg_latency_us": 149.9
+    }
+  },
+  "compact_experiment_database": {
+    "records_written": 200,
+    "write_duration_sec": 0.0334,
+    "writes_per_sec": 5982.5,
+    "storage_comparison": {
+      "legacy_monolithic_estimated_bytes": 7326354,
+      "compact_5part_schema_bytes": 326354,
+      "reduction_percentage": 95.55,
+      "space_saved_factor": 22.4
+    },
+    "query_latency_us": {
+      "tier_SUMMARY": 0.92,
+      "tier_EVIDENCE": 0.83,
+      "tier_TECHNICAL": 7.93
+    }
+  },
+  "memory_rss": {
+    "ticks_stepped": 1000,
+    "net_memory_change_kb": 93.61,
+    "leak_detected": false
+  }
+}

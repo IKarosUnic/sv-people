@@ -265,6 +265,9 @@ from saltbor.simulation.experiments.phase13_experiments import (
 from saltbor.simulation.experiments.phase112_scientific_experiments import (
     PHASE112_EXPERIMENTS,
 )
+from saltbor.simulation.experiments.phase113_domain_experiments import (
+    PHASE113_EXPERIMENTS,
+)
 from saltbor.simulation.runner import SimulationRunner
 
 logger = logging.getLogger(__name__)
@@ -516,6 +519,8 @@ class SimulationLaboratory:
         }
         # Phase 1.12 Scientific Experimentation & Causal Inference Suite
         self.experiment_registry.update(PHASE112_EXPERIMENTS)
+        # Phase 1.13 Universal Human Activity, Domain Simulation & Decision Intelligence Suite
+        self.experiment_registry.update(PHASE113_EXPERIMENTS)
 
     def start_simulation(self, seed: Optional[int] = None) -> SimulationRunner:
         """Initialize or reset the simulation runner."""

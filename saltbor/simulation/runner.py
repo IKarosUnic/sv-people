@@ -358,6 +358,10 @@ class SimulationRunner:
         self.parameter_sensitivity = ParameterSensitivityEngine()
         self.counterfactual_civilization = CounterfactualCivilizationEngine()
         self.scientific_validation = ScientificValidationFramework()
+
+        # Phase 1.13 Universal Human Activity, Domain Simulation & Decision Intelligence
+        from saltbor.domain import UniversalDomainEngine
+        self.domain_engine = UniversalDomainEngine()
         self.salvadoran_context = ElSalvadorResearchContext()
         self.population_sampling = PopulationSamplingEngine(self.population)
 
@@ -1598,6 +1602,9 @@ class SimulationRunner:
 
         # Master orchestrator steps scheduled and periodic civilization engines
         self.orchestrator.step(current_tick)
+
+        # Step active universal human activity domains
+        self.domain_engine.step(current_tick)
 
         # Day transition event and cultural maintenance
         if self.clock.tick_of_day == 0:
