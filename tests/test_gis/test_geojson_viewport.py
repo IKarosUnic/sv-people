@@ -15,6 +15,7 @@ from fastapi.testclient import TestClient
 
 from saltbor.datasets.gis import pipeline
 from saltbor.visualization.server import create_app
+from tests.test_gis.shapefile_helper import write_shapefile
 
 COORDS = (-89.2020, 13.6930, -89.1860, 13.7040)
 
@@ -46,10 +47,7 @@ def geography_db(tmp_path_factory) -> Path:
 
 
 def _write_lines(base: Path, lines, names) -> None:
-    # Same-directory test module: pytest puts this directory on sys.path.
-    from test_osm_pipeline import _write_shapefile
-
-    _write_shapefile(
+    write_shapefile(
         base,
         3,
         lines,
@@ -72,9 +70,7 @@ def _write_lines(base: Path, lines, names) -> None:
 
 
 def _write_polygon(base: Path, ring, name: str) -> None:
-    from test_osm_pipeline import _write_shapefile
-
-    _write_shapefile(
+    write_shapefile(
         base,
         5,
         [ring],
