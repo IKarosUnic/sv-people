@@ -182,3 +182,24 @@ def test_api_phase114_experiments_listing_and_run():
     res = r2.json()
     assert res["success"] is True
     assert res["experiment_id"] == "EXP_114_N"
+
+
+def test_api_connected_scenarios_demonstration():
+    res = client.post("/api/territory/connected_scenarios/run")
+    assert res.status_code == 200
+    data = res.json()
+    assert "Demostración de Escenarios Conectados" in data["title"]
+    assert len(data["shared_individuals"]) == 5
+    assert len(data["stages"]) == 5
+
+    # Check stage 1 vs stage 2 vs stage 4 vs stage 5
+    s1 = data["stages"][0]
+    s2 = data["stages"][1]
+    s4 = data["stages"][3]
+    s5 = data["stages"][4]
+
+    assert s1["commercial"]["road_friction_multiplier"] == 1.0
+    assert s2["commercial"]["road_friction_multiplier"] >= 3.0
+    assert s4["household"]["jose_cash_usd"] == 0.0
+    assert s4["healthcare"]["clinic_wait_hours"] >= 3.0
+    assert s5["education"]["mateo_attendance_pct"] >= 90.0

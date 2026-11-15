@@ -5347,6 +5347,10 @@
         // Run All Experiments Button
         const btnRunAll = document.getElementById("te-btn-run-all-experiments");
         if (btnRunAll) btnRunAll.addEventListener("click", () => runAllPhase114Experiments());
+
+        // Connected Scenarios Demo Button
+        const btnConn = document.getElementById("te-btn-run-connected-demo");
+        if (btnConn) btnConn.addEventListener("click", () => runConnectedScenariosDemo());
     }
 
     async function fetchTerritorialSummary() {
@@ -5790,6 +5794,82 @@
         }
 
         if (btn) btn.disabled = false;
+    }
+
+    async function runConnectedScenariosDemo() {
+        const btn = document.getElementById("te-btn-run-connected-demo");
+        const container = document.getElementById("te-connected-results");
+        if (btn) btn.disabled = true;
+        if (container) {
+            container.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-muted);">⏳ Ejecutando simulación de cascada multiescalar...</div>';
+        }
+
+        try {
+            const res = await fetch("/api/territory/connected_scenarios/run", { method: "POST" });
+            if (!res.ok) throw new Error("Error en la ejecución del servidor.");
+            const data = await res.json();
+
+            let html = `
+                <div style="background:var(--bg-surface); padding:16px; border-radius:8px; border:1px solid var(--border-subtle); margin-bottom:12px;">
+                    <h4 style="margin:0 0 8px 0; color:var(--accent-primary);">${data.title}</h4>
+                    <p style="margin:0; font-size:12px; color:var(--text-muted);">Territorio: <strong>${data.territory}</strong></p>
+                </div>
+            `;
+
+            data.stages.forEach((st, idx) => {
+                const isCrisis = st.stage_name.includes("Shock") || st.stage_name.includes("Crisis") || st.stage_name.includes("Cascade");
+                const isRecovery = st.stage_name.includes("Recovery") || st.stage_name.includes("Recuperación");
+                const borderColor = isCrisis ? "#ef4444" : (isRecovery ? "#10b981" : "var(--border-strong)");
+                const badgeColor = isCrisis ? "#fee2e2; color:#991b1b" : (isRecovery ? "#d1fae5; color:#065f46" : "var(--bg-subtle); color:var(--text-main)");
+
+                html += `
+                    <div style="background:var(--bg-surface); border-left:4px solid ${borderColor}; padding:14px; border-radius:6px; border-top:1px solid var(--border-subtle); border-right:1px solid var(--border-subtle); border-bottom:1px solid var(--border-subtle);">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
+                            <span style="font-weight:700; font-size:14px;">${st.stage_name}</span>
+                            <span style="font-size:11px; padding:2px 8px; border-radius:12px; background:${badgeColor}; font-weight:600;">Etapa ${idx + 1} de 5</span>
+                        </div>
+                        <p style="font-size:12px; color:var(--text-muted); margin:0 0 10px 0;">${st.description}</p>
+
+                        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px; font-size:12px;">
+                            <div style="background:var(--bg-subtle); padding:10px; border-radius:6px;">
+                                <strong>🏬 Comercio / Red:</strong><br/>
+                                • Fricción vial: ${st.commercial.road_friction_multiplier.toFixed(1)}x<br/>
+                                • Maíz mayoreo: $${st.commercial.wholesale_price_usd.toFixed(2)}/lb<br/>
+                                • Maíz tiendita: $${st.commercial.retail_price_usd.toFixed(2)}/lb<br/>
+                                • Caja Tiendita: $${st.commercial.tiendita_cash_usd.toFixed(2)} (${st.commercial.is_solvent ? "Solvente" : "⚠️ Ilíquida"})
+                            </div>
+                            <div style="background:var(--bg-subtle); padding:10px; border-radius:6px;">
+                                <strong>👥 Hogar Henríquez:</strong><br/>
+                                • Efectivo José: $${st.household.jose_cash_usd.toFixed(2)}<br/>
+                                • Gasto diario comida: $${st.household.daily_food_cost_usd.toFixed(2)}<br/>
+                                • Gasto comida / salario: ${st.household.food_budget_share_pct.toFixed(1)}%<br/>
+                                • Deuda fiado tiendita: $${st.household.informal_fiado_debt_usd.toFixed(2)}
+                            </div>
+                            <div style="background:var(--bg-subtle); padding:10px; border-radius:6px;">
+                                <strong>🎓 Educación (Mateo, 15a):</strong><br/>
+                                • Asistencia escolar: ${st.education.mateo_attendance_pct.toFixed(1)}%<br/>
+                                • Riesgo de deserción: ${(st.education.mateo_dropout_risk * 100).toFixed(0)}%<br/>
+                                • Trabajo infantil informal: ${st.education.mateo_child_labor ? "⚠️ SÍ ($4.50/día)" : "NO"}<br/>
+                                • Asistencia Centro Escolar: ${st.education.school_attendance_pct.toFixed(1)}%
+                            </div>
+                            <div style="background:var(--bg-subtle); padding:10px; border-radius:6px;">
+                                <strong>🏥 Salud (UCSF & Familia):</strong><br/>
+                                • Espera en clínica: ${st.healthcare.clinic_wait_hours.toFixed(2)} hrs<br/>
+                                • Días jornal perdidos: ${st.healthcare.jose_lost_work_days} días<br/>
+                                • Gasto bolsillo fármacos: $${st.healthcare.out_of_pocket_medicine_usd.toFixed(2)}<br/>
+                                • Salud Rosa (72a): ${(st.healthcare.rosa_health_status * 100).toFixed(0)}% | José: ${(st.healthcare.jose_health_status * 100).toFixed(0)}%
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        } catch (err) {
+            container.innerHTML = `<div style="color:var(--color-danger); padding:12px;">Error al ejecutar la demostración conectada: ${err.message}</div>`;
+        } finally {
+            if (btn) btn.disabled = false;
+        }
     }
 
     // Expose GIS utilities for testing and automated inspection

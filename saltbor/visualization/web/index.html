@@ -1614,6 +1614,7 @@
                             <button class="btn btn-sm btn-secondary te-subtab-btn" data-target="te-panel-governance">🏛️ 4. Gobernanza & Proyectos</button>
                             <button class="btn btn-sm btn-secondary te-subtab-btn" data-target="te-panel-needs">🎯 5. Necesidades Humanas (12D)</button>
                             <button class="btn btn-sm btn-secondary te-subtab-btn" data-target="te-panel-experiments">🔬 6. Experimentos Territoriales (A-T)</button>
+                            <button class="btn btn-sm btn-secondary te-subtab-btn" data-target="te-panel-connected">🔗 7. Demostración Conectada (Comercio ↔ Educación ↔ Salud)</button>
                         </div>
 
                         <!-- Sub-Panel 1: Territorial Map & Overlays -->
@@ -1802,6 +1803,32 @@
                             </div>
                             <div id="te-experiments-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:12px;">
                                 <div class="loading-placeholder">Cargando catálogo de experimentos EXP_114...</div>
+                            </div>
+                        </div>
+
+                        <!-- Sub-Panel 7: Connected Multi-Sector Scenarios Demonstration -->
+                        <div id="te-panel-connected" class="te-subpanel-content" style="display:none;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
+                                <div>
+                                    <h3 style="margin:0;">🔗 Demostración Funcional de Escenarios Conectados (Fase 1.14)</h3>
+                                    <p style="font-size:12px; color:var(--text-muted); margin:4px 0 0 0;">Interdependencia real entre <strong>Comercio/Transporte</strong>, <strong>Educación</strong> y <strong>Salud</strong> sobre la MISMA población y territorio (Cantón San José Las Flores, San Vicente Sur).</p>
+                                </div>
+                                <button id="te-btn-run-connected-demo" class="btn btn-sm btn-primary">🚀 Ejecutar Simulación Conectada</button>
+                            </div>
+
+                            <div id="te-connected-intro-box" style="background:var(--bg-subtle); padding:14px; border-radius:6px; margin-bottom:16px; font-size:13px; line-height:1.6;">
+                                <strong>Población e Infraestructura Compartida:</strong>
+                                <ul style="margin:6px 0 0 20px; padding:0;">
+                                    <li><strong>Familia Henríquez:</strong> José Henríquez (jornalero agrícola, 41 años) y Mateo Henríquez (estudiante de 9no grado, 15 años).</li>
+                                    <li><strong>Familia Vásquez:</strong> Carmen Vásquez (dueña de Tiendita Doña Carmen), Rosa Vásquez (72 años, hipertensa) y Lucía Vásquez (11 años).</li>
+                                    <li><strong>Entorno Común:</strong> Corredor vial rural de 12 km, Centro Escolar San José Las Flores y Unidad Comunitaria de Salud Familiar (UCSF).</li>
+                                </ul>
+                            </div>
+
+                            <div id="te-connected-results" style="display:flex; flex-direction:column; gap:14px;">
+                                <div style="font-size:13px; color:var(--text-muted); text-align:center; padding:24px; background:var(--bg-surface); border-radius:8px; border:1px dashed var(--border-strong);">
+                                    Haga clic en '🚀 Ejecutar Simulación Conectada' para observar la cascada multidominio y la recuperación territorial integrada en tiempo real.
+                                </div>
                             </div>
                         </div>
                     </div>

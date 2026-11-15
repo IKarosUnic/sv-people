@@ -5685,6 +5685,61 @@ def run_phase114_experiment_endpoint(experiment_id: str) -> dict[str, Any]:
     }
 
 
+@router.post("/territory/connected_scenarios/run")
+def run_connected_scenarios_demonstration_endpoint() -> dict[str, Any]:
+    """Execute the multi-sector demonstration linking Commercial, Education, and Health on the SAME population."""
+    from saltbor.territory.connected_scenarios import ConnectedTerritorialScenariosDemonstrator
+
+    demo = ConnectedTerritorialScenariosDemonstrator(random_seed=42)
+    snapshots = demo.run_full_demonstration()
+
+    return {
+        "title": "Demostración de Escenarios Conectados (Comercial - Educativo - Salud)",
+        "territory": "Cantón San José Las Flores, San Vicente Sur (D.L. 762)",
+        "shared_individuals": [
+            {"uid": "agent_jose_worker", "name": "José Henríquez", "role": "Jornalero Agrícola (Padre)"},
+            {"uid": "agent_mateo_student", "name": "Mateo Henríquez", "role": "Estudiante 9no Grado (Hijo, 15 años)"},
+            {"uid": "agent_carmen_trader", "name": "Carmen Vásquez", "role": "Propietaria Tiendita Doña Carmen"},
+            {"uid": "agent_rosa_elder", "name": "Rosa Vásquez", "role": "Adulta Mayor (Hipertensión crónica, 72 años)"},
+            {"uid": "agent_lucia_student", "name": "Lucía Vásquez", "role": "Estudiante Primaria (Hija, 11 años)"},
+        ],
+        "stages": [
+            {
+                "stage_name": s.stage_name,
+                "description": s.description,
+                "commercial": {
+                    "road_friction_multiplier": s.road_friction_multiplier,
+                    "wholesale_price_usd": s.wholesale_food_price_usd,
+                    "retail_price_usd": s.retail_food_price_usd,
+                    "customer_footfall_factor": s.tiendita_footfall_factor,
+                    "tiendita_cash_usd": s.tiendita_cash_usd,
+                    "is_solvent": s.is_tiendita_solvent,
+                },
+                "household": {
+                    "jose_cash_usd": s.jose_cash_balance_usd,
+                    "daily_food_cost_usd": s.daily_food_expenditure_usd,
+                    "food_budget_share_pct": s.food_budget_share_pct,
+                    "informal_fiado_debt_usd": s.informal_credit_fiado_usd,
+                },
+                "education": {
+                    "mateo_attendance_pct": s.mateo_school_attendance_pct,
+                    "mateo_dropout_risk": s.mateo_dropout_risk,
+                    "mateo_child_labor": s.mateo_is_working_informal,
+                    "school_attendance_pct": s.school_overall_attendance_pct,
+                },
+                "healthcare": {
+                    "clinic_wait_hours": s.clinic_waiting_time_hours,
+                    "jose_lost_work_days": s.jose_lost_work_days,
+                    "out_of_pocket_medicine_usd": s.out_of_pocket_medical_usd,
+                    "rosa_health_status": s.rosa_health_status,
+                    "jose_health_status": s.jose_health_status,
+                },
+            }
+            for s in snapshots
+        ],
+    }
+
+
 
 
 

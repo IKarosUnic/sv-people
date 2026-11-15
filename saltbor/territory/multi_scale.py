@@ -101,6 +101,17 @@ class MultiScaleTerritorialSimulationEngine:
         self._load_administrative_hierarchy()
         self._seed_sample_territorial_population()
 
+    def register_individual(self, ind: MultiScaleIndividualRecord) -> None:
+        """Register an individual human in the multi-scale registry."""
+        self.individuals[ind.uid] = ind
+
+    def register_household(self, hh: MultiScaleHouseholdRecord) -> None:
+        """Register a household in the multi-scale registry."""
+        self.households[hh.household_id] = hh
+        if hh.community_id in self.communities:
+            if hh.household_id not in self.communities[hh.community_id].household_ids:
+                self.communities[hh.community_id].household_ids.append(hh.household_id)
+
     # =========================================================================
     # Administrative Hierarchy Initialization (CNR / IGN 2024)
     # =========================================================================
