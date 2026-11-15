@@ -2,6 +2,21 @@
 name = "saltbor"
 version = "0.1.0"
 description = "Saltbor — Synthetic Human and Society Simulation"
+readme = "README.md"
+license = "Apache-2.0"
+authors = [
+    { name = "Roberto Alejandro Ábrego Monrroy (IKarosUnic)", email = "abregomonrroyrobertoalejandro@gmail.com" },
+]
+classifiers = [
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Artificial Life",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+]
 requires-python = ">=3.12"
 dependencies = [
     "numpy>=2.0",

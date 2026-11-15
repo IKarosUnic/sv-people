@@ -9,6 +9,15 @@
 
 ### Executive Overview
 
+SALTBOR is licensed under the **Apache License, Version 2.0** (see [LICENSE](file:///c:/GIT%20HUB/sv%20people/LICENSE) and [NOTICE](file:///c:/GIT%20HUB/sv%20people/NOTICE)).
+Copyright (c) 2024-2026 Roberto Alejandro Ábrego Monrroy (IKarosUnic) & SALTBOR Contributors.
+
+The Apache 2.0 license provides key legal protections for the project:
+1. **Express Patent Grant & Retaliation Clause (§3)**: Protects against patent trolls; anyone who sues for patent infringement over the code automatically forfeits their patent license to SALTBOR.
+2. **Mandatory Attribution & Notice Retention (§4c, §4d)**: Downstream users and redistributors are legally required to retain all copyright notices, license texts, and the `NOTICE` file in all distributions and derivative works.
+3. **Protection of Trademarks (§6)**: Explicitly denies permission to use the project name or trademarks to endorse or promote derivative products without written consent.
+4. **Warranty Disclaimer & Limitation of Liability (§7, §8)**: Protects the author and contributors from liability or damages arising from the use of the software ("AS IS").
+
 SALTBOR is committed to strict intellectual property integrity and full compliance with open-source licensing. This document records the licensing status of all direct dependencies, external datasets (notably OpenStreetMap and Salvadoran public geospatial sources), and guidelines for incorporating future third-party software.
 
 ---

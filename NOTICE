@@ -1,0 +1,35 @@
+SALTBOR — Synthetic Human and Society Simulation
+Copyright 2024-2026 Roberto Alejandro Ábrego Monrroy (IKarosUnic) & SALTBOR Contributors
+
+This product includes software developed as part of the SALTBOR Project
+(https://github.com/IKarosUnic/sv-people).
+
+===============================================================================
+Third-Party Data and Open-Source Acknowledgments:
+===============================================================================
+
+1. OpenStreetMap (OSM) Cartographic and Geographical Data:
+   Contains data from OpenStreetMap, © OpenStreetMap contributors,
+   available under the Open Database License (ODbL) 1.0.
+   For details, see: https://www.openstreetmap.org/copyright
+   and https://opendatacommons.org/licenses/odbl/
+
+2. Official Geospatial and Cadastral References of El Salvador:
+   Demarcations, road classifications, and administrative hierarchies
+   incorporate public geographic baseline references from:
+   - Centro Nacional de Registros (CNR), República de El Salvador.
+   - Instituto Geográfico y del Catastro Nacional (IGN).
+   - Legislative Decree N° 762 (D.L. 762, May 2024).
+
+3. Socioeconomic Baseline Data:
+   Empirical statistical baselines (minimum wages, basic food basket costs)
+   reference public aggregate surveys published by:
+   - Banco Central de Reserva de El Salvador (BCR).
+   - Encuesta de Hogares de Propósitos Múltiples (EHPM / DIGESTYC).
+
+4. Python Dependencies and Permissive Upstream Libraries:
+   - NumPy: Copyright (c) 2005-2024, NumPy Developers (BSD-3-Clause).
+   - Pydantic: Copyright (c) 2017-2024, Samuel Colvin and contributors (MIT).
+   - FastAPI: Copyright (c) 2018-2024, Sebastián Ramírez (MIT).
+   - Shapely: Copyright (c) 2007-2024, Sean C. Gillies and contributors (BSD-3-Clause).
+   - Uvicorn: Copyright (c) 2017-2024, Encode OSS Ltd (BSD-3-Clause).

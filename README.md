@@ -285,3 +285,20 @@ Total tests: **561 passing automated tests** across all phases with 0 regression
 - **Simulation Speed**: ~800 – 1,000 ticks per second (> 8 simulated days per wall-clock second).
 - **Logical Memory Usage**: ~0.57 KB per human (Target < 1,024 KB: **PASS**).
 - **Persistence Storage**: Single SQLite database in Write-Ahead-Logging (WAL) mode with zero lock contention.
+
+---
+
+## License & Legal Protections
+
+SALTBOR is licensed under the **Apache License, Version 2.0** (the "License").  
+Copyright © 2024–2026 **Roberto Alejandro Ábrego Monrroy (IKarosUnic)** & SALTBOR Contributors.
+
+You may obtain a copy of the License at:  
+[http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0) or in the [LICENSE](file:///c:/GIT%20HUB/sv%20people/LICENSE) file.
+
+### Key Intellectual Property Safeguards:
+- **Patent Retaliation Protection (§3)**: Grants an express patent license from contributors while providing a defensive patent clause (any party initiating patent litigation regarding the Work immediately loses their license).
+- **Mandatory Attribution & Notice (§4)**: Any distribution or derivative work must retain all original copyright, patent, trademark, and attribution notices alongside the [NOTICE](file:///c:/GIT%20HUB/sv%20people/NOTICE) file.
+- **Trademark Protection (§6)**: Strictly prohibits using the SALTBOR name, branding, or contributor names for endorsement or commercial promotion without prior written authorization.
+- **Disclaimer of Warranty & Liability Shield (§7, §8)**: The software is provided "AS IS" without any warranties, shielding authors from liability.
+
