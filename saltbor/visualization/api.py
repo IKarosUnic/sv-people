@@ -5208,6 +5208,484 @@ def run_phase113_experiment_endpoint(experiment_id: str) -> dict[str, Any]:
     }
 
 
+# =============================================================================
+# Phase 1.14 Integrated Territorial Ecosystems, Multi-Scale Governance & Impact
+# =============================================================================
+
+from saltbor.territory import (
+    CollaborativeProposal,
+    GovernanceRole,
+    HumanNeedDimension,
+    NeedEvidenceTier,
+    ProjectApprovalStatus,
+    ProjectType,
+    PublicServiceFacility,
+    RegionalTradeNode,
+    ServiceCapacityStatus,
+    ServiceCategory,
+    SupplyChainRole,
+    TerritorialEcosystemEngine,
+    TerritorialElementType,
+    TerritorialScale,
+)
+from saltbor.simulation.experiments.phase114_territorial_experiments import (
+    PHASE114_EXPERIMENTS,
+    _SHARED_TERRITORIAL_ENGINE,
+)
+
+def _get_territorial_engine() -> TerritorialEcosystemEngine:
+    domain_eng = _get_domain_engine()
+    if hasattr(domain_eng, "territorial_engine") and domain_eng.territorial_engine:
+        return domain_eng.territorial_engine
+    return _SHARED_TERRITORIAL_ENGINE
+
+
+class TerritorialTradeRequest(BaseModel):
+    buyer_id: str
+    seller_id: str
+    commodity: str
+    quantity_units: int
+    link_id: Optional[str] = None
+
+
+class TerritorialServiceDemandRequest(BaseModel):
+    facility_id: str
+    demanding_citizens_count: int
+
+
+class TerritorialProposalSubmitRequest(BaseModel):
+    actor_id: str
+    title: str
+    description: str
+    project_type: str
+    target_department_code: str
+    target_municipality_id: str
+    requested_budget_usd: float
+    is_simulated_intervention: bool = True
+
+
+class TerritorialProposalReviewRequest(BaseModel):
+    reviewer_id: str
+    proposal_id: str
+    decision: str  # "APPROVE", "REJECT", "REQUEST_REVISION"
+    notes: str = ""
+
+
+class TerritorialCrossDomainSimulateRequest(BaseModel):
+    mechanism: str
+    params: dict[str, Any] = Field(default_factory=dict)
+
+
+class TerritorialImpactAnalyzeRequest(BaseModel):
+    project_id: str
+    baseline_metrics: dict[str, float] = Field(default_factory=dict)
+    intervention_metrics: dict[str, float] = Field(default_factory=dict)
+
+
+@router.get("/territory/summary")
+def get_territorial_summary_endpoint() -> dict[str, Any]:
+    """High-level territorial summary across population, infrastructure, and governance."""
+    engine = _get_territorial_engine()
+    return engine.get_territorial_summary()
+
+
+@router.get("/territory/hierarchy")
+def get_territorial_hierarchy_endpoint() -> dict[str, Any]:
+    """Administrative breakdown conforming to D.L. 762 (14 Departments, 44 Municipalities, 262 Districts)."""
+    engine = _get_territorial_engine()
+    return {
+        "country": "El Salvador",
+        "departments": engine.multi_scale.departments,
+        "municipalities": engine.multi_scale.municipalities,
+        "districts_count": len(engine.multi_scale.communities),
+    }
+
+
+@router.get("/territory/cross_domain/graph")
+def get_cross_domain_graph_endpoint() -> dict[str, Any]:
+    """Causal directed graph linking sectoral domains."""
+    engine = _get_territorial_engine()
+    return engine.cross_domain.get_domain_coupling_graph()
+
+
+@router.post("/territory/cross_domain/simulate")
+def simulate_cross_domain_interaction_endpoint(req: TerritorialCrossDomainSimulateRequest) -> dict[str, Any]:
+    """Trigger an explicit cross-domain causal mechanism and return outputs and audit trace."""
+    engine = _get_territorial_engine()
+    cd = engine.cross_domain
+
+    mech = req.mechanism.lower()
+    p = req.params
+
+    if "trans" in mech or "comm" in mech:
+        res = cd.propagate_transport_to_commerce(
+            road_friction_multiplier=float(p.get("road_friction_multiplier", 1.5)),
+            travel_cost_per_km=float(p.get("travel_cost_per_km", 0.05)),
+            commercial_reach_km=float(p.get("commercial_reach_km", 10.0)),
+            is_road_disrupted=bool(p.get("is_road_disrupted", False)),
+        )
+    elif "edu" in mech or "econ" in mech:
+        res = cd.propagate_education_to_economy(
+            school_attendance_rate=float(p.get("school_attendance_rate", 0.75)),
+            household_poverty_rate=float(p.get("household_poverty_rate", 0.40)),
+            available_local_jobs=int(p.get("available_local_jobs", 50)),
+        )
+    elif "health" in mech or "hh" in mech:
+        res = cd.propagate_healthcare_to_household_economy(
+            facility_distance_km=float(p.get("facility_distance_km", 8.0)),
+            queue_waiting_time_hours=float(p.get("queue_waiting_time_hours", 3.0)),
+            daily_wage_usd=float(p.get("daily_wage_usd", 12.0)),
+            illness_incidence_rate=float(p.get("illness_incidence_rate", 0.12)),
+        )
+    elif "agr" in mech or "food" in mech:
+        res = cd.propagate_agriculture_to_food_commerce(
+            crop_yield_quintales=float(p.get("crop_yield_quintales", 75.0)),
+            baseline_yield_quintales=float(p.get("baseline_yield_quintales", 100.0)),
+            transport_distance_km=float(p.get("transport_distance_km", 60.0)),
+            is_paved_corridor=bool(p.get("is_paved_corridor", True)),
+        )
+    elif "env" in mech:
+        res = cd.propagate_environment_to_multiple_domains(
+            drought_severity_index=float(p.get("drought_severity_index", 0.60)),
+            flood_severity_index=float(p.get("flood_severity_index", 0.10)),
+        )
+    else:
+        res = cd.propagate_institutions_to_community(
+            municipal_budget_execution_rate=float(p.get("municipal_budget_execution_rate", 0.80)),
+            civic_trust_score=float(p.get("civic_trust_score", 0.65)),
+            active_adesco_participating_citizens=int(p.get("active_adesco_participating_citizens", 120)),
+        )
+
+    traces = cd.get_causal_traces(limit=1)
+    return {
+        "mechanism": req.mechanism,
+        "outputs": res,
+        "latest_trace": traces[0] if traces else None,
+    }
+
+
+@router.get("/territory/multi_scale/view/{scale}")
+def get_multi_scale_view_endpoint(scale: str) -> dict[str, Any]:
+    """Inspect population and elements aggregated at a specific territorial scale."""
+    engine = _get_territorial_engine()
+    try:
+        scale_enum = TerritorialScale(scale.lower())
+    except ValueError:
+        raise HTTPException(status_code=400, detail=f"Invalid scale '{scale}'. Valid: {[s.value for s in TerritorialScale]}")
+
+    return engine.multi_scale.aggregate_population_by_scale(scale_enum)
+
+
+@router.get("/territory/individual/{uid}/hierarchy")
+def get_individual_hierarchy_endpoint(uid: str) -> dict[str, Any]:
+    """Trace a synthetic human across all 6 scales."""
+    engine = _get_territorial_engine()
+    h = engine.multi_scale.get_individual_hierarchy(uid)
+    if not h:
+        raise HTTPException(status_code=404, detail=f"Individual '{uid}' not found in multi-scale directory")
+    return h
+
+
+@router.get("/territory/economic_network/summary")
+def get_economic_network_summary_endpoint() -> dict[str, Any]:
+    """Regional economic network: trade nodes, supply links, transactions, and conserved currency balance."""
+    engine = _get_territorial_engine()
+    econ = engine.regional_economics
+    return {
+        "nodes": [
+            {
+                "node_id": n.node_id,
+                "name": n.name,
+                "role": n.role.value,
+                "department_code": n.department_code,
+                "is_informal": n.is_informal,
+                "cash_balance_usd": round(n.cash_balance_usd, 2),
+                "is_solvent": n.is_solvent,
+                "employees_count": len(n.employees),
+                "inventory": n.inventory_units,
+                "catalog": n.selling_price_usd,
+            }
+            for n in econ.nodes.values()
+        ],
+        "links": [
+            {
+                "link_id": l.link_id,
+                "source": l.source_node_id,
+                "target": l.target_node_id,
+                "commodity": l.commodity,
+                "distance_km": l.distance_km,
+                "is_paved": l.is_paved,
+                "is_disrupted": l.is_disrupted,
+                "effective_cost_usd": round(l.effective_transport_cost, 2),
+            }
+            for l in econ.links.values()
+        ],
+        "total_transactions": len(econ.transactions),
+        "total_currency_usd": round(econ.total_currency_in_circulation_usd, 2),
+    }
+
+
+@router.post("/territory/economic_network/trade")
+def execute_trade_endpoint(req: TerritorialTradeRequest) -> dict[str, Any]:
+    """Execute conserved trade transaction between buyer and seller nodes."""
+    engine = _get_territorial_engine()
+    ok, msg, tx = engine.regional_economics.execute_supply_chain_trade(
+        buyer_id=req.buyer_id,
+        seller_id=req.seller_id,
+        commodity=req.commodity,
+        quantity_units=req.quantity_units,
+        link_id=req.link_id,
+    )
+    if not ok:
+        raise HTTPException(status_code=400, detail=msg)
+    return {
+        "success": True,
+        "message": msg,
+        "transaction": dataclasses.asdict(tx) if tx else None,
+    }
+
+
+@router.get("/territory/economic_network/price_transmission")
+def get_price_transmission_endpoint(
+    farmgate_cost: float = 18.0,
+    commodity: str = "maiz_quintal",
+) -> dict[str, Any]:
+    """Calculate multi-echelon price transmission from farm to consumer."""
+    engine = _get_territorial_engine()
+    return engine.regional_economics.compute_echelon_price_transmission(
+        farmgate_cost_usd=farmgate_cost,
+        producer_id="farm_usulutan_1",
+        wholesaler_id="wholesaler_tiendona_ss",
+        retailer_id="tiendita_soyapango",
+        commodity=commodity,
+        farm_to_wholesale_link_id="link_usulutan_tiendona",
+        wholesale_to_retail_link_id="link_tiendona_soyapango",
+    )
+
+
+@router.get("/territory/public_services/facilities")
+def list_facilities_endpoint(
+    category: Optional[str] = None,
+    department: Optional[str] = None,
+) -> list[dict[str, Any]]:
+    """Query facilities with capacities, coverage, and queues."""
+    engine = _get_territorial_engine()
+    cat_enum = ServiceCategory(category.lower()) if category else None
+    facs = engine.public_services.list_facilities(category=cat_enum, department_code=department)
+    return [
+        {
+            "facility_id": f.facility_id,
+            "name": f.name,
+            "category": f.category.value,
+            "department_code": f.department_code,
+            "municipality_id": f.municipality_id,
+            "latitude": f.latitude,
+            "longitude": f.longitude,
+            "coverage_radius_km": f.coverage_radius_km,
+            "status": f.status.value,
+            "capacity_per_day": f.configured_capacity_per_day,
+            "staff_count": f.staff_count,
+            "current_waiting_queue": f.current_waiting_queue,
+            "served_today": f.served_today,
+            "provenance_tier": f.provenance_tier.value,
+        }
+        for f in facs
+    ]
+
+
+@router.post("/territory/public_services/demand")
+def submit_service_demand_endpoint(req: TerritorialServiceDemandRequest) -> dict[str, Any]:
+    """Submit demand and simulate queue congestion."""
+    engine = _get_territorial_engine()
+    ok, served, unmet = engine.public_services.submit_service_demand(
+        facility_id=req.facility_id,
+        demanding_citizens_count=req.demanding_citizens_count,
+    )
+    if not ok:
+        raise HTTPException(status_code=404, detail="Facility not found")
+    fac = engine.public_services.get_facility(req.facility_id)
+    return {
+        "facility_id": req.facility_id,
+        "served_citizens": served,
+        "unmet_in_queue": unmet,
+        "current_status": fac.status.value if fac else "unknown",
+    }
+
+
+@router.get("/territory/public_services/accessibility")
+def get_service_accessibility_endpoint(
+    lat: float = 13.6989,
+    lon: float = -89.1914,
+    category: str = "healthcare",
+) -> dict[str, Any]:
+    """Compute geographic accessibility friction and detect service gaps."""
+    engine = _get_territorial_engine()
+    cat_enum = ServiceCategory(category.lower())
+    return engine.public_services.compute_community_accessibility(lat, lon, cat_enum)
+
+
+@router.get("/territory/governance/proposals")
+def list_governance_proposals_endpoint() -> list[dict[str, Any]]:
+    """List collaborative governance proposals and audit history."""
+    engine = _get_territorial_engine()
+    return [
+        {
+            "proposal_id": p.proposal_id,
+            "title": p.title,
+            "description": p.description,
+            "proposer_id": p.proposer_id,
+            "proposer_role": p.proposer_role.value,
+            "target_department_code": p.target_department_code,
+            "target_municipality_id": p.target_municipality_id,
+            "project_type": p.project_type,
+            "requested_budget_usd": p.requested_budget_usd,
+            "status": p.status.value,
+            "version": p.version,
+            "approval_signatures": p.approval_signatures,
+            "is_simulated": p.is_simulated_intervention,
+        }
+        for p in engine.governance.proposals.values()
+    ]
+
+
+@router.post("/territory/governance/propose")
+def submit_governance_proposal_endpoint(req: TerritorialProposalSubmitRequest) -> dict[str, Any]:
+    """Submit a versioned territorial proposal."""
+    engine = _get_territorial_engine()
+    ok, msg, prop = engine.governance.submit_proposal(
+        actor_id=req.actor_id,
+        title=req.title,
+        description=req.description,
+        project_type=req.project_type,
+        target_department_code=req.target_department_code,
+        target_municipality_id=req.target_municipality_id,
+        requested_budget_usd=req.requested_budget_usd,
+        is_simulated_intervention=req.is_simulated_intervention,
+    )
+    if not ok:
+        raise HTTPException(status_code=403, detail=msg)
+    return {
+        "success": True,
+        "message": msg,
+        "proposal_id": prop.proposal_id if prop else None,
+    }
+
+
+@router.post("/territory/governance/review")
+def review_governance_proposal_endpoint(req: TerritorialProposalReviewRequest) -> dict[str, Any]:
+    """Review and decide proposal (RBAC and municipal boundary enforced)."""
+    engine = _get_territorial_engine()
+    ok, msg = engine.governance.review_and_decide_proposal(
+        reviewer_id=req.reviewer_id,
+        proposal_id=req.proposal_id,
+        decision=req.decision,
+        notes=req.notes,
+    )
+    if not ok:
+        raise HTTPException(status_code=403, detail=msg)
+    return {"success": True, "message": msg}
+
+
+@router.get("/territory/needs/assessment")
+def get_needs_assessment_endpoint(territory_id: str = "chalatenango_dist") -> dict[str, Any]:
+    """12-dimensional needs profile with epistemic tiers and Pareto priorities."""
+    engine = _get_territorial_engine()
+    needs = engine.needs_assessment.get_territory_needs(territory_id)
+    priorities = engine.needs_assessment.compute_pareto_priority_interventions(territory_id)
+    return {
+        "territory_id": territory_id,
+        "needs": [
+            {
+                "need_id": n.need_id,
+                "dimension": n.dimension.value,
+                "unmet_severity": n.unmet_severity,
+                "evidence_tier": n.evidence_tier.value,
+                "affected_population": n.affected_population_estimate,
+                "confidence_interval_95": n.confidence_interval_95,
+                "primary_factors": n.primary_causal_factors,
+                "explicit_assumptions": n.explicit_assumptions,
+            }
+            for n in needs
+        ],
+        "pareto_priorities": priorities,
+    }
+
+
+@router.get("/territory/projects/alternatives")
+def get_project_alternatives_endpoint(project_id: Optional[str] = None) -> dict[str, Any]:
+    """Compare project design alternatives across cost, capacity, and coverage equity."""
+    engine = _get_territorial_engine()
+    projects = engine.projects.list_projects()
+    if not projects:
+        return {"projects": []}
+    target_pid = project_id or projects[0].project_id
+    return engine.projects.evaluate_project_alternatives(target_pid)
+
+
+@router.post("/territory/impact/analyze")
+def analyze_project_impact_endpoint(req: TerritorialImpactAnalyzeRequest) -> dict[str, Any]:
+    """Evaluate multi-domain direct, indirect, feedback, and distributional impacts."""
+    engine = _get_territorial_engine()
+    proj = engine.projects.get_project(req.project_id)
+    if not proj:
+        raise HTTPException(status_code=404, detail="Project not found")
+
+    report = engine.impact_analysis.evaluate_project_impact(
+        project=proj,
+        baseline_metrics=req.baseline_metrics,
+        intervention_metrics=req.intervention_metrics,
+    )
+    return dataclasses.asdict(report)
+
+
+@router.get("/territory/experiments/phase114")
+def list_phase114_experiments_endpoint() -> list[dict[str, Any]]:
+    """List all 20 Phase 1.14 Integrated Territorial Ecosystem experiments."""
+    experiments = []
+    for exp_id, exp_cls in PHASE114_EXPERIMENTS.items():
+        inst = exp_cls()
+        cfg = inst.default_config()
+        doc = exp_cls.__doc__ or "Empirical territorial experiment."
+        experiments.append({
+            "experiment_id": cfg.experiment_id,
+            "name": cfg.name,
+            "description": cfg.description,
+            "docstring": doc.strip(),
+            "random_seed": cfg.random_seed,
+            "duration_ticks": cfg.duration_ticks,
+        })
+    return experiments
+
+
+@router.post("/territory/experiments/phase114/run/{experiment_id}")
+def run_phase114_experiment_endpoint(experiment_id: str) -> dict[str, Any]:
+    """Execute a Phase 1.14 experiment on demand and record compact schema."""
+    exp_key = experiment_id.upper()
+    exp_cls = PHASE114_EXPERIMENTS.get(exp_key)
+    if not exp_cls:
+        raise HTTPException(status_code=404, detail=f"Experiment '{experiment_id}' not found. Available: {list(PHASE114_EXPERIMENTS.keys())}")
+
+    inst = exp_cls()
+    ctrl = None
+    try:
+        ctrl = get_controller()
+    except Exception:
+        pass
+    runner = ctrl.runner if ctrl else None
+    result = inst.run(runner=runner)
+
+    return {
+        "experiment_id": result.experiment_id,
+        "name": result.name,
+        "success": result.success,
+        "summary": result.summary,
+        "hypotheses": result.hypotheses,
+        "metrics": result.metrics,
+        "duration_seconds": round(result.duration_seconds, 4),
+    }
+
+
+
 
 
 

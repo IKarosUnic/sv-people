@@ -95,6 +95,7 @@
         connectSSE();
         initGeographyProvenance();
         initUniversalDomainsListeners();
+        initTerritorialObservatoryListeners();
 
         // Initial Data Fetch
         fetchWorldData();
@@ -242,6 +243,13 @@
             fetchScientificWorkspaceData();
         } else if (viewName === "universal_domains") {
             fetchUniversalDomainsData();
+        } else if (viewName === "territorial_ecosystem") {
+            fetchTerritorialSummary();
+            fetchTerritorialNodes();
+            fetchTerritorialFacilities();
+            fetchTerritorialProposals();
+            fetchTerritorialNeeds();
+            fetchPhase114Experiments();
         }
     }
 
@@ -5286,6 +5294,502 @@
         } finally {
             if (btn) btn.disabled = false;
         }
+    }
+
+    // =========================================================================
+    // 14. PHASE 1.14: INTEGRATED TERRITORIAL ECOSYSTEM & OBSERVATORY
+    // =========================================================================
+    function initTerritorialObservatoryListeners() {
+        // Subtab Navigation
+        document.querySelectorAll(".te-subtab-btn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                document.querySelectorAll(".te-subtab-btn").forEach((b) => {
+                    b.classList.remove("active", "btn-primary");
+                    b.classList.add("btn-secondary");
+                });
+                btn.classList.remove("btn-secondary");
+                btn.classList.add("active", "btn-primary");
+
+                const targetId = btn.dataset.target;
+                document.querySelectorAll(".te-subpanel-content").forEach((panel) => {
+                    panel.style.display = (panel.id === targetId) ? "block" : "none";
+                });
+
+                if (targetId === "te-panel-map") fetchTerritorialSummary();
+                else if (targetId === "te-panel-economics") fetchTerritorialNodes();
+                else if (targetId === "te-panel-services") fetchTerritorialFacilities();
+                else if (targetId === "te-panel-governance") fetchTerritorialProposals();
+                else if (targetId === "te-panel-needs") fetchTerritorialNeeds();
+                else if (targetId === "te-panel-experiments") fetchPhase114Experiments();
+            });
+        });
+
+        // Refresh Summary Button
+        const btnRef = document.getElementById("te-btn-refresh-summary");
+        if (btnRef) btnRef.addEventListener("click", () => fetchTerritorialSummary());
+
+        // Inspect Location Button
+        const btnInsp = document.getElementById("te-btn-inspect-loc");
+        if (btnInsp) btnInsp.addEventListener("click", () => inspectSelectedLocation());
+
+        // Price Transmission Button
+        const btnPrice = document.getElementById("te-btn-calc-price");
+        if (btnPrice) btnPrice.addEventListener("click", () => calculatePriceTransmission());
+
+        // Demand Bottleneck Simulation Button
+        const btnDemand = document.getElementById("te-btn-submit-demand");
+        if (btnDemand) btnDemand.addEventListener("click", () => submitTerritorialDemand());
+
+        // Submit Proposal Button
+        const btnProp = document.getElementById("te-btn-submit-proposal");
+        if (btnProp) btnProp.addEventListener("click", () => submitTerritorialProposal());
+
+        // Run All Experiments Button
+        const btnRunAll = document.getElementById("te-btn-run-all-experiments");
+        if (btnRunAll) btnRunAll.addEventListener("click", () => runAllPhase114Experiments());
+    }
+
+    async function fetchTerritorialSummary() {
+        try {
+            const res = await fetch("/api/territory/summary");
+            if (!res.ok) return;
+            const data = await res.json();
+
+            const setEl = (id, val) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = val;
+            };
+
+            setEl("te-stat-country", data.country || "El Salvador");
+            setEl("te-stat-depts", data.departments_count || 14);
+            setEl("te-stat-munis", data.municipalities_count || 44);
+            setEl("te-stat-comms", data.communities_count || 270);
+            setEl("te-stat-pop", data.total_simulated_population || 96);
+            setEl("te-stat-facilities", data.public_facilities_count || 7);
+            setEl("te-stat-nodes", data.trade_nodes_count || 4);
+            setEl("te-stat-links", data.active_cross_domain_interactions || 6);
+        } catch (err) {
+            console.warn("fetchTerritorialSummary error:", err);
+        }
+    }
+
+    async function inspectSelectedLocation() {
+        const sel = document.getElementById("te-select-territory");
+        const out = document.getElementById("te-location-details");
+        if (!sel || !out) return;
+
+        const locKey = sel.value;
+        out.innerHTML = `<span style="color:var(--text-muted);">Consultando datos territoriales para '${escapeExtensionHtml(locKey)}'...</span>`;
+
+        try {
+            const coordsMap = {
+                "ss_centro": { lat: 13.6989, lon: -89.1914, name: "San Salvador Centro", dept: "San Salvador (SS)", pop: "12,000 hab. (Muestra: 12)" },
+                "chalatenango_dist": { lat: 14.0415, lon: -88.9357, name: "Chalatenango Rural", dept: "Chalatenango (CH)", pop: "1,850 hab. (Muestra: 12)" },
+                "soyapango": { lat: 13.7102, lon: -89.1398, name: "Soyapango", dept: "San Salvador (SS)", pop: "285,000 hab. (Muestra: 12)" },
+                "usulutan_dist": { lat: 13.3500, lon: -88.4500, name: "Usulután Agrícola", dept: "Usulután (US)", pop: "75,000 hab. (Muestra: 12)" },
+                "santa_ana_dist": { lat: 13.9942, lon: -89.5597, name: "Santa Ana Centro", dept: "Santa Ana (SA)", pop: "245,000 hab. (Muestra: 12)" },
+            };
+            const locInfo = coordsMap[locKey] || { lat: 13.7000, lon: -89.2000, name: locKey, dept: "El Salvador", pop: "1,000" };
+
+            // Fetch accessibility for healthcare
+            const accRes = await fetch(`/api/territory/public_services/accessibility?lat=${locInfo.lat}&lon=${locInfo.lon}&category=healthcare`);
+            const accData = accRes.ok ? await accRes.json() : {};
+
+            out.innerHTML = `
+                <div style="font-weight:600; font-size:14px; margin-bottom:4px;">📍 ${escapeExtensionHtml(locInfo.name)}</div>
+                <div style="color:var(--text-muted); font-size:12px; margin-bottom:8px;">Departamento: <strong>${escapeExtensionHtml(locInfo.dept)}</strong> | Población: <strong>${escapeExtensionHtml(locInfo.pop)}</strong></div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; font-size:12px; margin-bottom:8px;">
+                    <div>Clínica más cercana: <strong>${accData.nearest_facility_name || "Unidad de Salud"}</strong></div>
+                    <div>Distancia: <strong>${accData.distance_km != null ? accData.distance_km + " km" : "N/D"}</strong></div>
+                    <div>Índice Accesibilidad: <span class="badge ${accData.accessibility_index > 0.5 ? 'badge-success' : 'badge-warning'}">${accData.accessibility_index || 0.0}</span></div>
+                    <div>Brecha de Servicio: <strong>${accData.service_gap_identified ? '⚠️ Identificada' : '✓ Cobertura Adecuada'}</strong></div>
+                </div>
+                <div style="font-size:11px; color:var(--text-muted); border-top:1px solid var(--border-subtle); padding-top:6px;">
+                    Fuente: <em>CNR / IGN 2024 (D.L. 762) & Geofabrik OpenStreetMap</em> | Nivel Epistémico: <span class="badge badge-info" style="font-size:9px;">OBSERVED_REAL</span>
+                </div>
+            `;
+        } catch (err) {
+            out.innerHTML = `<span style="color:var(--color-danger);">Error al inspeccionar ubicación: ${escapeExtensionHtml(err.message)}</span>`;
+        }
+    }
+
+    async function fetchTerritorialNodes() {
+        const out = document.getElementById("te-econ-nodes-table");
+        if (!out) return;
+
+        try {
+            const res = await fetch("/api/territory/economic_network/summary");
+            if (!res.ok) throw new Error("Error al consultar red económica");
+            const data = await res.json();
+
+            let html = `
+                <table class="table" style="width:100%; border-collapse:collapse;">
+                    <thead>
+                        <tr style="border-bottom:1px solid var(--border-strong); text-align:left;">
+                            <th style="padding:6px;">Nodo Económico</th>
+                            <th style="padding:6px;">Rol en Cadena</th>
+                            <th style="padding:6px;">Dpto</th>
+                            <th style="padding:6px;">Saldo USD</th>
+                            <th style="padding:6px;">Formalidad</th>
+                            <th style="padding:6px;">Solvencia</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            (data.nodes || []).forEach((n) => {
+                html += `
+                    <tr style="border-bottom:1px solid var(--border-subtle);">
+                        <td style="padding:6px; font-weight:500;">${escapeExtensionHtml(n.name)}</td>
+                        <td style="padding:6px;"><span class="badge badge-secondary" style="font-size:10px;">${escapeExtensionHtml(n.role)}</span></td>
+                        <td style="padding:6px;">${escapeExtensionHtml(n.department_code)}</td>
+                        <td style="padding:6px; font-weight:600; color:var(--color-success);">$${n.cash_balance_usd.toFixed(2)}</td>
+                        <td style="padding:6px;">${n.is_informal ? '<span class="badge badge-warning" style="font-size:10px;">Informal</span>' : '<span class="badge badge-info" style="font-size:10px;">Formal</span>'}</td>
+                        <td style="padding:6px;">${n.is_solvent ? '<span class="badge badge-success" style="font-size:10px;">Solvente</span>' : '<span class="badge badge-danger" style="font-size:10px;">En Quiebra</span>'}</td>
+                    </tr>
+                `;
+            });
+
+            html += `</tbody></table>`;
+            out.innerHTML = html;
+        } catch (err) {
+            out.innerHTML = `<span style="color:var(--color-danger);">Error al cargar nodos: ${escapeExtensionHtml(err.message)}</span>`;
+        }
+    }
+
+    async function calculatePriceTransmission() {
+        const input = document.getElementById("te-calc-farmgate");
+        const out = document.getElementById("te-price-transmission-results");
+        if (!input || !out) return;
+
+        const farmgate = parseFloat(input.value) || 18.0;
+        out.innerHTML = `<span style="color:var(--text-muted);">Calculando transmisión de precios...</span>`;
+
+        try {
+            const res = await fetch(`/api/territory/economic_network/price_transmission?farmgate_cost=${farmgate}&commodity=maiz_quintal`);
+            if (!res.ok) throw new Error("Error en cálculo");
+            const data = await res.json();
+
+            out.innerHTML = `
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:8px;">
+                    <div>Costo Finca Productor: <strong>$${data.farmgate_cost_usd.toFixed(2)}</strong></div>
+                    <div>Flete hacia Mayorista: <strong>$${data.transport_to_wholesale_usd.toFixed(2)}</strong></div>
+                    <div>Precio Venta Mayorista: <strong>$${data.wholesale_selling_price_usd.toFixed(2)}</strong></div>
+                    <div>Flete hacia Tiendita: <strong>$${data.transport_to_retail_usd.toFixed(2)}</strong></div>
+                </div>
+                <div style="background:var(--bg-card); padding:8px; border-radius:4px; border:1px solid var(--border-subtle); margin-bottom:6px;">
+                    <div style="font-size:11px; color:var(--text-muted);">Precio Final al Consumidor (lb/unidad):</div>
+                    <div style="font-size:16px; font-weight:700; color:var(--color-primary);">$${data.final_consumer_retail_price_usd.toFixed(2)} USD</div>
+                    <div style="font-size:11px; color:var(--text-muted);">Participación acumulada del flete vial: <strong>${data.cumulative_transport_share_pct}%</strong></div>
+                </div>
+                <div style="font-size:10px; color:var(--text-muted);">Conservación Contable: <em>Ingreso Productor + Flete + Márgenes = Gasto del Consumidor (Exacto).</em></div>
+            `;
+        } catch (err) {
+            out.innerHTML = `<span style="color:var(--color-danger);">Error en cálculo: ${escapeExtensionHtml(err.message)}</span>`;
+        }
+    }
+
+    async function fetchTerritorialFacilities() {
+        const out = document.getElementById("te-services-table");
+        if (!out) return;
+
+        try {
+            const res = await fetch("/api/territory/public_services/facilities");
+            if (!res.ok) throw new Error("Error al consultar instalaciones");
+            const facs = await res.json();
+
+            let html = `
+                <table class="table" style="width:100%; border-collapse:collapse;">
+                    <thead>
+                        <tr style="border-bottom:1px solid var(--border-strong); text-align:left;">
+                            <th style="padding:6px;">Instalación</th>
+                            <th style="padding:6px;">Categoría</th>
+                            <th style="padding:6px;">Dpto</th>
+                            <th style="padding:6px;">Capacidad / Día</th>
+                            <th style="padding:6px;">Cola Actual</th>
+                            <th style="padding:6px;">Estado Operativo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            facs.forEach((f) => {
+                const capLabel = f.capacity_per_day != null ? `${f.capacity_per_day} hab.` : '<em style="color:var(--text-muted);">Sin Configurar</em>';
+                let statusBadge = 'badge-success';
+                if (f.status === 'degraded') statusBadge = 'badge-warning';
+                else if (f.status === 'overloaded') statusBadge = 'badge-danger';
+                else if (f.status === 'unconfigured') statusBadge = 'badge-secondary';
+
+                html += `
+                    <tr style="border-bottom:1px solid var(--border-subtle);">
+                        <td style="padding:6px; font-weight:500;">${escapeExtensionHtml(f.name)}</td>
+                        <td style="padding:6px;"><span class="badge badge-secondary" style="font-size:10px;">${escapeExtensionHtml(f.category)}</span></td>
+                        <td style="padding:6px;">${escapeExtensionHtml(f.department_code)}</td>
+                        <td style="padding:6px;">${capLabel}</td>
+                        <td style="padding:6px; font-weight:600; color:${f.current_waiting_queue > 0 ? 'var(--color-danger)' : 'var(--text-main)'};">${f.current_waiting_queue}</td>
+                        <td style="padding:6px;"><span class="badge ${statusBadge}" style="font-size:10px;">${escapeExtensionHtml(f.status.toUpperCase())}</span></td>
+                    </tr>
+                `;
+            });
+
+            html += `</tbody></table>`;
+            out.innerHTML = html;
+        } catch (err) {
+            out.innerHTML = `<span style="color:var(--color-danger);">Error al cargar servicios: ${escapeExtensionHtml(err.message)}</span>`;
+        }
+    }
+
+    async function submitTerritorialDemand() {
+        const facSelect = document.getElementById("te-demand-facility");
+        const countInput = document.getElementById("te-demand-count");
+        const out = document.getElementById("te-demand-results");
+        if (!facSelect || !countInput || !out) return;
+
+        const facId = facSelect.value;
+        const count = parseInt(countInput.value, 10) || 50;
+        out.innerHTML = `<span style="color:var(--text-muted);">Enviando ${count} solicitudes de atención...</span>`;
+
+        try {
+            const res = await fetch("/api/territory/public_services/demand", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ facility_id: facId, demanding_citizens_count: count }),
+            });
+            if (!res.ok) throw new Error("Error al simular demanda");
+            const data = await res.json();
+
+            out.innerHTML = `
+                <div style="font-weight:600; margin-bottom:4px;">Resultado del Flujo de Demanda:</div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; font-size:12px;">
+                    <div>Atendidos hoy: <strong style="color:var(--color-success);">${data.served_citizens}</strong></div>
+                    <div>En cola / No atendidos: <strong style="color:var(--color-danger);">${data.unmet_in_queue}</strong></div>
+                    <div>Estado resultante: <span class="badge ${data.current_status === 'operational' ? 'badge-success' : 'badge-danger'}">${data.current_status.toUpperCase()}</span></div>
+                </div>
+            `;
+            fetchTerritorialFacilities();
+        } catch (err) {
+            out.innerHTML = `<span style="color:var(--color-danger);">Error: ${escapeExtensionHtml(err.message)}</span>`;
+        }
+    }
+
+    async function fetchTerritorialProposals() {
+        const out = document.getElementById("te-proposals-list");
+        if (!out) return;
+
+        try {
+            const res = await fetch("/api/territory/governance/proposals");
+            if (!res.ok) throw new Error("Error al consultar propuestas");
+            const props = await res.json();
+
+            if (!props.length) {
+                out.innerHTML = `<div style="color:var(--text-muted); font-size:12px; padding:8px;">No hay propuestas ciudadanas activas en este momento.</div>`;
+                return;
+            }
+
+            let html = ``;
+            props.forEach((p) => {
+                html += `
+                    <div style="background:var(--bg-subtle); padding:10px; border-radius:6px; margin-bottom:8px; border:1px solid var(--border-subtle);">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                            <strong style="font-size:13px;">${escapeExtensionHtml(p.title)}</strong>
+                            <span class="badge ${p.status === 'approved' ? 'badge-success' : (p.status === 'rejected' ? 'badge-danger' : 'badge-warning')}" style="font-size:10px;">${p.status.toUpperCase()} (v${p.version})</span>
+                        </div>
+                        <div style="font-size:12px; color:var(--text-muted); margin-bottom:6px;">${escapeExtensionHtml(p.description)}</div>
+                        <div style="display:flex; justify-content:space-between; font-size:11px;">
+                            <span>Proponente: <strong>${escapeExtensionHtml(p.proposer_id)}</strong> (${escapeExtensionHtml(p.proposer_role)})</span>
+                            <span>Presupuesto: <strong style="color:var(--color-success);">$${p.requested_budget_usd.toFixed(2)} USD</strong></span>
+                            <span>Municipio: <strong>${escapeExtensionHtml(p.target_municipality_id)}</strong></span>
+                        </div>
+                    </div>
+                `;
+            });
+            out.innerHTML = html;
+        } catch (err) {
+            out.innerHTML = `<span style="color:var(--color-danger);">Error al cargar propuestas: ${escapeExtensionHtml(err.message)}</span>`;
+        }
+    }
+
+    async function submitTerritorialProposal() {
+        const actor = document.getElementById("te-prop-actor")?.value || "citizen_ss_01";
+        const type = document.getElementById("te-prop-type")?.value || "public_market";
+        const title = document.getElementById("te-prop-title")?.value || "Proyecto Comunitario";
+        const budget = parseFloat(document.getElementById("te-prop-budget")?.value) || 20000.0;
+        const statusEl = document.getElementById("te-prop-submit-status");
+
+        if (statusEl) statusEl.innerHTML = `<span style="color:var(--text-muted);">Enviando propuesta para revisión...</span>`;
+
+        try {
+            const res = await fetch("/api/territory/governance/propose", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    actor_id: actor,
+                    title: title,
+                    description: `Propuesta de ${type} en San Salvador Centro`,
+                    project_type: type,
+                    target_department_code: "SS",
+                    target_municipality_id: "SS01",
+                    requested_budget_usd: budget,
+                    is_simulated_intervention: true,
+                }),
+            });
+            if (!res.ok) {
+                const errData = await res.json();
+                throw new Error(errData.detail || "Error al proponer");
+            }
+            const data = await res.json();
+            if (statusEl) statusEl.innerHTML = `<span style="color:var(--color-success);">✓ Propuesta registrada con éxito (ID: ${data.proposal_id})</span>`;
+            fetchTerritorialProposals();
+        } catch (err) {
+            if (statusEl) statusEl.innerHTML = `<span style="color:var(--color-danger);">Error: ${escapeExtensionHtml(err.message)}</span>`;
+        }
+    }
+
+    async function fetchTerritorialNeeds() {
+        const tableOut = document.getElementById("te-needs-table");
+        const paretoOut = document.getElementById("te-pareto-priorities");
+        if (!tableOut || !paretoOut) return;
+
+        try {
+            const res = await fetch("/api/territory/needs/assessment?territory_id=chalatenango_dist");
+            if (!res.ok) throw new Error("Error al consultar necesidades");
+            const data = await res.json();
+
+            let html = `
+                <table class="table" style="width:100%; border-collapse:collapse;">
+                    <thead>
+                        <tr style="border-bottom:1px solid var(--border-strong); text-align:left;">
+                            <th style="padding:6px;">Dimensión (12D)</th>
+                            <th style="padding:6px;">Severidad</th>
+                            <th style="padding:6px;">Población Afectada</th>
+                            <th style="padding:6px;">Nivel Epistémico</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            (data.needs || []).forEach((n) => {
+                const pct = Math.round(n.unmet_severity * 100);
+                let badgeClass = 'badge-danger';
+                if (n.evidence_tier.includes('confirmed')) badgeClass = 'badge-info';
+                else if (n.evidence_tier.includes('potential')) badgeClass = 'badge-warning';
+
+                html += `
+                    <tr style="border-bottom:1px solid var(--border-subtle);">
+                        <td style="padding:6px; font-weight:500;">${escapeExtensionHtml(n.dimension)}</td>
+                        <td style="padding:6px;">
+                            <div style="display:flex; align-items:center; gap:6px;">
+                                <div style="background:var(--border-subtle); width:60px; height:6px; border-radius:3px; overflow:hidden;">
+                                    <div style="background:var(--color-danger); width:${pct}%; height:100%;"></div>
+                                </div>
+                                <span style="font-size:11px; font-weight:600;">${n.unmet_severity.toFixed(2)}</span>
+                            </div>
+                        </td>
+                        <td style="padding:6px;">${n.affected_population.toLocaleString()} hab.</td>
+                        <td style="padding:6px;"><span class="badge ${badgeClass}" style="font-size:9px;">${escapeExtensionHtml(n.evidence_tier)}</span></td>
+                    </tr>
+                `;
+            });
+            html += `</tbody></table>`;
+            tableOut.innerHTML = html;
+
+            // Pareto Priorities
+            let paretoHtml = `<div style="font-weight:600; margin-bottom:8px;">Orden de Prioridad Multicriterio (Pareto):</div>`;
+            (data.pareto_priorities || []).forEach((p, idx) => {
+                paretoHtml += `
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid var(--border-subtle);">
+                        <span>${idx + 1}. <strong>${escapeExtensionHtml(p.dimension)}</strong></span>
+                        <span class="badge badge-primary" style="font-size:10px;">Urgencia: ${p.urgency_score}</span>
+                    </div>
+                `;
+            });
+            paretoOut.innerHTML = paretoHtml;
+        } catch (err) {
+            tableOut.innerHTML = `<span style="color:var(--color-danger);">Error: ${escapeExtensionHtml(err.message)}</span>`;
+        }
+    }
+
+    async function fetchPhase114Experiments() {
+        const grid = document.getElementById("te-experiments-grid");
+        if (!grid) return;
+
+        try {
+            const res = await fetch("/api/territory/experiments/phase114");
+            if (!res.ok) throw new Error("Error al consultar catálogo de experimentos");
+            const exps = await res.json();
+
+            let html = ``;
+            exps.forEach((e) => {
+                html += `
+                    <div class="card" style="padding:12px; border:1px solid var(--border-subtle); border-radius:6px; background:var(--bg-card); display:flex; flex-direction:column; justify-content:space-between;">
+                        <div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                                <strong style="font-size:13px; color:var(--color-primary);">${escapeExtensionHtml(e.experiment_id)}</strong>
+                                <span id="te-badge-${e.experiment_id}" class="badge badge-secondary" style="font-size:9px;">Pendiente</span>
+                            </div>
+                            <div style="font-size:12px; font-weight:600; margin-bottom:4px;">${escapeExtensionHtml(e.name)}</div>
+                            <div style="font-size:11px; color:var(--text-muted); margin-bottom:8px;">${escapeExtensionHtml(e.description)}</div>
+                        </div>
+                        <div>
+                            <div id="te-result-${e.experiment_id}" style="font-size:11px; color:var(--text-muted); margin-bottom:8px; min-height:16px;"></div>
+                            <button class="btn btn-sm btn-outline-primary" style="width:100%; font-size:11px;" onclick="window.runSinglePhase114Experiment('${e.experiment_id}')">▶ Ejecutar Experimento</button>
+                        </div>
+                    </div>
+                `;
+            });
+            grid.innerHTML = html;
+        } catch (err) {
+            grid.innerHTML = `<span style="color:var(--color-danger);">Error al cargar experimentos: ${escapeExtensionHtml(err.message)}</span>`;
+        }
+    }
+
+    window.runSinglePhase114Experiment = async function (expId) {
+        const badge = document.getElementById(`te-badge-${expId}`);
+        const resultOut = document.getElementById(`te-result-${expId}`);
+        if (badge) {
+            badge.className = "badge badge-warning";
+            badge.textContent = "Ejecutando...";
+        }
+
+        try {
+            const res = await fetch(`/api/territory/experiments/phase114/run/${expId}`, { method: "POST" });
+            if (!res.ok) throw new Error("Fallo en ejecución");
+            const data = await res.json();
+
+            if (badge) {
+                badge.className = data.success ? "badge badge-success" : "badge badge-danger";
+                badge.textContent = data.success ? "Aprobado ✓" : "Fallido ✗";
+            }
+            if (resultOut) {
+                resultOut.innerHTML = `<span style="color:${data.success ? 'var(--color-success)' : 'var(--color-danger)'};">${escapeExtensionHtml(data.summary)} (${data.duration_seconds}s)</span>`;
+            }
+        } catch (err) {
+            if (badge) {
+                badge.className = "badge badge-danger";
+                badge.textContent = "Error";
+            }
+            if (resultOut) {
+                resultOut.innerHTML = `<span style="color:var(--color-danger);">${escapeExtensionHtml(err.message)}</span>`;
+            }
+        }
+    };
+
+    async function runAllPhase114Experiments() {
+        const btn = document.getElementById("te-btn-run-all-experiments");
+        if (btn) btn.disabled = true;
+
+        const expIds = [
+            "EXP_114_A", "EXP_114_B", "EXP_114_C", "EXP_114_D", "EXP_114_E",
+            "EXP_114_F", "EXP_114_G", "EXP_114_H", "EXP_114_I", "EXP_114_J",
+            "EXP_114_K", "EXP_114_L", "EXP_114_M", "EXP_114_N", "EXP_114_O",
+            "EXP_114_P", "EXP_114_Q", "EXP_114_R", "EXP_114_S", "EXP_114_T"
+        ];
+
+        for (const expId of expIds) {
+            await window.runSinglePhase114Experiment(expId);
+        }
+
+        if (btn) btn.disabled = false;
     }
 
     // Expose GIS utilities for testing and automated inspection

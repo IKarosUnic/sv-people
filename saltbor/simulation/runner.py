@@ -362,6 +362,7 @@ class SimulationRunner:
         # Phase 1.13 Universal Human Activity, Domain Simulation & Decision Intelligence
         from saltbor.domain import UniversalDomainEngine
         self.domain_engine = UniversalDomainEngine()
+        self.territorial_engine = getattr(self.domain_engine, "territorial_engine", None)
         self.salvadoran_context = ElSalvadorResearchContext()
         self.population_sampling = PopulationSamplingEngine(self.population)
 

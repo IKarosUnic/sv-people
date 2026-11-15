@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-11-15T04:16:32Z",
+  "python_version": "3.14.5",
+  "platform": "win32",
+  "benchmarks": {
+    "territorial_tick_latency": {
+      "ticks": 100,
+      "total_seconds": 0.0,
+      "ms_per_tick": 0.0003,
+      "throughput_ticks_per_sec": 3521125.21
+    },
+    "spatial_accessibility_queries": {
+      "queries": 500,
+      "total_seconds": 0.0015,
+      "ms_per_query": 0.003,
+      "queries_per_sec": 335863.5
+    },
+    "economic_trade_throughput": {
+      "attempted_tx": 500,
+      "successful_tx": 17,
+      "total_seconds": 0.0004,
+      "tx_per_sec": 39803.33
+    },
+    "multi_scale_aggregations": {
+      "rollups_count": 200,
+      "total_seconds": 0.0037,
+      "ms_per_4_tier_rollup": 0.0185
+    },
+    "cross_domain_causal_propagation": {
+      "propagations": 1000,
+      "total_seconds": 0.0095,
+      "ms_per_propagation": 0.0095
+    }
+  }
+}

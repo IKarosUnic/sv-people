@@ -64,6 +64,10 @@ class UniversalDomainEngine:
         self.transportation_domain = TransportationActivityDomain()
         self.agriculture_domain = AgricultureActivityDomain()
 
+        # Phase 1.14 Integrated Territorial Ecosystem Subsystem
+        from saltbor.territory.ecosystem import TerritorialEcosystemEngine
+        self.territorial_engine = TerritorialEcosystemEngine(domain_engine=self)
+
         # Domain Definition Registry
         self.definitions: Dict[str, DomainDefinition] = {}
         self.active_domain_ids: Set[str] = set()
@@ -150,6 +154,8 @@ class UniversalDomainEngine:
         if current_tick % 96 == 0:
             if "commerce_retail" in self.active_domain_ids:
                 results["commerce"] = self.commerce_domain.execute_daily_cycle()
+            if hasattr(self, "territorial_engine") and self.territorial_engine:
+                results["territory"] = self.territorial_engine.step(current_tick)
 
         return results
 

@@ -174,6 +174,10 @@
                         <span class="nav-icon">🌐</span>
                         <span class="nav-title">Dominios & Decisiones</span>
                     </li>
+                    <li class="nav-item" data-view="territorial_ecosystem">
+                        <span class="nav-icon">🗺️</span>
+                        <span class="nav-title">Observatorio Territorial</span>
+                    </li>
                 </ul>
 
                 <div class="sidebar-footer">
@@ -1589,6 +1593,215 @@
                                     <button id="ud-btn-close-code-viewer" class="btn btn-sm btn-secondary">Cerrar</button>
                                 </div>
                                 <pre id="ud-code-viewer-content" style="background:#111; color:#eee; padding:14px; border-radius:6px; overflow-x:auto; font-size:12px; max-height:400px; font-family:monospace;"></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 13. INTEGRATED TERRITORIAL ECOSYSTEM & OBSERVATORY (PHASE 1.14) -->
+                <section id="view-territorial_ecosystem" class="view-panel">
+                    <div class="laboratory-container">
+                        <div class="lab-header">
+                            <h2>🗺️ Observatorio de Ecosistemas Territoriales, Gobernanza Multiescala e Impacto Público (Fase 1.14)</h2>
+                            <p>Evolución de SALTBOR hacia un ecosistema territorial interconectado: estudio multiescala de actividades humanas, infraestructura, servicios públicos, cadenas de suministro, gobernanza participativa y condiciones ambientales en El Salvador (14 Departamentos, 44 Municipios Vigentes y 262 Distritos).</p>
+                        </div>
+
+                        <!-- Territorial Sub-Workspace Navigation -->
+                        <div class="scientific-subtabs-nav" style="display:flex; gap:8px; margin-bottom:20px; border-bottom:1px solid var(--border-strong); padding-bottom:10px; flex-wrap:wrap;">
+                            <button class="btn btn-sm btn-primary active te-subtab-btn" data-target="te-panel-map">🗺️ 1. Mapa Territorial & Capas</button>
+                            <button class="btn btn-sm btn-secondary te-subtab-btn" data-target="te-panel-economics">⛓️ 2. Red Económica & Cadenas</button>
+                            <button class="btn btn-sm btn-secondary te-subtab-btn" data-target="te-panel-services">🏥 3. Servicios Públicos & Capacidad</button>
+                            <button class="btn btn-sm btn-secondary te-subtab-btn" data-target="te-panel-governance">🏛️ 4. Gobernanza & Proyectos</button>
+                            <button class="btn btn-sm btn-secondary te-subtab-btn" data-target="te-panel-needs">🎯 5. Necesidades Humanas (12D)</button>
+                            <button class="btn btn-sm btn-secondary te-subtab-btn" data-target="te-panel-experiments">🔬 6. Experimentos Territoriales (A-T)</button>
+                        </div>
+
+                        <!-- Sub-Panel 1: Territorial Map & Overlays -->
+                        <div id="te-panel-map" class="te-subpanel-content">
+                            <!-- Metrics summary strip -->
+                            <div class="metric-row" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:12px; margin-bottom:18px;">
+                                <div class="metric-card"><div class="metric-title">Territorio</div><div class="metric-value" id="te-stat-country">El Salvador</div></div>
+                                <div class="metric-card"><div class="metric-title">Departamentos</div><div class="metric-value" id="te-stat-depts">14</div></div>
+                                <div class="metric-card"><div class="metric-title">Municipios 2024</div><div class="metric-value" id="te-stat-munis">44</div></div>
+                                <div class="metric-card"><div class="metric-title">Distritos / Cantones</div><div class="metric-value" id="te-stat-comms">270</div></div>
+                                <div class="metric-card"><div class="metric-title">Población Activa</div><div class="metric-value" id="te-stat-pop">96</div></div>
+                                <div class="metric-card"><div class="metric-title">Servicios Públicos</div><div class="metric-value" id="te-stat-facilities">7</div></div>
+                                <div class="metric-card"><div class="metric-title">Nodos de Red Comercial</div><div class="metric-value" id="te-stat-nodes">4</div></div>
+                                <div class="metric-card"><div class="metric-title">Mecanismos Cruzados</div><div class="metric-value" id="te-stat-links">6</div></div>
+                            </div>
+
+                            <div class="economy-two-col" style="display:flex; gap:16px; margin-bottom:20px; flex-wrap:wrap;">
+                                <div class="col-box" style="flex:1; min-width:320px;">
+                                    <h3>Capas Multidominio del Territorio</h3>
+                                    <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Active o desactive capas operativas para inspeccionar la interacción geográfica en tiempo real.</p>
+                                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:15px;">
+                                        <label style="font-size:13px; display:flex; align-items:center; gap:6px;"><input type="checkbox" id="te-layer-pop" checked> 👥 Población & Hogares</label>
+                                        <label style="font-size:13px; display:flex; align-items:center; gap:6px;"><input type="checkbox" id="te-layer-commerce" checked> 🏬 Redes Comerciales & Mercados</label>
+                                        <label style="font-size:13px; display:flex; align-items:center; gap:6px;"><input type="checkbox" id="te-layer-health" checked> 🏥 Clínicas & Hospitales</label>
+                                        <label style="font-size:13px; display:flex; align-items:center; gap:6px;"><input type="checkbox" id="te-layer-edu" checked> 🎓 Escuelas & Institutos</label>
+                                        <label style="font-size:13px; display:flex; align-items:center; gap:6px;"><input type="checkbox" id="te-layer-water" checked> 💧 Infraestructura de Agua</label>
+                                        <label style="font-size:13px; display:flex; align-items:center; gap:6px;"><input type="checkbox" id="te-layer-trans" checked> 🚌 Rutas & Corredores Viales</label>
+                                    </div>
+                                    <button id="te-btn-refresh-summary" class="btn btn-sm btn-outline-primary">🔄 Actualizar Ecosistema</button>
+                                </div>
+
+                                <div class="col-box" style="flex:1; min-width:320px;">
+                                    <h3>Inspector Contextual de Ubicación</h3>
+                                    <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Seleccione un territorio para inspeccionar población, servicios y trazabilidad epistémica.</p>
+                                    <div style="display:flex; gap:8px; margin-bottom:12px;">
+                                        <select id="te-select-territory" class="form-control" style="flex:1;">
+                                            <option value="ss_centro">San Salvador Centro (Urbano Metropolitano)</option>
+                                            <option value="chalatenango_dist">Chalatenango Rural (Zona Montañosa)</option>
+                                            <option value="soyapango">Soyapango (Centro Comercial & Habitacional)</option>
+                                            <option value="usulutan_dist">Usulután Agrícola (Valle y Costa)</option>
+                                            <option value="santa_ana_dist">Santa Ana Centro (Zona Occidental)</option>
+                                        </select>
+                                        <button id="te-btn-inspect-loc" class="btn btn-sm btn-primary">Inspeccionar</button>
+                                    </div>
+                                    <div id="te-location-details" style="background:var(--bg-subtle); padding:12px; border-radius:6px; font-size:13px; min-height:120px;">
+                                        <em>Haga clic en 'Inspeccionar' para cargar detalles de la ubicación seleccionada.</em>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sub-Panel 2: Regional Economic Networks -->
+                        <div id="te-panel-economics" class="te-subpanel-content" style="display:none;">
+                            <div class="economy-two-col" style="display:flex; gap:16px; margin-bottom:20px; flex-wrap:wrap;">
+                                <div class="col-box" style="flex:1.2; min-width:320px;">
+                                    <h3>Cadenas de Suministro y Nodos Comerciales</h3>
+                                    <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Productores, mayoristas, tienditas y pupuserías con conservación contable absoluta ($Debit = Credit$).</p>
+                                    <div id="te-econ-nodes-table" style="max-height:280px; overflow-y:auto; font-size:12px;">
+                                        <div class="loading-placeholder">Cargando nodos económicos...</div>
+                                    </div>
+                                </div>
+
+                                <div class="col-box" style="flex:0.8; min-width:300px;">
+                                    <h3>Transmisión de Precios por Escalón</h3>
+                                    <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Cálculo de propagación de costos agrícolas, flete y márgenes hasta el consumidor final.</p>
+                                    <div style="margin-bottom:10px;">
+                                        <label style="font-size:12px;">Costo Agrícola en Finca ($/quintal):</label>
+                                        <input type="number" id="te-calc-farmgate" class="form-control" value="18.00" step="0.50">
+                                    </div>
+                                    <button id="te-btn-calc-price" class="btn btn-sm btn-primary" style="margin-bottom:12px;">Calcular Transmisión</button>
+                                    <div id="te-price-transmission-results" style="background:var(--bg-subtle); padding:10px; border-radius:6px; font-size:12px;">
+                                        <em>Ingrese costo en finca para simular la transmisión de precios.</em>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sub-Panel 3: Public Services Capacity -->
+                        <div id="te-panel-services" class="te-subpanel-content" style="display:none;">
+                            <div class="economy-two-col" style="display:flex; gap:16px; margin-bottom:20px; flex-wrap:wrap;">
+                                <div class="col-box" style="flex:1.3; min-width:320px;">
+                                    <h3>Instalaciones y Capacidad Operativa</h3>
+                                    <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Capacidades configuradas, colas diarias y estado operativo. Capacidad desconocida permanece sin inferir.</p>
+                                    <div id="te-services-table" style="max-height:300px; overflow-y:auto; font-size:12px;">
+                                        <div class="loading-placeholder">Cargando instalaciones públicas...</div>
+                                    </div>
+                                </div>
+
+                                <div class="col-box" style="flex:0.7; min-width:280px;">
+                                    <h3>Simulación de Demanda & Congestión</h3>
+                                    <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Envíe demanda ciudadana para observar formación de colas y sobrecarga.</p>
+                                    <div style="margin-bottom:8px;">
+                                        <label style="font-size:12px;">Instalación:</label>
+                                        <select id="te-demand-facility" class="form-control" style="font-size:12px;">
+                                            <option value="salud_chalatenango">Unidad de Salud Chalatenango (Cap: 65/día)</option>
+                                            <option value="hosp_rosales_ss">Hospital Rosales (Cap: 450/día)</option>
+                                            <option value="school_rural_usulutan">Escuela Caserío El Tamarindo (Cap: 80/día)</option>
+                                        </select>
+                                    </div>
+                                    <div style="margin-bottom:10px;">
+                                        <label style="font-size:12px;">Ciudadanos Demandando Servicio:</label>
+                                        <input type="number" id="te-demand-count" class="form-control" value="85" min="1">
+                                    </div>
+                                    <button id="te-btn-submit-demand" class="btn btn-sm btn-primary">Simular Demanda</button>
+                                    <div id="te-demand-results" style="margin-top:12px; background:var(--bg-subtle); padding:10px; border-radius:6px; font-size:12px;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sub-Panel 4: Collaborative Governance -->
+                        <div id="te-panel-governance" class="te-subpanel-content" style="display:none;">
+                            <div class="economy-two-col" style="display:flex; gap:16px; margin-bottom:20px; flex-wrap:wrap;">
+                                <div class="col-box" style="flex:1; min-width:320px;">
+                                    <h3>Propuestas de Proyectos Territoriales</h3>
+                                    <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Ciclo de vida institucional: DRAFT → SUBMITTED → UNDER_REVIEW → APPROVED con permisos RBAC y jurisdicción.</p>
+                                    <div id="te-proposals-list" style="max-height:280px; overflow-y:auto; font-size:12px;">
+                                        <div class="loading-placeholder">Cargando propuestas ciudadanas e institucionales...</div>
+                                    </div>
+                                </div>
+
+                                <div class="col-box" style="flex:1; min-width:320px;">
+                                    <h3>Presentar Nueva Propuesta de Proyecto</h3>
+                                    <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Proponga una intervención para evaluación y revisión municipal.</p>
+                                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
+                                        <div>
+                                            <label style="font-size:12px;">Actor Proponente:</label>
+                                            <select id="te-prop-actor" class="form-control" style="font-size:12px;">
+                                                <option value="citizen_ss_01">Ciudadano (San Salvador)</option>
+                                                <option value="leader_adesco_tamarindo">Líder ADESCO (Usulután)</option>
+                                                <option value="admin_muni_ss_centro">Administrador Municipal (SS)</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label style="font-size:12px;">Tipo de Proyecto:</label>
+                                            <select id="te-prop-type" class="form-control" style="font-size:12px;">
+                                                <option value="public_market">Mercado Municipal</option>
+                                                <option value="healthcare_facility">Puesto de Salud</option>
+                                                <option value="rural_school">Escuela Rural</option>
+                                                <option value="transportation_connection">Pavimentación Vial</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div style="margin-bottom:8px;">
+                                        <label style="font-size:12px;">Título:</label>
+                                        <input type="text" id="te-prop-title" class="form-control" value="Mejoramiento Vial Canton El Tamarindo">
+                                    </div>
+                                    <div style="margin-bottom:8px;">
+                                        <label style="font-size:12px;">Presupuesto Estimado ($USD):</label>
+                                        <input type="number" id="te-prop-budget" class="form-control" value="25000.00" step="500">
+                                    </div>
+                                    <button id="te-btn-submit-proposal" class="btn btn-sm btn-primary">Enviar Propuesta</button>
+                                    <div id="te-prop-submit-status" style="margin-top:8px; font-size:12px;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sub-Panel 5: Human Needs (12D) -->
+                        <div id="te-panel-needs" class="te-subpanel-content" style="display:none;">
+                            <div class="economy-two-col" style="display:flex; gap:16px; margin-bottom:20px; flex-wrap:wrap;">
+                                <div class="col-box" style="flex:1.2; min-width:320px;">
+                                    <h3>Evaluación de Necesidades en 12 Dimensiones</h3>
+                                    <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Severidad de carencias y clasificación epistémica (Carencia Confirmada vs Brecha Potencial vs Demanda Simulada).</p>
+                                    <div id="te-needs-table" style="max-height:300px; overflow-y:auto; font-size:12px;">
+                                        <div class="loading-placeholder">Cargando perfil de necesidades...</div>
+                                    </div>
+                                </div>
+
+                                <div class="col-box" style="flex:0.8; min-width:300px;">
+                                    <h3>Priorización Multicriterio Pareto</h3>
+                                    <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Orden de urgencia sin reducir el bienestar a una sola métrica agregada.</p>
+                                    <div id="te-pareto-priorities" style="background:var(--bg-subtle); padding:10px; border-radius:6px; font-size:12px;">
+                                        <div class="loading-placeholder">Cargando prioridades Pareto...</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sub-Panel 6: Territorial Experiments EXP_114_A to EXP_114_T -->
+                        <div id="te-panel-experiments" class="te-subpanel-content" style="display:none;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                                <div>
+                                    <h3 style="margin:0;">Suite de 20 Experimentos Territoriales (Fase 1.14)</h3>
+                                    <p style="font-size:12px; color:var(--text-muted); margin:4px 0 0 0;">Verificación empírica de consistencia cruzada, red económica, gobernanza y rendimiento.</p>
+                                </div>
+                                <button id="te-btn-run-all-experiments" class="btn btn-sm btn-primary">▶ Ejecutar Todas las Pruebas</button>
+                            </div>
+                            <div id="te-experiments-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:12px;">
+                                <div class="loading-placeholder">Cargando catálogo de experimentos EXP_114...</div>
                             </div>
                         </div>
                     </div>
