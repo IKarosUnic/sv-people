@@ -203,3 +203,109 @@ def test_api_connected_scenarios_demonstration():
     assert s4["household"]["jose_cash_usd"] == 0.0
     assert s4["healthcare"]["clinic_wait_hours"] >= 3.0
     assert s5["education"]["mateo_attendance_pct"] >= 90.0
+
+
+# =============================================================================
+# PHASE 1.15 API TESTS
+# =============================================================================
+
+def test_api_generalized_scenarios_listing_and_create():
+    # List scenarios
+    r1 = client.get("/api/territory/scenarios/list")
+    assert r1.status_code == 200
+    scens = r1.json()
+    assert len(scens) >= 3
+    assert any(s["scenario_id"] == "SCEN_INTEGRATED_POLICY_RECOVERY" for s in scens)
+
+    # Create new scenario
+    r2 = client.post(
+        "/api/territory/scenarios/create",
+        json={
+            "scenario_id": "SCEN_API_CUSTOM_DROUGHT",
+            "name": "Custom Agricultural Drought Scenario",
+            "description": "Prolonged dry spell affecting staple yields and tiendita liquidity",
+            "department_code": "09",
+            "municipality_id": "0902",
+            "community_id": "com_san_jose_flores",
+            "is_rural": True,
+            "shocks": [{"type": "DROUGHT_CROP_LOSS", "harvest_loss_pct": 50}],
+            "interventions": [{"type": "FOCUSED_CASH_TRANSFER", "amount_usd": 30.0}],
+            "duration_ticks": 96,
+            "hypotheses": ["Emergency transfer protects maize consumption above baseline subsistence."],
+        },
+    )
+    assert r2.status_code == 200
+    res = r2.json()
+    assert res["status"] == "created"
+    assert res["scenario_id"] == "SCEN_API_CUSTOM_DROUGHT"
+
+
+def test_api_generalized_scenario_execution_and_conservation():
+    res = client.post(
+        "/api/territory/scenarios/run",
+        json={"scenario_id": "SCEN_INTEGRATED_POLICY_RECOVERY", "seed": 42},
+    )
+    assert res.status_code == 200
+    data = res.json()
+    assert data["scenario_id"] == "SCEN_INTEGRATED_POLICY_RECOVERY"
+    assert len(data["stages"]) == 5
+    assert data["ledger_summary"]["conservation_passed"] is True
+    assert data["consistency_passed"] is True
+    assert data["causal_trace_summary"]["total_nodes"] >= 8
+    assert data["causal_trace_summary"]["total_edges"] >= 8
+
+
+def test_api_scenario_comparison_and_causal_trace():
+    # Comparison
+    r1 = client.get("/api/territory/scenarios/compare?baseline_id=SCEN_BASE_EQUILIBRIUM&shock_id=SCEN_ROAD_LANDSLIDE_SHOCK&interventions=SCEN_INTEGRATED_POLICY_RECOVERY")
+    assert r1.status_code == 200
+    comp = r1.json()
+    assert "comparison" in comp
+    assert "SCEN_BASE_EQUILIBRIUM" in comp["comparison"]
+    assert "SCEN_ROAD_LANDSLIDE_SHOCK" in comp["comparison"]
+
+    # Causal Trace
+    r2 = client.get("/api/territory/causal/trace?scenario_id=SCEN_INTEGRATED_POLICY_RECOVERY&seed=42")
+    assert r2.status_code == 200
+    trace = r2.json()
+    assert len(trace["nodes"]) >= 8
+    assert len(trace["edges"]) >= 8
+    assert "epistemic_breakdown" in trace["metrics"]
+
+
+def test_api_economic_ledger_and_entity_inspection():
+    # Ledger
+    r1 = client.get("/api/territory/ledger/transactions")
+    assert r1.status_code == 200
+    ledger = r1.json()
+    assert ledger["conservation_passed"] is True
+    assert ledger["total_transactions_recorded"] >= 8
+
+    # Entity Inspection (Individual)
+    r2 = client.get("/api/territory/entity/inspect?entity_id=agent_jose_worker&entity_type=individual")
+    assert r2.status_code == 200
+    ind = r2.json()
+    assert ind["entity_id"] == "agent_jose_worker"
+
+    # Entity Inspection (Household)
+    r3 = client.get("/api/territory/entity/inspect?entity_id=hh_henriquez&entity_type=household")
+    assert r3.status_code == 200
+    hh = r3.json()
+    assert hh["household_id"] == "hh_henriquez"
+
+
+def test_api_population_analysis_and_provenance():
+    # Population analysis
+    r1 = client.get("/api/territory/population/analysis")
+    assert r1.status_code == 200
+    pop = r1.json()
+    assert "demographics" in pop
+    assert "heterogeneity_rules" in pop
+
+    # Provenance catalog
+    r2 = client.get("/api/territory/provenance/catalog")
+    assert r2.status_code == 200
+    prov = r2.json()
+    assert "762" in prov["legal_framework"]
+    assert len(prov["data_sources"]) >= 4
+

@@ -59,6 +59,35 @@ from saltbor.territory.regional_economics import (
     RegionalEconomicNetworkEngine,
     TradeTransactionRecord,
 )
+from saltbor.territory.behavior_heterogeneity import (
+    CopingLevel,
+    HouseholdStressAssessment,
+    HumanBehaviorHeterogeneityEngine,
+)
+from saltbor.territory.causal_trace import (
+    CausalEdge,
+    CausalNode,
+    CausalTraceEngine,
+    EpistemicCategory,
+)
+from saltbor.territory.consistency import (
+    ConsistencyViolation,
+    SharedEntityConsistencyValidator,
+)
+from saltbor.territory.economic_ledger import (
+    AccountType,
+    EconomicTransaction,
+    TransactionConcept,
+    TransactionEntry,
+    VerifiableEconomicLedger,
+)
+from saltbor.territory.generalized_scenarios import (
+    GeneralizedTerritorialScenarioEngine,
+    InterventionType,
+    ScenarioExecutionResult,
+    ShockType,
+    TerritorialScenarioDefinition,
+)
 
 __all__ = [
     "TerritorialEcosystemEngine",
@@ -70,6 +99,25 @@ __all__ = [
     "HumanNeedsAssessmentEngine",
     "TerritorialProjectEngine",
     "IntegratedImpactAnalysisEngine",
+    "GeneralizedTerritorialScenarioEngine",
+    "TerritorialScenarioDefinition",
+    "ScenarioExecutionResult",
+    "ShockType",
+    "InterventionType",
+    "CausalTraceEngine",
+    "CausalNode",
+    "CausalEdge",
+    "EpistemicCategory",
+    "VerifiableEconomicLedger",
+    "EconomicTransaction",
+    "TransactionEntry",
+    "AccountType",
+    "TransactionConcept",
+    "SharedEntityConsistencyValidator",
+    "ConsistencyViolation",
+    "HumanBehaviorHeterogeneityEngine",
+    "HouseholdStressAssessment",
+    "CopingLevel",
     "TerritorialScale",
     "TerritorialElementType",
     "TerritorialElement",

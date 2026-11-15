@@ -25,7 +25,12 @@ import logging
 from typing import Any, Dict, List, Optional, Tuple
 
 from saltbor.domain.engine import UniversalDomainEngine
+from saltbor.territory.behavior_heterogeneity import HumanBehaviorHeterogeneityEngine
+from saltbor.territory.causal_trace import CausalTraceEngine
+from saltbor.territory.consistency import SharedEntityConsistencyValidator
 from saltbor.territory.cross_domain import CrossDomainInteractionEngine
+from saltbor.territory.economic_ledger import VerifiableEconomicLedger
+from saltbor.territory.generalized_scenarios import GeneralizedTerritorialScenarioEngine
 from saltbor.territory.governance import CollaborativeGovernanceEngine
 from saltbor.territory.impact_analysis import IntegratedImpactAnalysisEngine
 from saltbor.territory.models import (
@@ -63,6 +68,13 @@ class TerritorialEcosystemEngine:
         self.needs_assessment = HumanNeedsAssessmentEngine(random_seed=random_seed)
         self.projects = TerritorialProjectEngine()
         self.impact_analysis = IntegratedImpactAnalysisEngine()
+
+        # Phase 1.15 Generalized Engines
+        self.generalized_scenarios = GeneralizedTerritorialScenarioEngine(random_seed=random_seed)
+        self.causal_trace = CausalTraceEngine()
+        self.economic_ledger = VerifiableEconomicLedger()
+        self.consistency_validator = SharedEntityConsistencyValidator()
+        self.behavior_heterogeneity = HumanBehaviorHeterogeneityEngine(random_seed=random_seed)
 
         # Territorial Elements Directory
         self.elements: Dict[str, TerritorialElement] = {}

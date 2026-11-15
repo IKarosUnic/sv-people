@@ -1,0 +1,78 @@
+{
+  "timestamp": "2026-11-15T04:58:33Z",
+  "python_version": "3.14.5",
+  "platform": "win32",
+  "offline_runtime": true,
+  "benchmarks": {
+    "generalized_scenario_execution": {
+      "runs": 50,
+      "total_seconds": 0.0162,
+      "ms_per_scenario": 0.32,
+      "scenarios_per_sec": 3089.9
+    },
+    "causal_dag_traversals": {
+      "total_queries": 2000,
+      "total_seconds": 0.0202,
+      "ms_per_query": 0.0101,
+      "queries_per_sec": 98965.8
+    },
+    "verifiable_economic_ledger": {
+      "transactions_posted": 5000,
+      "total_seconds": 0.0328,
+      "ms_per_transaction": 0.0066,
+      "throughput_tx_per_sec": 152401.4,
+      "audit_latency_ms": 0.01,
+      "conservation_passed": true
+    },
+    "consistency_validator_scalability": {
+      "scale_100": {
+        "individuals_count": 100,
+        "households_count": 25,
+        "businesses_count": 2,
+        "elapsed_ms": 0.15,
+        "throughput_entities_per_sec": 671592.0,
+        "is_valid": true,
+        "synchronized_entities": 25
+      },
+      "scale_500": {
+        "individuals_count": 500,
+        "households_count": 125,
+        "businesses_count": 10,
+        "elapsed_ms": 0.67,
+        "throughput_entities_per_sec": 741620.0,
+        "is_valid": true,
+        "synchronized_entities": 125
+      },
+      "scale_1000": {
+        "individuals_count": 1000,
+        "households_count": 250,
+        "businesses_count": 20,
+        "elapsed_ms": 1.38,
+        "throughput_entities_per_sec": 725795.0,
+        "is_valid": true,
+        "synchronized_entities": 250
+      },
+      "scale_5000": {
+        "individuals_count": 5000,
+        "households_count": 1250,
+        "businesses_count": 100,
+        "elapsed_ms": 9.41,
+        "throughput_entities_per_sec": 531197.0,
+        "is_valid": true,
+        "synchronized_entities": 1250
+      }
+    },
+    "behavioral_heterogeneity_evaluations": {
+      "total_evaluations": 4000,
+      "total_seconds": 0.013,
+      "ms_per_evaluation": 0.0032,
+      "evaluations_per_sec": 308527.7
+    },
+    "multi_seed_stochastic_evaluation": {
+      "seeds_count": 5,
+      "total_seconds": 0.0117,
+      "ms_per_seed": 2.34,
+      "all_accounting_conserved": true
+    }
+  }
+}

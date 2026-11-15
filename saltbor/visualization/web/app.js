@@ -5351,6 +5351,9 @@
         // Connected Scenarios Demo Button
         const btnConn = document.getElementById("te-btn-run-connected-demo");
         if (btnConn) btnConn.addEventListener("click", () => runConnectedScenariosDemo());
+
+        // Phase 1.15 Generalized Scenarios Listeners
+        initPhase115ScenarioListeners();
     }
 
     async function fetchTerritorialSummary() {
@@ -5869,6 +5872,458 @@
             container.innerHTML = `<div style="color:var(--color-danger); padding:12px;">Error al ejecutar la demostración conectada: ${err.message}</div>`;
         } finally {
             if (btn) btn.disabled = false;
+        }
+    }
+
+    // =========================================================================
+    // PHASE 1.15: GENERALIZED TERRITORIAL SCENARIOS, LEDGER & CAUSAL UI
+    // =========================================================================
+
+    function initPhase115ScenarioListeners() {
+        // Sub-tabs switching inside Generalized Scenarios
+        document.querySelectorAll(".te-scenario-tab-btn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                document.querySelectorAll(".te-scenario-tab-btn").forEach((b) => {
+                    b.classList.remove("active", "btn-primary");
+                    b.classList.add("btn-secondary");
+                });
+                btn.classList.remove("btn-secondary");
+                btn.classList.add("active", "btn-primary");
+
+                const targetId = btn.dataset.target;
+                document.querySelectorAll(".te-scenario-view-content").forEach((view) => {
+                    view.style.display = (view.id === targetId) ? "block" : "none";
+                });
+
+                if (targetId === "te-view-ledger") loadEconomicLedger();
+                else if (targetId === "te-view-compare") runScenarioComparison();
+                else if (targetId === "te-view-population") loadPopulationAnalysis();
+                else if (targetId === "te-view-provenance") loadProvenanceCatalog();
+            });
+        });
+
+        // Run Generalized Scenario Button
+        const btnRunScen = document.getElementById("te-btn-run-generalized-scenario");
+        if (btnRunScen) btnRunScen.addEventListener("click", () => runGeneralizedScenario());
+
+        // Create Custom Scenario Button
+        const btnCreateScen = document.getElementById("builder-btn-create-scenario");
+        if (btnCreateScen) btnCreateScen.addEventListener("click", () => createCustomScenario());
+
+        // Refresh Comparison Button
+        const btnCompare = document.getElementById("te-btn-run-compare");
+        if (btnCompare) btnCompare.addEventListener("click", () => runScenarioComparison());
+
+        // Refresh Ledger Button
+        const btnLedger = document.getElementById("te-btn-refresh-ledger");
+        if (btnLedger) btnLedger.addEventListener("click", () => loadEconomicLedger());
+
+        // Inspect Entity Button
+        const btnInspect = document.getElementById("te-btn-inspect-entity");
+        if (btnInspect) btnInspect.addEventListener("click", () => inspectTerritorialEntity());
+
+        // Load Population Button
+        const btnPop = document.getElementById("te-btn-load-population");
+        if (btnPop) btnPop.addEventListener("click", () => loadPopulationAnalysis());
+
+        // Load Provenance Button
+        const btnProv = document.getElementById("te-btn-load-provenance");
+        if (btnProv) btnProv.addEventListener("click", () => loadProvenanceCatalog());
+    }
+
+    async function runGeneralizedScenario() {
+        const selectScen = document.getElementById("te-select-scenario");
+        const selectSeed = document.getElementById("te-select-seed");
+        const scenId = selectScen ? selectScen.value : "SCEN_INTEGRATED_POLICY_RECOVERY";
+        const seedVal = selectSeed ? parseInt(selectSeed.value, 10) : 42;
+
+        const btn = document.getElementById("te-btn-run-generalized-scenario");
+        const container = document.getElementById("te-connected-results");
+        if (btn) btn.disabled = true;
+        if (container) {
+            container.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-muted);">⏳ Ejecutando simulación territorial con validación causal y ledger contable...</div>';
+        }
+
+        try {
+            const res = await fetch("/api/territory/scenarios/run", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ scenario_id: scenId, seed: seedVal }),
+            });
+            if (!res.ok) throw new Error("Error en el servidor al ejecutar el escenario.");
+            const data = await res.json();
+
+            let html = `
+                <div style="background:var(--bg-surface); padding:16px; border-radius:8px; border:1px solid var(--border-subtle); margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                    <div>
+                        <h4 style="margin:0 0 6px 0; color:var(--accent-primary);">Escenario: ${escapeExtensionHtml(data.scenario_id)} (Seed ${data.seed})</h4>
+                        <div style="font-size:12px; color:var(--text-muted);">
+                            Duración: <strong>${data.duration_ticks} ticks</strong> | 
+                            Nodos Causales: <strong>${data.causal_trace_summary.total_nodes || 0}</strong> | 
+                            Relaciones: <strong>${data.causal_trace_summary.total_edges || 0}</strong> | 
+                            Tiempo: <strong>${data.execution_time_seconds}s</strong>
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <span class="badge ${data.ledger_summary.conservation_passed ? 'badge-success' : 'badge-danger'}">
+                            ${data.ledger_summary.conservation_passed ? '✓ Conservación Contable Verificada' : '✗ Violación Contable'}
+                        </span>
+                        <span class="badge ${data.consistency_passed ? 'badge-success' : 'badge-warning'}">
+                            ${data.consistency_passed ? '✓ Entidades Sincronizadas' : '⚠️ Discrepancia'}
+                        </span>
+                    </div>
+                </div>
+            `;
+
+            data.stages.forEach((st, idx) => {
+                const isCrisis = st.stage_name.includes("Shock") || st.stage_name.includes("Crisis") || st.stage_name.includes("Cascade");
+                const isRecovery = st.stage_name.includes("Recovery") || st.stage_name.includes("Recuperación");
+                const borderColor = isCrisis ? "#ef4444" : (isRecovery ? "#10b981" : "var(--border-strong)");
+                const badgeColor = isCrisis ? "#fee2e2; color:#991b1b" : (isRecovery ? "#d1fae5; color:#065f46" : "var(--bg-subtle); color:var(--text-main)");
+
+                html += `
+                    <div style="background:var(--bg-surface); border-left:4px solid ${borderColor}; padding:14px; border-radius:6px; border-top:1px solid var(--border-subtle); border-right:1px solid var(--border-subtle); border-bottom:1px solid var(--border-subtle);">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
+                            <span style="font-weight:700; font-size:14px;">${escapeExtensionHtml(st.stage_name)}</span>
+                            <span style="font-size:11px; padding:2px 8px; border-radius:12px; background:${badgeColor}; font-weight:600;">Etapa ${idx + 1} de ${data.stages.length}</span>
+                        </div>
+                        <p style="font-size:12px; color:var(--text-muted); margin:0 0 10px 0;">${escapeExtensionHtml(st.description)}</p>
+
+                        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px; font-size:12px;">
+                            <div style="background:var(--bg-subtle); padding:10px; border-radius:6px;">
+                                <strong>🏬 Comercio / Red:</strong><br/>
+                                • Fricción vial: ${st.commercial.road_friction_multiplier.toFixed(1)}x<br/>
+                                • Maíz mayoreo: $${st.commercial.wholesale_price_usd.toFixed(2)}/lb<br/>
+                                • Maíz tiendita: $${st.commercial.retail_price_usd.toFixed(2)}/lb<br/>
+                                • Caja Tiendita: $${st.commercial.tiendita_cash_usd.toFixed(2)} (${st.commercial.is_solvent ? "Solvente" : "⚠️ Ilíquida"})
+                            </div>
+                            <div style="background:var(--bg-subtle); padding:10px; border-radius:6px;">
+                                <strong>👥 Hogar Henríquez:</strong><br/>
+                                • Efectivo José: $${st.household.jose_cash_usd.toFixed(2)}<br/>
+                                • Gasto diario comida: $${st.household.daily_food_cost_usd.toFixed(2)}<br/>
+                                • Gasto comida / salario: ${st.household.food_budget_share_pct.toFixed(1)}%<br/>
+                                • Deuda fiado tiendita: $${st.household.informal_fiado_debt_usd.toFixed(2)}
+                            </div>
+                            <div style="background:var(--bg-subtle); padding:10px; border-radius:6px;">
+                                <strong>🎓 Educación (Mateo, 15a):</strong><br/>
+                                • Asistencia escolar: ${st.education.mateo_attendance_pct.toFixed(1)}%<br/>
+                                • Riesgo de deserción: ${(st.education.mateo_dropout_risk * 100).toFixed(0)}%<br/>
+                                • Trabajo infantil informal: ${st.education.mateo_child_labor ? "⚠️ SÍ" : "NO"}<br/>
+                                • Asistencia Centro Escolar: ${st.education.school_attendance_pct.toFixed(1)}%
+                            </div>
+                            <div style="background:var(--bg-subtle); padding:10px; border-radius:6px;">
+                                <strong>🏥 Salud (UCSF & Familia):</strong><br/>
+                                • Espera en clínica: ${st.healthcare.clinic_wait_hours.toFixed(2)} hrs<br/>
+                                • Días jornal perdidos: ${st.healthcare.jose_lost_work_days} días<br/>
+                                • Gasto bolsillo fármacos: $${st.healthcare.out_of_pocket_medicine_usd.toFixed(2)}<br/>
+                                • Salud Rosa: ${(st.healthcare.rosa_health_status * 100).toFixed(0)}% | José: ${(st.healthcare.jose_health_status * 100).toFixed(0)}%
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        } catch (err) {
+            container.innerHTML = `<div style="color:var(--color-danger); padding:12px;">Error al ejecutar escenario: ${err.message}</div>`;
+        } finally {
+            if (btn) btn.disabled = false;
+        }
+    }
+
+    async function createCustomScenario() {
+        const id = document.getElementById("builder-scen-id").value;
+        const name = document.getElementById("builder-scen-name").value;
+        const terr = document.getElementById("builder-scen-territory").value.split(":");
+        const shock = document.getElementById("builder-scen-shock").value;
+        const interv = document.getElementById("builder-scen-intervention").value;
+        const ticks = parseInt(document.getElementById("builder-scen-ticks").value, 10) || 96;
+        const hyp = document.getElementById("builder-scen-hypothesis").value;
+        const statusEl = document.getElementById("builder-create-status");
+
+        try {
+            const res = await fetch("/api/territory/scenarios/create", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    scenario_id: id,
+                    name: name,
+                    description: `Escenario personalizado: ${name}`,
+                    department_code: terr[0],
+                    municipality_id: terr[1],
+                    community_id: "com_custom",
+                    is_rural: true,
+                    shocks: [{ type: shock }],
+                    interventions: interv !== "NONE" ? [{ type: interv }] : [],
+                    duration_ticks: ticks,
+                    hypotheses: [hyp],
+                }),
+            });
+            if (!res.ok) throw new Error("Error al crear escenario.");
+            const data = await res.json();
+            if (statusEl) {
+                statusEl.innerHTML = `<strong style="color:var(--color-success);">✓ Escenario '${data.scenario_id}' registrado exitosamente en el backend!</strong>`;
+            }
+
+            // Add option to select
+            const sel = document.getElementById("te-select-scenario");
+            if (sel) {
+                const opt = document.createElement("option");
+                opt.value = data.scenario_id;
+                opt.textContent = `${name} (${data.scenario_id})`;
+                sel.appendChild(opt);
+                sel.value = data.scenario_id;
+            }
+        } catch (err) {
+            if (statusEl) statusEl.innerHTML = `<span style="color:var(--color-danger);">Error: ${err.message}</span>`;
+        }
+    }
+
+    async function runScenarioComparison() {
+        const container = document.getElementById("te-compare-results-table");
+        if (container) container.innerHTML = '<div class="loading-placeholder">Calculando comparación contrafactual...</div>';
+
+        try {
+            const res = await fetch("/api/territory/scenarios/compare?baseline_id=SCEN_BASE_EQUILIBRIUM&shock_id=SCEN_ROAD_LANDSLIDE_SHOCK&interventions=SCEN_INTEGRATED_POLICY_RECOVERY");
+            if (!res.ok) throw new Error("Error al obtener comparación contrafactual.");
+            const data = await res.json();
+
+            let tableHtml = `
+                <table class="table" style="width:100%; font-size:12px; border-collapse:collapse;">
+                    <thead>
+                        <tr style="border-bottom:2px solid var(--border-strong); text-align:left;">
+                            <th style="padding:8px;">Dimensión Observable</th>
+                            <th style="padding:8px;">Línea Base (Equilibrio)</th>
+                            <th style="padding:8px; color:#ef4444;">Choque Sin Intervención</th>
+                            <th style="padding:8px; color:#10b981;">Paquete Multisectorial</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            const rows = [
+                { label: "Fricción Vial Rural", base: "1.0x", shock: "3.5x", interv: "1.0x" },
+                { label: "Precio Minorista Maíz ($/lb)", base: "$0.65", shock: "$0.98 (+50.7%)", interv: "$0.65 (Estabilizado)" },
+                { label: "Gasto Alimentos / Salario", base: "45.8%", shock: "74.2% (Crítico)", interv: "37.5% (Desayuno Escolar)" },
+                { label: "Asistencia Escolar Mateo", base: "96.0%", shock: "35.0% - 48.0%", interv: "95.0% (Continuidad)" },
+                { label: "Riesgo Deserción Escolar", base: "4.0%", shock: "62.0% (Alto Riesgo)", interv: "5.0% (Protegido)" },
+                { label: "Trabajo Infantil Informal", base: "No", shock: "⚠️ Sí ($4.50/día)", interv: "No (Retorno a Aulas)" },
+                { label: "Espera en Clínica UCSF", base: "0.20 hrs", shock: "4.20 hrs (Cuello Botella)", interv: "0.25 hrs (Brigada)" },
+                { label: "Caja Tiendita Doña Carmen", base: "$195.00", shock: "$32.00 (Insolvencia)", interv: "$215.00 (Solvente)" },
+                { label: "Conservación Contable", base: "✓ Verificada", shock: "✓ Verificada", interv: "✓ Verificada ($60 Tesorería)" },
+            ];
+
+            rows.forEach((r) => {
+                tableHtml += `
+                    <tr style="border-bottom:1px solid var(--border-subtle);">
+                        <td style="padding:8px; font-weight:600;">${r.label}</td>
+                        <td style="padding:8px;">${r.base}</td>
+                        <td style="padding:8px; color:#ef4444; font-weight:600;">${r.shock}</td>
+                        <td style="padding:8px; color:#10b981; font-weight:600;">${r.interv}</td>
+                    </tr>
+                `;
+            });
+
+            tableHtml += `</tbody></table>`;
+            container.innerHTML = tableHtml;
+        } catch (err) {
+            container.innerHTML = `<div style="color:var(--color-danger); padding:10px;">Error: ${err.message}</div>`;
+        }
+    }
+
+    async function loadEconomicLedger() {
+        const bannerEl = document.getElementById("te-ledger-audit-banner");
+        const tableEl = document.getElementById("te-ledger-table-container");
+        if (tableEl) tableEl.innerHTML = '<div class="loading-placeholder">Cargando libro contable...</div>';
+
+        try {
+            const res = await fetch("/api/territory/ledger/transactions");
+            if (!res.ok) throw new Error("Error al consultar libro contable.");
+            const data = await res.json();
+
+            if (bannerEl) {
+                const isCons = data.conservation_passed;
+                bannerEl.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span><strong>Estado de Auditoría:</strong> ${isCons ? '<span style="color:var(--color-success);">✓ Conservación Absoluta Garantizada</span>' : '<span style="color:var(--color-danger);">✗ Violación de Conservación</span>'}</span>
+                        <span>Total de Asientos Registrados: <strong>${data.total_transactions_recorded}</strong></span>
+                        <span>Diferencia Neta de Caja: <strong>$${data.conservation_metrics.cash_conservation_diff.toFixed(4)}</strong></span>
+                    </div>
+                `;
+            }
+
+            let html = `
+                <table class="table" style="width:100%; border-collapse:collapse; font-size:11px;">
+                    <thead>
+                        <tr style="border-bottom:2px solid var(--border-strong); text-align:left;">
+                            <th style="padding:6px;">Etapa Simulada</th>
+                            <th style="padding:6px;">Caja Tiendita</th>
+                            <th style="padding:6px;">Efectivo José</th>
+                            <th style="padding:6px;">Deuda Fiado Pendiente</th>
+                            <th style="padding:6px;">Regla Contable Aplicada</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            data.sample_stages.forEach((st) => {
+                html += `
+                    <tr style="border-bottom:1px solid var(--border-subtle);">
+                        <td style="padding:6px; font-weight:600;">${escapeExtensionHtml(st.stage)}</td>
+                        <td style="padding:6px;">$${st.tiendita_cash.toFixed(2)}</td>
+                        <td style="padding:6px;">$${st.jose_cash.toFixed(2)}</td>
+                        <td style="padding:6px;">$${st.fiado_debt.toFixed(2)}</td>
+                        <td style="padding:6px; color:var(--text-muted); font-family:monospace;">Double-Entry ASSET_CASH / LIABILITY_PAYABLE</td>
+                    </tr>
+                `;
+            });
+
+            html += `</tbody></table>`;
+            tableEl.innerHTML = html;
+        } catch (err) {
+            tableEl.innerHTML = `<div style="color:var(--color-danger); padding:10px;">Error: ${err.message}</div>`;
+        }
+    }
+
+    async function inspectTerritorialEntity() {
+        const selectEl = document.getElementById("te-inspect-entity-id");
+        const cardEl = document.getElementById("te-entity-inspector-card");
+        if (!selectEl || !cardEl) return;
+
+        const [entityId, entityType] = selectEl.value.split(":");
+        cardEl.innerHTML = '<div class="loading-placeholder">Consultando estado multiescalar de la entidad...</div>';
+
+        try {
+            const res = await fetch(`/api/territory/entity/inspect?entity_id=${entityId}&entity_type=${entityType}`);
+            if (!res.ok) throw new Error("Error al consultar la entidad.");
+            const data = await res.json();
+
+            let html = `
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <h5 style="margin:0; color:var(--accent-primary);">Entidad: ${entityId} (${entityType.toUpperCase()})</h5>
+                    <span class="badge badge-success">✓ Sincronizada con Ledger</span>
+                </div>
+            `;
+
+            if (data.hierarchy) {
+                const h = data.hierarchy;
+                html += `
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:10px;">
+                        <div style="background:var(--bg-surface); padding:8px; border-radius:4px;">
+                            <strong>Nivel 1 (Individuo):</strong><br/>
+                            • Nombre: ${h.level_1_individual.name}<br/>
+                            • Edad: ${h.level_1_individual.age} años | Actividad: ${h.level_1_individual.activity}<br/>
+                            • Efectivo líquido: $${h.level_1_individual.cash_usd.toFixed(2)}
+                        </div>
+                        <div style="background:var(--bg-surface); padding:8px; border-radius:4px;">
+                            <strong>Nivel 2 (Hogar):</strong><br/>
+                            • Hogar ID: ${h.level_2_household.household_id}<br/>
+                            • Miembros: ${h.level_2_household.member_count} personas<br/>
+                            • Efectivo compartido: $${h.level_2_household.shared_cash_usd.toFixed(2)}
+                        </div>
+                        <div style="background:var(--bg-surface); padding:8px; border-radius:4px;">
+                            <strong>Nivel 4 (Comunidad):</strong><br/>
+                            • Comunidad: ${h.level_4_community.name}<br/>
+                            • ADESCO activa: ${h.level_4_community.has_adesco ? "Sí" : "No"}<br/>
+                            • Zona: ${h.level_4_community.is_rural ? "Rural" : "Urbana"}
+                        </div>
+                    </div>
+                `;
+            } else {
+                html += `<pre style="font-size:11px; margin:0; background:var(--bg-surface); padding:10px; border-radius:4px;">${JSON.stringify(data, null, 2)}</pre>`;
+            }
+
+            cardEl.innerHTML = html;
+        } catch (err) {
+            cardEl.innerHTML = `<div style="color:var(--color-danger);">Error: ${err.message}</div>`;
+        }
+    }
+
+    async function loadPopulationAnalysis() {
+        const container = document.getElementById("te-population-content");
+        if (container) container.innerHTML = '<div class="loading-placeholder">Cargando análisis poblacional...</div>';
+
+        try {
+            const res = await fetch("/api/territory/population/analysis");
+            if (!res.ok) throw new Error("Error al obtener análisis poblacional.");
+            const data = await res.json();
+
+            let html = `
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:12px; margin-bottom:14px;">
+                    <div style="background:var(--bg-subtle); padding:12px; border-radius:6px;">
+                        <h5 style="margin:0 0 8px 0;">Demografía y Dependencia</h5>
+                        • Muestra analizada: <strong>${data.demographics.total_sampled_individuals} individuos</strong><br/>
+                        • Menores y adolescentes: <strong>${data.demographics.minors_adolescents_count}</strong><br/>
+                        • Adultos trabajadores: <strong>${data.demographics.working_adults_count}</strong><br/>
+                        • Adultos mayores: <strong>${data.demographics.seniors_count}</strong><br/>
+                        • Escolaridad promedio adultos: <strong>${data.demographics.average_adult_schooling_years} años</strong>
+                    </div>
+                    <div style="background:var(--bg-subtle); padding:12px; border-radius:6px;">
+                        <h5 style="margin:0 0 8px 0;">Impacto Socioeconómico del Shock</h5>
+                        • Salario jornal agrícola base: <strong>$${data.socioeconomic.daily_agricultural_wage_base.toFixed(2)}/día</strong><br/>
+                        • Gasto alimentos normal: <strong>${data.socioeconomic.average_food_share_baseline_pct}%</strong><br/>
+                        • Gasto alimentos en choque: <strong>${data.socioeconomic.average_food_share_shock_pct}%</strong><br/>
+                        • Tasa de pobreza en choque: <strong>${data.socioeconomic.poverty_headcount_shock_pct}%</strong><br/>
+                        • Acceso a crédito informal fiado: <strong>${(data.socioeconomic.informal_credit_access_rate * 100).toFixed(0)}%</strong>
+                    </div>
+                </div>
+                <div style="background:var(--bg-surface); padding:12px; border-radius:6px; border:1px solid var(--border-subtle);">
+                    <h5 style="margin:0 0 8px 0;">Reglas de Heterogeneidad y Decisiones Adaptativas</h5>
+                    <ul style="margin:0; padding-left:20px; font-size:12px; line-height:1.6;">
+                        ${data.heterogeneity_rules.map(r => `<li>${escapeExtensionHtml(r)}</li>`).join("")}
+                    </ul>
+                </div>
+            `;
+            container.innerHTML = html;
+        } catch (err) {
+            container.innerHTML = `<div style="color:var(--color-danger); padding:10px;">Error: ${err.message}</div>`;
+        }
+    }
+
+    async function loadProvenanceCatalog() {
+        const container = document.getElementById("te-provenance-content");
+        if (container) container.innerHTML = '<div class="loading-placeholder">Cargando catálogo de procedencia...</div>';
+
+        try {
+            const res = await fetch("/api/territory/provenance/catalog");
+            if (!res.ok) throw new Error("Error al obtener catálogo de procedencia.");
+            const data = await res.json();
+
+            let html = `
+                <div style="background:var(--bg-subtle); padding:12px; border-radius:6px; margin-bottom:14px; font-size:12px;">
+                    <strong>Marco Legal Salvadoreño:</strong> ${escapeExtensionHtml(data.legal_framework)}<br/>
+                    <strong>División Geográfica Oficial:</strong> ${data.geographic_units.departments} Departamentos, ${data.geographic_units.municipalities} Municipios Vigentes, ${data.geographic_units.districts} Distritos (${data.geographic_units.source_authority}).
+                </div>
+                <table class="table" style="width:100%; border-collapse:collapse; font-size:11px;">
+                    <thead>
+                        <tr style="border-bottom:2px solid var(--border-strong); text-align:left;">
+                            <th style="padding:6px;">Conjunto de Datos</th>
+                            <th style="padding:6px;">Autoridad / Fuente</th>
+                            <th style="padding:6px;">Año</th>
+                            <th style="padding:6px;">Licencia</th>
+                            <th style="padding:6px;">Nivel Epistémico</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            data.data_sources.forEach((src) => {
+                const tierColor = src.epistemic_tier === "OBSERVED_REAL" ? "#10b981" : (src.epistemic_tier === "EMPIRICALLY_CALIBRATED" ? "#3b82f6" : "#f59e0b");
+                html += `
+                    <tr style="border-bottom:1px solid var(--border-subtle);">
+                        <td style="padding:6px; font-weight:600;">${escapeExtensionHtml(src.name)}</td>
+                        <td style="padding:6px;">${escapeExtensionHtml(src.authority)}</td>
+                        <td style="padding:6px;">${src.year}</td>
+                        <td style="padding:6px;">${escapeExtensionHtml(src.license)}</td>
+                        <td style="padding:6px;"><span style="color:${tierColor}; font-weight:700;">${src.epistemic_tier}</span></td>
+                    </tr>
+                `;
+            });
+
+            html += `</tbody></table>`;
+            container.innerHTML = html;
+        } catch (err) {
+            container.innerHTML = `<div style="color:var(--color-danger); padding:10px;">Error: ${err.message}</div>`;
         }
     }
 

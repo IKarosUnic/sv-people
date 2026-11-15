@@ -1810,24 +1810,172 @@
                         <div id="te-panel-connected" class="te-subpanel-content" style="display:none;">
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
                                 <div>
-                                    <h3 style="margin:0;">🔗 Demostración Funcional de Escenarios Conectados (Fase 1.14)</h3>
-                                    <p style="font-size:12px; color:var(--text-muted); margin:4px 0 0 0;">Interdependencia real entre <strong>Comercio/Transporte</strong>, <strong>Educación</strong> y <strong>Salud</strong> sobre la MISMA población y territorio (Cantón San José Las Flores, San Vicente Sur).</p>
+                                    <h3 style="margin:0;">🌐 Escenarios Territoriales Generalizados, Validación Causal y Ledger Contable (Fase 1.15)</h3>
+                                    <p style="font-size:12px; color:var(--text-muted); margin:4px 0 0 0;">Simulación de cascadas multidominio, mecanismos causales explícitos, estricta conservación contable de doble partida e individuos heterogéneos.</p>
                                 </div>
-                                <button id="te-btn-run-connected-demo" class="btn btn-sm btn-primary">🚀 Ejecutar Simulación Conectada</button>
+                                <div style="display:flex; gap:8px; align-items:center;">
+                                    <select id="te-select-scenario" class="form-control" style="font-size:12px; width:260px;">
+                                        <option value="SCEN_INTEGRATED_POLICY_RECOVERY">Recuperación Integral Multisectorial</option>
+                                        <option value="SCEN_ROAD_LANDSLIDE_SHOCK">Choque No Mitigado (Deslave Vial)</option>
+                                        <option value="SCEN_BASE_EQUILIBRIUM">Línea Base en Equilibrio</option>
+                                    </select>
+                                    <select id="te-select-seed" class="form-control" style="font-size:12px; width:100px;">
+                                        <option value="42">Seed 42</option>
+                                        <option value="101">Seed 101</option>
+                                        <option value="202">Seed 202</option>
+                                    </select>
+                                    <button id="te-btn-run-generalized-scenario" class="btn btn-sm btn-primary">🚀 Ejecutar Escenario</button>
+                                </div>
                             </div>
 
-                            <div id="te-connected-intro-box" style="background:var(--bg-subtle); padding:14px; border-radius:6px; margin-bottom:16px; font-size:13px; line-height:1.6;">
-                                <strong>Población e Infraestructura Compartida:</strong>
-                                <ul style="margin:6px 0 0 20px; padding:0;">
-                                    <li><strong>Familia Henríquez:</strong> José Henríquez (jornalero agrícola, 41 años) y Mateo Henríquez (estudiante de 9no grado, 15 años).</li>
-                                    <li><strong>Familia Vásquez:</strong> Carmen Vásquez (dueña de Tiendita Doña Carmen), Rosa Vásquez (72 años, hipertensa) y Lucía Vásquez (11 años).</li>
-                                    <li><strong>Entorno Común:</strong> Corredor vial rural de 12 km, Centro Escolar San José Las Flores y Unidad Comunitaria de Salud Familiar (UCSF).</li>
-                                </ul>
+                            <!-- 7 Sub-tabs of the Scenario Observatory -->
+                            <div class="scientific-subtabs-nav" style="display:flex; gap:6px; margin-bottom:14px; border-bottom:1px solid var(--border-subtle); padding-bottom:8px; flex-wrap:wrap;">
+                                <button class="btn btn-xs btn-primary te-scenario-tab-btn active" data-target="te-view-timeline">🔗 Línea Temporal Causal</button>
+                                <button class="btn btn-xs btn-secondary te-scenario-tab-btn" data-target="te-view-builder">🏗️ Creador de Escenarios</button>
+                                <button class="btn btn-xs btn-secondary te-scenario-tab-btn" data-target="te-view-compare">📊 Comparación Contrafactual</button>
+                                <button class="btn btn-xs btn-secondary te-scenario-tab-btn" data-target="te-view-ledger">⚖️ Libro Diario Contable</button>
+                                <button class="btn btn-xs btn-secondary te-scenario-tab-btn" data-target="te-view-inspector">👤 Inspector de Entidades</button>
+                                <button class="btn btn-xs btn-secondary te-scenario-tab-btn" data-target="te-view-population">👥 Análisis Poblacional</button>
+                                <button class="btn btn-xs btn-secondary te-scenario-tab-btn" data-target="te-view-provenance">📜 Evidencia & Procedencia</button>
                             </div>
 
-                            <div id="te-connected-results" style="display:flex; flex-direction:column; gap:14px;">
-                                <div style="font-size:13px; color:var(--text-muted); text-align:center; padding:24px; background:var(--bg-surface); border-radius:8px; border:1px dashed var(--border-strong);">
-                                    Haga clic en '🚀 Ejecutar Simulación Conectada' para observar la cascada multidominio y la recuperación territorial integrada en tiempo real.
+                            <!-- View 1: Causal Timeline -->
+                            <div id="te-view-timeline" class="te-scenario-view-content">
+                                <div id="te-connected-results" style="display:flex; flex-direction:column; gap:14px;">
+                                    <div style="font-size:13px; color:var(--text-muted); text-align:center; padding:24px; background:var(--bg-surface); border-radius:8px; border:1px dashed var(--border-strong);">
+                                        Haga clic en '🚀 Ejecutar Escenario' para simular la cascada territorial y trazar la red causal.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- View 2: Scenario Builder -->
+                            <div id="te-view-builder" class="te-scenario-view-content" style="display:none;">
+                                <div style="background:var(--bg-surface); padding:16px; border-radius:8px; border:1px solid var(--border-subtle);">
+                                    <h4 style="margin:0 0 12px 0;">🏗️ Diseñador Declarativo de Escenarios Territoriales</h4>
+                                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:12px; margin-bottom:12px;">
+                                        <div>
+                                            <label style="font-size:12px; font-weight:600;">ID del Escenario:</label>
+                                            <input type="text" id="builder-scen-id" class="form-control" value="SCEN_CUSTOM_CLIMATE_SHOCK">
+                                        </div>
+                                        <div>
+                                            <label style="font-size:12px; font-weight:600;">Nombre:</label>
+                                            <input type="text" id="builder-scen-name" class="form-control" value="Sequía Prolongada y Alza de Fletes">
+                                        </div>
+                                        <div>
+                                            <label style="font-size:12px; font-weight:600;">Departamento / Municipio:</label>
+                                            <select id="builder-scen-territory" class="form-control">
+                                                <option value="09:0902">09 - San Vicente Sur (D.L. 762)</option>
+                                                <option value="04:0401">04 - Chalatenango Centro</option>
+                                                <option value="06:0601">06 - San Salvador Centro</option>
+                                                <option value="11:1101">11 - Usulután Norte</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label style="font-size:12px; font-weight:600;">Choque Inicial:</label>
+                                            <select id="builder-scen-shock" class="form-control">
+                                                <option value="ROAD_BLOCKAGE_LANDSLIDE">Deslave y Bloqueo Vial (3.5x fricción)</option>
+                                                <option value="DROUGHT_CROP_LOSS">Sequía y Pérdida de Cosecha (-60% granos)</option>
+                                                <option value="FOOD_PRICE_SPIKE">Alza de Precios de Alimentos (+50%)</option>
+                                                <option value="HEALTHCARE_CLINIC_OVERLOAD">Sobrecarga de Clínica y Desabastecimiento</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label style="font-size:12px; font-weight:600;">Intervención de Política:</label>
+                                            <select id="builder-scen-intervention" class="form-control">
+                                                <option value="COMBINED_TERRITORIAL_PACKAGE">Paquete Integrado (Vía + Desayuno + Brigada)</option>
+                                                <option value="ROAD_REHABILITATION">Rehabilitación Vial con Empleo Local</option>
+                                                <option value="SCHOOL_BREAKFAST_PROGRAM">Programa de Desayuno Escolar y Transporte</option>
+                                                <option value="FOCUSED_CASH_TRANSFER">Transferencia Monetaria de Emergencia</option>
+                                                <option value="NONE">Sin Intervención (Dejar evolucionar choque)</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label style="font-size:12px; font-weight:600;">Duración (Ticks):</label>
+                                            <input type="number" id="builder-scen-ticks" class="form-control" value="96">
+                                        </div>
+                                    </div>
+                                    <div style="margin-bottom:12px;">
+                                        <label style="font-size:12px; font-weight:600;">Hipótesis Falsable:</label>
+                                        <input type="text" id="builder-scen-hypothesis" class="form-control" value="La intervención focalizada reduce el riesgo de deserción escolar por debajo del 10% en hogares bajo la línea de pobreza.">
+                                    </div>
+                                    <button id="builder-btn-create-scenario" class="btn btn-sm btn-primary">💾 Registrar Escenario en Backend</button>
+                                    <span id="builder-create-status" style="margin-left:10px; font-size:12px; color:var(--text-muted);"></span>
+                                </div>
+                            </div>
+
+                            <!-- View 3: Scenario Comparison -->
+                            <div id="te-view-compare" class="te-scenario-view-content" style="display:none;">
+                                <div style="background:var(--bg-surface); padding:16px; border-radius:8px; border:1px solid var(--border-subtle);">
+                                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                                        <h4 style="margin:0;">📊 Comparación Contrafactual de Políticas Territoriales</h4>
+                                        <button id="te-btn-run-compare" class="btn btn-sm btn-secondary">🔄 Comparar Alternativas</button>
+                                    </div>
+                                    <div id="te-compare-results-table">
+                                        <div class="loading-placeholder">Haga clic en 'Comparar Alternativas' para calcular diferencias contrafactuales.</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- View 4: Verifiable Economic Ledger -->
+                            <div id="te-view-ledger" class="te-scenario-view-content" style="display:none;">
+                                <div style="background:var(--bg-surface); padding:16px; border-radius:8px; border:1px solid var(--border-subtle);">
+                                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                                        <div>
+                                            <h4 style="margin:0;">⚖️ Libro Diario Contable de Partida Doble</h4>
+                                            <p style="font-size:12px; color:var(--text-muted); margin:4px 0 0 0;">Conservación monetaria absoluta: todo débito tiene un crédito igual. Cero creación de dinero de la nada.</p>
+                                        </div>
+                                        <button id="te-btn-refresh-ledger" class="btn btn-sm btn-secondary">🔄 Actualizar Asientos</button>
+                                    </div>
+                                    <div id="te-ledger-audit-banner" style="margin-bottom:12px; padding:10px; border-radius:6px; font-size:12px; background:var(--bg-subtle);"></div>
+                                    <div id="te-ledger-table-container" style="max-height:340px; overflow-y:auto; font-size:12px;"></div>
+                                </div>
+                            </div>
+
+                            <!-- View 5: Entity Inspector -->
+                            <div id="te-view-inspector" class="te-scenario-view-content" style="display:none;">
+                                <div style="background:var(--bg-surface); padding:16px; border-radius:8px; border:1px solid var(--border-subtle);">
+                                    <div style="display:flex; gap:10px; margin-bottom:14px; align-items:center; flex-wrap:wrap;">
+                                        <label style="font-size:12px; font-weight:600;">Seleccionar Entidad:</label>
+                                        <select id="te-inspect-entity-id" class="form-control" style="width:260px;">
+                                            <option value="agent_jose_worker:individual">José Henríquez (Jornalero Agrícola)</option>
+                                            <option value="agent_mateo_student:individual">Mateo Henríquez (Estudiante 15a)</option>
+                                            <option value="agent_carmen_trader:individual">Carmen Vásquez (Comerciante Tienda)</option>
+                                            <option value="agent_rosa_elder:individual">Rosa Vásquez (Adulta Mayor 72a)</option>
+                                            <option value="hh_henriquez:household">Familia Henríquez (Hogar)</option>
+                                            <option value="hh_vasquez:household">Familia Vásquez (Hogar)</option>
+                                            <option value="node_tiendita_carmen:business">Tiendita Doña Carmen (Comercio)</option>
+                                        </select>
+                                        <button id="te-btn-inspect-entity" class="btn btn-sm btn-primary">Inspeccionar Entidad</button>
+                                    </div>
+                                    <div id="te-entity-inspector-card" style="background:var(--bg-subtle); padding:14px; border-radius:6px; font-size:12px;">
+                                        <em>Seleccione una entidad y presione 'Inspeccionar Entidad' para examinar su estado multiescalar sincronizado.</em>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- View 6: Population Analysis -->
+                            <div id="te-view-population" class="te-scenario-view-content" style="display:none;">
+                                <div style="background:var(--bg-surface); padding:16px; border-radius:8px; border:1px solid var(--border-subtle);">
+                                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                                        <h4 style="margin:0;">👥 Análisis de Heterogeneidad y Decisiones Humanas</h4>
+                                        <button id="te-btn-load-population" class="btn btn-sm btn-secondary">🔄 Cargar Demografía</button>
+                                    </div>
+                                    <div id="te-population-content">
+                                        <div class="loading-placeholder">Cargando perfil poblacional y reglas de resiliencia...</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- View 7: Data Provenance & Evidence -->
+                            <div id="te-view-provenance" class="te-scenario-view-content" style="display:none;">
+                                <div style="background:var(--bg-surface); padding:16px; border-radius:8px; border:1px solid var(--border-subtle);">
+                                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                                        <h4 style="margin:0;">📜 Catálogo de Procedencia de Datos y Marco Legal (D.L. 762)</h4>
+                                        <button id="te-btn-load-provenance" class="btn btn-sm btn-secondary">🔄 Cargar Fuentes</button>
+                                    </div>
+                                    <div id="te-provenance-content">
+                                        <div class="loading-placeholder">Cargando procedencia de datos oficiales de El Salvador...</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
